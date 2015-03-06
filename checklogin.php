@@ -1,7 +1,6 @@
 <?php require_once("includes/connection.php"); ?>
 <?php require_once("includes/functions.php"); ?>
 <?php require_once("includes/constants.php"); ?>
-<?php include("includes/header.php"); ?>
 
 
 <?php
@@ -14,8 +13,10 @@ if(isset($_POST['submit'])){
 	else{
 		
 		$username = $_POST['uname']; 
-		$password = $_POST['pwd']; 
-		echo "set";
+		$password = $_POST['pwd'];
+		
+		$username = mysql_prep($username, $connection);
+		$password = mysql_prep($password, $connection);
 		
 		$query = mysqli_query($connection,"SELECT * from users where Password='$password' AND Email='$username'");
 		if($query == FALSE){
@@ -31,9 +32,14 @@ if(isset($_POST['submit'])){
 				$error = "Username or Password is invalid";
 				echo $error;
 			} else {
-				$_SESSION['login_user'] = $username; // Initializing Session
-				echo "Logged in";
-				redirect_to("profile.php"); // Redirecting To Other Page
+				session_start();
+				$_SESSION['user'] = $username; // Initializing Session
+				
+				$usr = md5($username);
+				if(isset($_SESSION['user']))
+					{
+					redirect_to("dashboard.php"); // Redirecting To Other Page
+					}
 			}
 			
 		
@@ -41,4 +47,3 @@ if(isset($_POST['submit'])){
 }
 
 ?>
-
