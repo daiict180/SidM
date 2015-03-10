@@ -48,14 +48,14 @@
                 <input type="text" name="uname" class="form-control" placeholder="User ID" autofocus>
                 <input type="password" name="pwd" class="form-control" placeholder="Password">
             </div>
-            <label class="checkbox">
+            <label class="checkbox" style="margin-top:35px">
                 <!--<input type="checkbox" value="remember-me"> Remember me -->
-                <span class="pull-right">
+                <span class="pull-right" style="margin-top:28px">
                     <a data-toggle="modal" href="#myModal"> Forgot Password?</a>
 
                 </span>
             </label>
-            <button class="btn btn-lg btn-login btn-block" name="submit" type="submit">Sign in</button>
+            <button class="btn btn-lg btn-login btn-block" name="submit" type="submit" style="margin-top:-65px">Sign in</button>
 
         <!--<div class="registration">
                 Don't have an account yet?
@@ -77,11 +77,12 @@
                       <div class="modal-body">
                           <p>Enter your e-mail address below to reset your password.</p>
                           <input type="text" name="email" placeholder="Email" autocomplete="off" class="form-control placeholder-no-fix">
-
                       </div>
                       <div class="modal-footer">
-                          <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                          <button class="btn btn-success" type="button">Submit</button>
+                        <div style="margin-top:16px">
+                          <button class="btn btn-success" type="button" style="margin-left:140px;margin-bottom:16px">Submit</button>
+                          <button class="btn btn-default" type="button">Cancel</button>
+                        </div>
                       </div>
                   </div>
               </div>

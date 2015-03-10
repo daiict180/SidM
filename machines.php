@@ -13,3 +13,5 @@
 		echo nl2br($result[0] . " " . $result[1] . " " . $result[2] . " " . $result[3] . "\n");
 	}
 ?>
+
+<?php include("includes/footer.php"); ?>

@@ -16,3 +16,6 @@ if(!isset($_SESSION['user'])){
 		echo nl2br($result[0] . "\n");
 	}
 ?>
+
+
+<?php include("includes/footer.php"); ?>

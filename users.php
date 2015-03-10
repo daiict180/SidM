@@ -9,3 +9,6 @@
 		$branch = getbranchbyid($_SESSION['user'], $connection);
 		echo $branch;
 ?>
+
+
+<?php include("includes/footer.php"); ?>

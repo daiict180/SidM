@@ -16,3 +16,5 @@ if(isset($_SESSION['user'])){
 	}
 }
 ?>
+
+<?php include("includes/footer.php"); ?>

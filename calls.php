@@ -4,3 +4,7 @@
 <?php require_once("includes/constants.php"); ?>
 <?php include("includes/checksession.php"); ?>
 <?php include("includes/toggle.php"); ?>
+
+
+
+<?php include("includes/footer.php"); ?>

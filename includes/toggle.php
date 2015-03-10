@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="Sidharth Machinaries">
     <link rel="shortcut icon" href="images/favicon.html">
-    <title>Sidharth Machineries</title>
+    <title>Siddharth Machineries</title>
     <!--Core CSS -->
     <link href="bs3/css/bootstrap.min.css" rel="stylesheet">
     <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
@@ -23,8 +23,8 @@
 <!--header start-->
 <header class="header fixed-top clearfix">
 <!--logo start-->
-<div class="brand">
-    <a href="dashboard.php" class="logo">
+<div class="brand" style="background-color:white">
+    <a href="index.html" class="logo">
         <img src="images/logo1.png" alt="">
     </a>
     <div class="sidebar-toggle-box">
@@ -43,13 +43,13 @@
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                 <img alt="" src="images/avatar1_small.jpg">
-                <span class="username"><?php echo getnamebyid($_SESSION['user'],$connection); ?></span>
+                <span class="username"><?php echo getnamebyid($_SESSION['user'], $connection) ?> </span>
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu extended logout">
                 <li><a href="#"><i class="fa fa-suitcase"></i>Profile</a></li>
                 <li><a href="#"><i class="fa fa-cog"></i>Settings</a></li>
-                <li><a href="logout.php"><i class="fa fa-key"></i>Log Out</a></li>
+                <li><a href="login.html"><i class="fa fa-key"></i>Log Out</a></li>
             </ul>
         </li>
         <!-- user login dropdown end -->
@@ -146,21 +146,3 @@
     </div>
 </aside>
 <!--sidebar end-->
-</section>
-<!-- Placed js at the end of the document so the pages load faster -->
-<!--Core js-->
-<script src="js/jquery.js"></script>
-<script src="js/jquery-ui/jquery-ui-1.10.1.custom.min.js"></script>
-<script src="bs3/js/bootstrap.min.js"></script>
-<script src="js/jquery.dcjqaccordion.2.7.js"></script>
-<script src="js/jquery.scrollTo.min.js"></script>
-<script src="js/jquery.nicescroll.js"></script>
-<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="js/flot-chart/excanvas.min.js"></script><![endif]-->
-
-<!--clock init-->
-<!--common script init for all pages-->
-<script src="js/scripts.js"></script>
-<!--script for this page-->
-
-</body>
-</html>

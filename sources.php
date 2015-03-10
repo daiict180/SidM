@@ -5,8 +5,6 @@
 <?php include("includes/checksession.php"); ?>
 <?php include("includes/toggle.php"); ?>
 
-<html>
-<body>
 
 <?php
 $query = mysqli_query($connection, "SELECT * FROM sources");
@@ -16,5 +14,5 @@ $query = mysqli_query($connection, "SELECT * FROM sources");
 		echo nl2br($result[0] . "\n");
 ?>
 
-</body>
-</html>
+
+<?php include("includes/footer.php"); ?>
