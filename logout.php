@@ -15,3 +15,5 @@ session_destroy();
 
 </body>
 </html>
+
+<?php require_once("includes/footer.php"); ?>

@@ -105,3 +105,4 @@
 
 <!-- Mirrored from bucketadmin.themebucket.net/login.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 31 Jul 2014 11:13:08 GMT -->
 </html>
+<?php require_once("includes/footer.php"); ?>

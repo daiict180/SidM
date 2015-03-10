@@ -4,6 +4,14 @@
 <?php require_once("includes/constants.php"); ?>
 <?php include("includes/checksession.php"); ?>
 
+<?php
+if(isset($_GET['cid'])){
+	$cid = $_GET['cid'];
+    $query = mysqli_query($connection, "DELETE FROM companies WHERE companyid='$cid'");
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -79,43 +87,43 @@
         <div class="leftside-navigation">
             <ul class="sidebar-menu" id="nav-accordion">
                 <li>
-                    <a class="active" href="index.html">
+                    <a href="dashboard.php">
                         <i class="fa fa-dashboard"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
                 <li>
-                    <a href="companies.php">
+                    <a class="active" href="companies.php">
                         <i class="fa fa-university"></i>
                         <span>Companies</span>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="companycontacts.php">
                         <i class="fa fa-info"></i>
                         <span>Company Contacts</span>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="setupinfo.php">
                         <i class="fa fa-cog"></i>
                         <span>Setup Information</span>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="leads.php">
                         <i class="fa fa-magnet"></i>
                         <span>Leads</span>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="opportunities.php">
                         <i class="fa fa-level-up"></i>
                         <span>Opportunities</span>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="calls.php">
                         <i class="fa fa-mobile"></i>
                         <span>Calls</span>
                     </a>
@@ -177,9 +185,11 @@
                     <div class="panel-body">
                     <div class="adv-table">
                     <div class="btn-group">
+					<a href="newcompany.php">
                         <button id="editable-sample_new" class="btn btn-primary">
                             Add New Company <i class="fa fa-plus"></i>
                         </button>
+					<a/>
                     </div>
                     <table  class="display table table-bordered table-striped" id="dynamic-table">
                     <thead>
@@ -198,49 +208,30 @@
                         <th>Delete</th>
                     </tr>
                     </thead>
-                    <tbody>
+					<tbody>
+					<?php
+						$query = mysqli_query($connection, "SELECT * FROM companies");
+						$rows = mysqli_num_rows($query);
+						for($i=0 ; $i<$rows ; $i++){
+							$result = mysqli_fetch_array($query);
+					?>
+					
                     <tr class="gradeX">
-                        <td>Company1</td>
-                        <td>Owner1</td>
-                        <td>Owner@gmail.com</td>
-                        <td>1234567890</td>
-                        <td>1234567890</td>
-                        <td>city1</td>
-                        <td>Lead</td>
-                        <td>Branch1</td>
-                        <td>Source1</td>
-                        <td>Signage</td>
+                        <td><?php echo $result[1] ; ?></td>
+                        <td><?php echo $result[2] ; ?></td>
+                        <td><?php echo $result[13] ; ?></td>
+                        <td><?php echo $result[14] ; ?></td>
+                        <td><?php echo $result[15] ; ?></td>
+                        <td><?php echo $result[5] ; ?></td>
+                        <td><?php echo $result[11] ; ?></td>
+                        <td><?php echo $result[12] ; ?></td>
+                        <td><?php echo $result[9] ; ?></td>
+                        <td><?php echo $result[19] ; ?></td>
                         <td><a class="edit" href="">Edit</a></td>
-                        <td><a class="delete" href="">Delete</a></td>
+                        <td><a class="delete" href="companies.php?cid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Company?')">Delete</a></td>
                     </tr>
-                    <tr class="gradeX">
-                        <td>Company1</td>
-                        <td>Owner1</td>
-                        <td>Owner@gmail.com</td>
-                        <td>1234567890</td>
-                        <td>1234567890</td>
-                        <td>city1</td>
-                        <td>Lead</td>
-                        <td>Branch1</td>
-                        <td>Source1</td>
-                        <td>Signage</td>
-                        <td><a class="edit" href="">Edit</a></td>
-                        <td><a class="delete" href="">Delete</a></td>
-                    </tr>
-                    <tr class="gradeX">
-                        <td>Company1</td>
-                        <td>Owner1</td>
-                        <td>Owner@gmail.com</td>
-                        <td>1234567890</td>
-                        <td>1234567890</td>
-                        <td>city1</td>
-                        <td>Lead</td>
-                        <td>Branch1</td>
-                        <td>Source1</td>
-                        <td>Signage</td>
-                        <td><a class="edit" href="">Edit</a></td>
-                        <td><a class="delete" href="">Delete</a></td>
-                    </tr>
+					
+					<?php } ?>
                     </tbody>
                     <tfoot>
                     <tr>
@@ -269,6 +260,7 @@
 </section>
 <!-- Placed js at the end of the document so the pages load faster -->
 <!--Core js-->
+
 <script src="js/jquery.js"></script>
 <script src="js/jquery-ui/jquery-ui-1.10.1.custom.min.js"></script>
 <script src="bs3/js/bootstrap.min.js"></script>
@@ -288,3 +280,5 @@
 
 <!-- Mirrored from bucketadmin.themebucket.net/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 31 Jul 2014 11:12:48 GMT -->
 </html>
+
+<?php require_once("includes/footer.php"); ?>

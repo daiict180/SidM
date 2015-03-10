@@ -20,7 +20,7 @@ if(isset($_POST['submit'])){
 	$software = mysql_prep($_POST['software'], $connection);
 	$mremarks = mysql_prep($_POST['mremarks'], $connection);
 	
-	$query = mysqli_query($connection, "INSERT INTO setupinformation VALUES ('$company', '$manufacturer', STR_TO_DATE('$date', '%d-%m-%Y'), '$place', '$machine', '$model', '$size', '$head', '$mnumber', '$warranty', '$ink', '$software', '$mremarks')");	
+	$query = mysqli_query($connection, "INSERT INTO setupinformation VALUES ('','$company', '$manufacturer', STR_TO_DATE('$date', '%d-%m-%Y'), '$place', '$machine', '$model', '$size', '$head', '$mnumber', '$warranty', '$ink', '$software', '$mremarks')");	
 }
 
 ?>
@@ -108,7 +108,7 @@ if(isset($_POST['submit'])){
         <div class="leftside-navigation">
             <ul class="sidebar-menu" id="nav-accordion">
                 <li>
-                    <a class="active" href="index.html">
+                    <a class="active" href="dashboard.php">
                         <i class="fa fa-dashboard"></i>
                         <span>Dashboard</span>
                     </a>
@@ -120,31 +120,31 @@ if(isset($_POST['submit'])){
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="companycontacts.php">
                         <i class="fa fa-info"></i>
                         <span>Company Contacts</span>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="setupinfo.php">
                         <i class="fa fa-cog"></i>
                         <span>Setup Information</span>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="leads.php">
                         <i class="fa fa-magnet"></i>
                         <span>Leads</span>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="opportunities.php">
                         <i class="fa fa-level-up"></i>
                         <span>Opportunities</span>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="calls.php">
                         <i class="fa fa-mobile"></i>
                         <span>Calls</span>
                     </a>
@@ -344,3 +344,4 @@ if(isset($_POST['submit'])){
 
 <!-- Mirrored from bucketadmin.themebucket.net/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 31 Jul 2014 11:12:48 GMT -->
 </html>
+<?php require_once("includes/footer.php"); ?>
