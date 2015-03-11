@@ -46,7 +46,7 @@ if(isset($_GET['oid'])){
 <header class="header fixed-top clearfix">
 <!--logo start-->
 <div class="brand">
-    <a href="index.html" class="logo">
+    <a href="dashboard.php" class="logo">
         <img src="images/logo1.png" alt="">
     </a>
     <div class="sidebar-toggle-box">
@@ -249,10 +249,10 @@ if(isset($_GET['oid'])){
                     <tr class="gradeX">
                         <td><?php echo $result[1]; ?></td>
                         <td><?php echo $result[2]; ?></td>
+                        <td><?php echo $result[4]; ?></td>
                         <td><?php echo $result[5]; ?></td>
                         <td><?php echo $result[7]; ?></td>
                         <td><?php echo $result[8]; ?></td>
-                        <td><?php echo $result[9]; ?></td>
                         <td><?php echo $result[13]; ?></td>
                         <td><a class="edit" href="">Edit</a></td>
                         <td><a class="delete" href="opportunities.php?oid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Opportunity?')">Delete</a></td>

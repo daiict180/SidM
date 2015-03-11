@@ -30,7 +30,7 @@
 <header class="header fixed-top clearfix">
 <!--logo start-->
 <div class="brand" style="background-color:white">
-    <a href="index.html" class="logo">
+    <a href="dashboard.php" class="logo">
         <img src="images/logo1.png" alt="">
     </a>
     <div class="sidebar-toggle-box">

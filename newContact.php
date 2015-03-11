@@ -10,12 +10,12 @@ if(isset($_POST['submit'])){
 	$cname = mysql_prep($_POST['company'],$connection);
 	$contact = mysql_prep($_POST['contact'],$connection);
 	$designation = mysql_prep($_POST['designation'],$connection);
-	$bphone = intval($_POST['bphone']);
-	$pphone = intval($_POST['pphone']);
-	$mobile = intval($_POST['mobile']);
+	$bphone = mysql_prep($_POST['bphone'],$connection);
+	$pphone = mysql_prep($_POST['pphone'],$connection);
+	$mobile = mysql_prep($_POST['mobile'],$connection);
 	$email = mysql_prep($_POST['email'],$connection);
 	
-	$query = mysqli_query($connection, "INSERT INTO companycontacts VALUES ('','$cname', '$contact', '$designation', $bphone, $pphone, $mobile, '$email')");	
+	$query = mysqli_query($connection, "INSERT INTO companycontacts VALUES ('','$cname', '$contact', '$designation', '$bphone', '$pphone', '$mobile', '$email')");	
 }
 
 ?>
@@ -216,19 +216,19 @@ if(isset($_POST['submit'])){
                                     <div class="form-group ">
                                         <label for="bphone" class="control-label col-lg-3">Business Phone</label>
                                         <div class="col-lg-6">
-                                            <input class="form-control " id="bphone" type="number" name="bphone" />
+                                            <input class="form-control " id="bphone" type="text" name="bphone" />
                                         </div>
                                     </div>
                                     <div class="form-group ">
                                         <label for="pphone" class="control-label col-lg-3">Personal Phone</label>
                                         <div class="col-lg-6">
-                                            <input class="form-control " id="pphone" type="number" name="pphone" />
+                                            <input class="form-control " id="pphone" type="text" name="pphone" />
                                         </div>
                                     </div>
                                     <div class="form-group ">
                                         <label for="mobile" class="control-label col-lg-3">Mobile</label>
                                         <div class="col-lg-6">
-                                            <input class="form-control " id="mobile" type="number" name="mobile" />
+                                            <input class="form-control " id="mobile" type="text" name="mobile" />
                                         </div>
                                     </div>
                                     <div class="form-group ">

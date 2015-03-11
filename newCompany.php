@@ -14,13 +14,13 @@ if(isset($_POST['submit'])){
 	$add1 = mysql_prep($_POST['add1'], $connection);
 	$email = mysql_prep($_POST['email'],$connection);
 	$add2 = mysql_prep($_POST['add2'],$connection);
-	$bphone = intval($_POST['bphone']);
+	$bphone = mysql_prep($_POST['bphone'],$connection);
 	$city = mysql_prep($_POST['city'],$connection);
-	$mobile = intval($_POST['mobile']);
+	$mobile = mysql_prep($_POST['mobile'],$connection);
 	$pin = intval($_POST['pin']);
-	$phone2 = intval($_POST['phone2']);
+	$phone2 = mysql_prep($_POST['phone2'],$connection);
 	$state = mysql_prep($_POST['state'],$connection);
-	$fax = intval($_POST['fax']);
+	$fax = mysql_prep($_POST['fax'],$connection);
 	$country = mysql_prep($_POST['country'],$connection);
 	$url = mysql_prep($_POST['url'],$connection);
 	$source = mysql_prep($_POST['source'],$connection);
@@ -28,8 +28,7 @@ if(isset($_POST['submit'])){
 	$remarks = mysql_prep($_POST['remarks'],$connection);
 	$experience = mysql_prep($_POST['experience'],$connection);
 	
-	$query = mysqli_query($connection, "INSERT INTO companies VALUES ('','$name', '$oname', '$add1', '$add2', '$city', $pin, '$state', '$country', '$source', '$remarks', '$type', '$branch', '$email', $bphone, $mobile, $phone2, $fax, '$url', '$segment', '$experience')");
-	
+	$query = mysqli_query($connection, "INSERT INTO companies VALUES ('','$name', '$oname', '$add1', '$add2', '$city', $pin, '$state', '$country', '$source', '$remarks', '$type', '$branch', '$email', '$bphone', '$mobile', '$phone2', '$fax', '$url', '$segment', '$experience')");
 }
 
 ?>
@@ -60,7 +59,7 @@ if(isset($_POST['submit'])){
 <header class="header fixed-top clearfix">
 <!--logo start-->
 <div class="brand">
-    <a href="index.html" class="logo">
+    <a href="dashboard.php" class="logo">
         <img src="images/logo1.png" alt="">
     </a>
     <div class="sidebar-toggle-box">
@@ -250,7 +249,7 @@ if(isset($_POST['submit'])){
                                         </div>
                                         <label for="cbphone" class="control-label col-lg-3">Business Phone</label>
                                         <div class="col-lg-3">
-                                            <input class="form-control " id="cbphone" type="number" name="bphone" />
+                                            <input class="form-control " id="cbphone" type="text" name="bphone" />
                                         </div>
                                     </div>
                                     <div class="form-group ">
@@ -260,7 +259,7 @@ if(isset($_POST['submit'])){
                                         </div>
                                         <label for="cmobile" class="control-label col-lg-3">Mobile</label>
                                         <div class="col-lg-3">
-                                            <input class="form-control " id="cmobile" type="number" name="mobile" />
+                                            <input class="form-control " id="cmobile" type="text" name="mobile" />
                                         </div>
                                     </div>
                                     <div class="form-group ">
@@ -270,7 +269,7 @@ if(isset($_POST['submit'])){
                                         </div>
                                         <label for="cphone2" class="control-label col-lg-3">Phone2</label>
                                         <div class="col-lg-3">
-                                            <input class="form-control " id="cphone2" type="number" name="phone2" />
+                                            <input class="form-control " id="cphone2" type="text" name="phone2" />
                                         </div>
                                     </div>
                                     <div class="form-group ">
@@ -280,7 +279,7 @@ if(isset($_POST['submit'])){
                                         </div>
                                         <label for="cfax" class="control-label col-lg-3">Fax</label>
                                         <div class="col-lg-3">
-                                            <input class="form-control " id="cfax" type="number" name="fax" />
+                                            <input class="form-control " id="cfax" type="text" name="fax" />
                                         </div>
                                     </div>
                                     <div class="form-group ">

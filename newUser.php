@@ -9,15 +9,15 @@
 if(isset($_POST['submit'])){
 	$FullName = mysql_prep($_POST['FullName'], $connection);
 	$useremail = mysql_prep($_POST['useremail'], $connection);
-	$password = mysql_prep($_POST['password'], $connection);
-	$confirmPassword = mysql_prep($_POST['confirmPassword'], $connection);
-	$umobile = intval($_POST['umobile']);
+	$password = md5(mysql_prep($_POST['password'], $connection));
+	$confirmPassword = md5(mysql_prep($_POST['confirmPassword'], $connection));
+	$umobile = mysql_prep($_POST['umobile'], $connection);
 	$active = mysql_prep($_POST['active'], $connection);
 	$role = mysql_prep($_POST['role'], $connection);
 	$branch = mysql_prep($_POST['branch'], $connection);
 	
 	if($password == $confirmPassword)
-		$query = mysqli_query($connection, "INSERT INTO users VALUES ('','$FullName', '$useremail', $umobile, '$role', '$active', '$password', '$branch')");
+		$query = mysqli_query($connection, "INSERT INTO users VALUES ('','$FullName', '$useremail', '$umobile', '$role', '$active', '$password', '$branch')");
 	
 }
 
@@ -50,7 +50,7 @@ if(isset($_POST['submit'])){
 <header class="header fixed-top clearfix">
 <!--logo start-->
 <div class="brand">
-    <a href="index.html" class="logo">
+    <a href="dashboard.php" class="logo">
         <img src="images/logo1.png" alt="">
     </a>
     <div class="sidebar-toggle-box">
@@ -91,7 +91,7 @@ if(isset($_POST['submit'])){
         <div class="leftside-navigation">
             <ul class="sidebar-menu" id="nav-accordion">
                 <li>
-                    <a class="active" href="dashboard.php">
+                    <a href="dashboard.php">
                         <i class="fa fa-dashboard"></i>
                         <span>Dashboard</span>
                     </a>
@@ -217,7 +217,7 @@ if(isset($_POST['submit'])){
                                     <div class="form-group ">
                                         <label for="umobile" class="control-label col-lg-3">Mobile</label>
                                         <div class="col-lg-6">
-                                            <input class="form-control " id="umobile" type="number" name="umobile"/>
+                                            <input class="form-control " id="umobile" type="text" name="umobile"/>
                                         </div>
                                     </div>
                                     <div class="form-group ">

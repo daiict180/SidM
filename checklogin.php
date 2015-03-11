@@ -16,7 +16,7 @@ if(isset($_POST['submit'])){
 		$password = $_POST['pwd'];
 		
 		$username = mysql_prep($username, $connection);
-		$password = mysql_prep($password, $connection);
+		$password = md5(mysql_prep($password, $connection));
 		
 		$query = mysqli_query($connection,"SELECT * from users where Password='$password' AND Email='$username'");
 		if($query == FALSE){

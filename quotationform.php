@@ -1,22 +1,3 @@
-<?php session_start(); ?>
-<?php require_once("includes/connection.php"); ?>
-<?php require_once("includes/functions.php"); ?>
-<?php require_once("includes/constants.php"); ?>
-<?php include("includes/checksession.php"); ?>
-
-<?php
-if(isset($_POST['submit'])){
-	$machine = mysql_prep($_POST['Machine'], $connection);
-	$category = mysql_prep($_POST['category'], $connection);
-	$description = mysql_prep($_POST['description'], $connection);
-	$active = mysql_prep($_POST['active'], $connection);
-	
-	
-	$query = mysqli_query($connection, "INSERT INTO machines VALUES ('','$machine', '$category', '$description', '$active')");	
-}
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -27,13 +8,28 @@ if(isset($_POST['submit'])){
     <meta name="description" content="">
     <meta name="author" content="Sidharth Machinaries">
     <link rel="shortcut icon" href="images/favicon.html">
-    <title>Machines</title>
+    <title>Quotation</title>
     <!--Core CSS -->
     <link href="bs3/css/bootstrap.min.css" rel="stylesheet">
     <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
     <!--clock css-->
     <link href="js/css3clock/css/style.css" rel="stylesheet">
     <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="css/bootstrap-switch.css" />
+    <link rel="stylesheet" type="text/css" href="js/bootstrap-fileupload/bootstrap-fileupload.css" />
+    <link rel="stylesheet" type="text/css" href="js/bootstrap-wysihtml5/bootstrap-wysihtml5.css" />
+
+    <link rel="stylesheet" type="text/css" href="js/bootstrap-datepicker/css/datepicker.css" />
+    <link rel="stylesheet" type="text/css" href="js/bootstrap-timepicker/css/timepicker.css" />
+    <link rel="stylesheet" type="text/css" href="js/bootstrap-colorpicker/css/colorpicker.css" />
+    <link rel="stylesheet" type="text/css" href="js/bootstrap-daterangepicker/daterangepicker-bs3.css" />
+    <link rel="stylesheet" type="text/css" href="js/bootstrap-datetimepicker/css/datetimepicker.css" />
+
+    <link rel="stylesheet" type="text/css" href="js/jquery-multi-select/css/multi-select.css" />
+    <link rel="stylesheet" type="text/css" href="js/jquery-tags-input/jquery.tagsinput.css" />
+
+    <link rel="stylesheet" type="text/css" href="js/select2/select2.css" />
+    <link href="css/style1.css" rel="stylesheet">
     <link href="css/style1.css" rel="stylesheet">
     <link href="css/style-responsive.css" rel="stylesheet"/>
 </head>
@@ -43,7 +39,7 @@ if(isset($_POST['submit'])){
 <header class="header fixed-top clearfix">
 <!--logo start-->
 <div class="brand">
-    <a href="dashboard.php" class="logo">
+    <a href="index.html" class="logo">
         <img src="images/logo1.png" alt="">
     </a>
     <div class="sidebar-toggle-box">
@@ -62,13 +58,13 @@ if(isset($_POST['submit'])){
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                 <img alt="" src="images/avatar1_small.jpg">
-                <span class="username"><?php echo getnamebyid($_SESSION['user'], $connection) ?></span>
+                <span class="username">John Doe</span>
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu extended logout">
                 <li><a href="#"><i class="fa fa-suitcase"></i>Profile</a></li>
                 <li><a href="#"><i class="fa fa-cog"></i>Settings</a></li>
-                <li><a href="logout.php"><i class="fa fa-key"></i>Log Out</a></li>
+                <li><a href="login.html"><i class="fa fa-key"></i>Log Out</a></li>
             </ul>
         </li>
         <!-- user login dropdown end -->
@@ -84,43 +80,43 @@ if(isset($_POST['submit'])){
         <div class="leftside-navigation">
             <ul class="sidebar-menu" id="nav-accordion">
                 <li>
-                    <a href="dashboard.php">
+                    <a class="active" href="index.html">
                         <i class="fa fa-dashboard"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
                 <li>
-                    <a href="companies.php">
+                    <a href="index.html">
                         <i class="fa fa-university"></i>
                         <span>Companies</span>
                     </a>
                 </li>
                 <li>
-                    <a href="companycontacts.php">
+                    <a href="index.html">
                         <i class="fa fa-info"></i>
                         <span>Company Contacts</span>
                     </a>
                 </li>
                 <li>
-                    <a href="setupinfo.php">
+                    <a href="index.html">
                         <i class="fa fa-cog"></i>
                         <span>Setup Information</span>
                     </a>
                 </li>
                 <li>
-                    <a href="leads.php">
+                    <a href="index.html">
                         <i class="fa fa-magnet"></i>
                         <span>Leads</span>
                     </a>
                 </li>
                 <li>
-                    <a href="opportunities.php">
+                    <a href="index.html">
                         <i class="fa fa-level-up"></i>
                         <span>Opportunities</span>
                     </a>
                 </li>
                 <li>
-                    <a href="calls.php">
+                    <a href="index.html">
                         <i class="fa fa-mobile"></i>
                         <span>Calls</span>
                     </a>
@@ -142,12 +138,12 @@ if(isset($_POST['submit'])){
                         <span>Masters</span>
                     </a>
                     <ul class="sub">
-                        <li><a href="machines.php">Machines</a></li>
-                        <li><a href="users.php">Users</a></li>
-                        <li><a href="segments.php">Segments</a></li>
-                        <li><a href="branches.php">Branches</a></li>
-                        <li><a href="sources.php">Sources</a></li>
-                        <li><a href="callmodes.php">Call Modes</a></li>
+                        <li><a href="basic_table.html">Machines</a></li>
+                        <li><a href="responsive_table.html">Users</a></li>
+                        <li><a href="dynamic_table.html">Segments</a></li>
+                        <li><a href="editable_table.html">Branches</a></li>
+                        <li><a href="editable_table.html">Sources</a></li>
+                        <li><a href="editable_table.html">Call Modes</a></li>
                     </ul>
                 </li>
                 <li class="sub-menu">
@@ -173,7 +169,7 @@ if(isset($_POST['submit'])){
                 <div class="col-lg-12">
                     <section class="panel">
                         <header class="panel-heading">
-                            <h4><b>Add Machine</b></h4>
+                            <h4><b>Add Quotation Information</b></h4>
                             <span class="tools pull-right">
                                 <a class="fa fa-chevron-down" href="javascript:;"></a>
                                 <a class="fa fa-cog" href="javascript:;"></a>
@@ -182,38 +178,72 @@ if(isset($_POST['submit'])){
                         </header>
                         <div class="panel-body">
                             <div class=" form">
-                                <form class="cmxform form-horizontal " id="commentForm" method="post" action="#">
+                                <form class="cmxform form-horizontal " id="commentForm" method="get" action="#">
                                     <div class="form-group ">
-                                        <label for="MachineName" class="control-label col-lg-3">Machine Name</label>
+                                        <label for="qCompany" class="control-label col-lg-3">Company</label>
                                         <div class="col-lg-6">
-                                            <input class="form-control " id="MachineName" type="text" name="Machine" required/>
+                                            <input class="form-control " id="qCompany" type="text" name="qcompany" disabled="true" placeholder="Name of the Company with selected Opportunity">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">Quotation Date</label>
+                                        <div class="col-md-6 col-xs-11">
+                                            <input class="form-control form-control-inline input-medium default-date-picker"  size="16" type="text" value="" />
+                                            <!-- <span class="help-block">Select date</span> -->
                                         </div>
                                     </div>
                                     <div class="form-group ">
-                                        <label for="category" class="control-label col-lg-3">Category</label>
+                                        <label for="machine1" class="control-label col-lg-3">Name of Machine 1</label>
                                         <div class="col-lg-6">
-                                            <input class="form-control " id="category" type="text" name="category"/>
+                                            <input class="form-control " id="machine1" type="text" name="machine1" required/>
                                         </div>
                                     </div>
                                     <div class="form-group ">
-                                        <label for="mdes" class="control-label col-lg-3">Description</label>
+                                        <label for="price1" class="control-label col-lg-3">Price of Machine 1</label>
                                         <div class="col-lg-6">
-                                            <textarea class="form-control " id="mdes" name="description"></textarea>
+                                            <input class="form-control " id="price1" type="number" name="price1" />
                                         </div>
                                     </div>
                                     <div class="form-group ">
-                                        <label for="active" class="control-label col-lg-3">Active</label>
+                                        <label for="quantity1" class="control-label col-lg-3">Quantity of Machine 1</label>
                                         <div class="col-lg-6">
-                                            <select class="form-control"  id="active" name="active" required>
-                                                <option value="Y">Yes</option>
-                                                <option value="N">No</option>
-                                            </select>
+                                            <input class="form-control " id="quantity1" type="number" name="quantity1" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="machine2" class="control-label col-lg-3">Name of Machine 2</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="machine2" type="text" name="machine2" required/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="price2" class="control-label col-lg-3">Price of Machine 2</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="price2" type="number" name="price2" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="quantity2" class="control-label col-lg-3">Quantity of Machine 2</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="quantity2" type="number" name="quantity2" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="discount" class="control-label col-lg-3">Discount Percentage</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="discount" type="text" name="discount" required/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="tax" class="control-label col-lg-3">Tax Percentage</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="tax" type="text" name="tax" required/>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-lg-offset-3 col-lg-6">
-                                            <button class="btn btn-primary" type="submit" name="submit">Save</button>
-                                            <a href="machines.php"><button class="btn btn-default" type="button">Cancel</button></a>
+                                            <button class="btn btn-primary" type="submit">Generate Quotation</button>
+                                            <button class="btn btn-default" type="button">Cancel</button>
                                         </div>
                                     </div>
                                 </form>
@@ -229,19 +259,33 @@ if(isset($_POST['submit'])){
 <!-- Placed js at the end of the document so the pages load faster -->
 <!--Core js-->
 <script src="js/jquery.js"></script>
-<script src="js/jquery-ui/jquery-ui-1.10.1.custom.min.js"></script>
+<script src="js/jquery-1.8.3.min.js"></script>
 <script src="bs3/js/bootstrap.min.js"></script>
-<script src="js/jquery.dcjqaccordion.2.7.js"></script>
+<script src="js/jquery-ui-1.9.2.custom.min.js"></script>
+<script class="include" type="text/javascript" src="js/jquery.dcjqaccordion.2.7.js"></script>
 <script src="js/jquery.scrollTo.min.js"></script>
+<script src="js/easypiechart/jquery.easypiechart.js"></script>
+<script src="js/jQuery-slimScroll-1.3.0/jquery.slimscroll.js"></script>
 <script src="js/jquery.nicescroll.js"></script>
+<script src="js/jquery.nicescroll.js"></script>
+
+<script src="js/bootstrap-switch.js"></script>
+
+<script type="text/javascript" src="js/fuelux/js/spinner.min.js"></script>
+<script type="text/javascript" src="js/bootstrap-fileupload/bootstrap-fileupload.js"></script>
+<script type="text/javascript" src="js/bootstrap-wysihtml5/wysihtml5-0.3.0.js"></script>
+<script type="text/javascript" src="js/bootstrap-wysihtml5/bootstrap-wysihtml5.js"></script>
+
+<script type="text/javascript" src="js/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
 <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="js/flot-chart/excanvas.min.js"></script><![endif]-->
 
 <!--clock init-->
 <!--common script init for all pages-->
 <script src="js/scripts.js"></script>
-<!--script for this page-->
+<script src="js/toggle-init.js"></script>
+
+<script src="js/advanced-form.js"></script>
 </body>
 
 <!-- Mirrored from bucketadmin.themebucket.net/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 31 Jul 2014 11:12:48 GMT -->
 </html>
-<?php require_once("includes/footer.php"); ?>
