@@ -93,7 +93,7 @@ if(isset($_POST['submit'])){
         <div class="leftside-navigation">
             <ul class="sidebar-menu" id="nav-accordion">
                 <li>
-                    <a class="active" href="dashboard.php">
+                    <a href="dashboard.php">
                         <i class="fa fa-dashboard"></i>
                         <span>Dashboard</span>
                     </a>
@@ -117,7 +117,7 @@ if(isset($_POST['submit'])){
                     </a>
                 </li>
                 <li>
-                    <a href="leads.php">
+                    <a class="active" href="leads.php">
                         <i class="fa fa-magnet"></i>
                         <span>Leads</span>
                     </a>
@@ -151,12 +151,12 @@ if(isset($_POST['submit'])){
                         <span>Masters</span>
                     </a>
                     <ul class="sub">
-                        <li><a href="basic_table.html">Machines</a></li>
-                        <li><a href="responsive_table.html">Users</a></li>
-                        <li><a href="dynamic_table.html">Segments</a></li>
-                        <li><a href="editable_table.html">Branches</a></li>
-                        <li><a href="editable_table.html">Sources</a></li>
-                        <li><a href="editable_table.html">Call Modes</a></li>
+                        <li><a href="machines.php">Machines</a></li>
+                        <li><a href="users.php">Users</a></li>
+                        <li><a href="segments.php">Segments</a></li>
+                        <li><a href="branches.php">Branches</a></li>
+                        <li><a href="sources.php">Sources</a></li>
+                        <li><a href="callmodes.php">Call Modes</a></li>
                     </ul>
                 </li>
                 <li class="sub-menu">
@@ -226,10 +226,10 @@ if(isset($_POST['submit'])){
                                         <label for="status" class="control-label col-lg-3">Status</label>
                                         <div class="col-lg-6">
                                             <select class="form-control"  id="status" name="status" required>
-                                                <option value="NW">New</option>
-                                                <option value="AC">Active</option>
-                                                <option value="CL">Closed</option>
-                                                <option value="CT">Converted</option>
+                                                <option value="New">New</option>
+                                                <option value="Active">Active</option>
+                                                <option value="Closed">Closed</option>
+                                                <option value="Converted">Converted</option>
                                             </select>
                                         </div>
                                     </div>
@@ -272,7 +272,7 @@ if(isset($_POST['submit'])){
                                     <div class="form-group">
                                         <div class="col-lg-offset-3 col-lg-6">
                                             <button class="btn btn-primary" type="submit" name="submit">Save</button>
-                                            <button class="btn btn-default" type="button">Cancel</button>
+                                            <a href="leads.php"><button class="btn btn-default" type="button">Cancel</button></a>
                                         </div>
                                     </div>
                                 </form>

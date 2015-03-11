@@ -22,7 +22,7 @@ if(isset($_POST['submit'])){
 	$cdate = mysql_prep($_POST['cdate'], $connection);
 	$oremarks = mysql_prep($_POST['oremarks'], $connection);
 	
-	$query = mysqli_query($connection, "INSERT INTO opportunities VALUES ('','$oppname', '$company', '$lead', '$branch', STR_TO_DATE('$crdate', '%d-%m-%Y'), '$user', '$assignedto', '$status', '$stage', '$source', $amount, '$interest', STR_TO_DATE('$cdate', '%d-%m-%Y'), '$oremarks')");	
+	$query = mysqli_query($connection, "INSERT INTO opportunities VALUES ('','$oppname', '$company', '$lead', '$branch', STR_TO_DATE('$crdate', '%m-%d-%Y'), '$user', '$assignedto', '$status', '$stage', '$source', $amount, '$interest', STR_TO_DATE('$cdate', '%m-%d-%Y'), '$oremarks')");	
 }
 
 ?>
@@ -110,7 +110,7 @@ if(isset($_POST['submit'])){
         <div class="leftside-navigation">
             <ul class="sidebar-menu" id="nav-accordion">
                 <li>
-                    <a class="active" href="dashboard.php">
+                    <a href="dashboard.php">
                         <i class="fa fa-dashboard"></i>
                         <span>Dashboard</span>
                     </a>
@@ -140,7 +140,7 @@ if(isset($_POST['submit'])){
                     </a>
                 </li>
                 <li>
-                    <a href="opportunities.php">
+                    <a class="active" href="opportunities.php">
                         <i class="fa fa-level-up"></i>
                         <span>Opportunities</span>
                     </a>
@@ -168,12 +168,12 @@ if(isset($_POST['submit'])){
                         <span>Masters</span>
                     </a>
                     <ul class="sub">
-                        <li><a href="basic_table.html">Machines</a></li>
-                        <li><a href="responsive_table.html">Users</a></li>
-                        <li><a href="dynamic_table.html">Segments</a></li>
-                        <li><a href="editable_table.html">Branches</a></li>
-                        <li><a href="editable_table.html">Sources</a></li>
-                        <li><a href="editable_table.html">Call Modes</a></li>
+                        <li><a href="machines.php">Machines</a></li>
+                        <li><a href="users.php">Users</a></li>
+                        <li><a href="segments.php">Segments</a></li>
+                        <li><a href="branches.php">Branches</a></li>
+                        <li><a href="sources.php">Sources</a></li>
+                        <li><a href="callmodes.php">Call Modes</a></li>
                     </ul>
                 </li>
                 <li class="sub-menu">
@@ -302,12 +302,12 @@ if(isset($_POST['submit'])){
                                         <label for="oppstatus" class="control-label col-lg-3">Status</label>
                                         <div class="col-lg-6">
                                             <select class="form-control" name="status" id="oppstatus" required>
-                                                <option value="IN">Initial</option>
-                                                <option value="QT">Quoted</option>
-                                                <option value="NG">Negotiation</option>
-                                                <option value="OR">Order Received</option>
-                                                <option value="OL">Order Lost</option>
-                                                <option value="DD">Dead</option>
+                                                <option value="Initial">Initial</option>
+                                                <option value="Qouted">Quoted</option>
+                                                <option value="Negotiation">Negotiation</option>
+                                                <option value="Order Received">Order Received</option>
+                                                <option value="Order Lost">Order Lost</option>
+                                                <option value="Dead">Dead</option>
                                             </select>
                                         </div>
                                     </div>
@@ -315,9 +315,9 @@ if(isset($_POST['submit'])){
                                         <label for="oppstage" class="control-label col-lg-3">Stage</label>
                                         <div class="col-lg-6">
                                             <select class="form-control"  id="oppstage" name="stage" required>
-                                                <option value="HT">Hot</option>
-                                                <option value="WM">Warm</option>
-                                                <option value="CD">Cold</option>
+                                                <option value="Hot">Hot</option>
+                                                <option value="Warm">Warm</option>
+                                                <option value="Cold">Cold</option>
                                             </select>
                                         </div>
                                     </div>
@@ -364,7 +364,7 @@ if(isset($_POST['submit'])){
                                     <div class="form-group">
                                         <div class="col-lg-offset-3 col-lg-6">
                                             <button class="btn btn-primary" type="submit" name="submit">Save</button>
-                                            <button class="btn btn-default" type="button">Cancel</button>
+                                            <a href="opportunities.php"><button class="btn btn-default" type="button">Cancel</button></a>
                                         </div>
                                     </div>
                                 </form>

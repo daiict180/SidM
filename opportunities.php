@@ -1,3 +1,17 @@
+<?php session_start(); ?>
+<?php require_once("includes/connection.php"); ?>
+<?php require_once("includes/functions.php"); ?>
+<?php require_once("includes/constants.php"); ?>
+<?php include("includes/checksession.php"); ?>
+
+<?php
+if(isset($_GET['oid'])){
+	$oid = $_GET['oid'];
+    $query = mysqli_query($connection, "DELETE FROM opportunities WHERE opportunityid='$oid'");
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -51,13 +65,13 @@
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                 <img alt="" src="images/avatar1_small.jpg">
-                <span class="username">John Doe</span>
+                <span class="username"><?php echo getnamebyid($_SESSION['user'], $connection) ?></span>
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu extended logout">
                 <li><a href="#"><i class="fa fa-suitcase"></i>Profile</a></li>
                 <li><a href="#"><i class="fa fa-cog"></i>Settings</a></li>
-                <li><a href="login.html"><i class="fa fa-key"></i>Log Out</a></li>
+                <li><a href="logout.php"><i class="fa fa-key"></i>Log Out</a></li>
             </ul>
         </li>
         <!-- user login dropdown end -->
@@ -73,43 +87,43 @@
         <div class="leftside-navigation">
             <ul class="sidebar-menu" id="nav-accordion">
                 <li>
-                    <a class="active" href="index.html">
+                    <a href="dashboard.php">
                         <i class="fa fa-dashboard"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="companies.php">
                         <i class="fa fa-university"></i>
                         <span>Companies</span>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="companycontacts.php">
                         <i class="fa fa-info"></i>
                         <span>Company Contacts</span>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="setupinfo.php">
                         <i class="fa fa-cog"></i>
                         <span>Setup Information</span>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="leads.php">
                         <i class="fa fa-magnet"></i>
                         <span>Leads</span>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a class="active" href="opportunities.php">
                         <i class="fa fa-level-up"></i>
                         <span>Opportunities</span>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="calls.php">
                         <i class="fa fa-mobile"></i>
                         <span>Calls</span>
                     </a>
@@ -131,12 +145,12 @@
                         <span>Masters</span>
                     </a>
                     <ul class="sub">
-                        <li><a href="basic_table.html">Machines</a></li>
-                        <li><a href="responsive_table.html">Users</a></li>
-                        <li><a href="dynamic_table.html">Segments</a></li>
-                        <li><a href="editable_table.html">Branches</a></li>
-                        <li><a href="editable_table.html">Sources</a></li>
-                        <li><a href="editable_table.html">Call Modes</a></li>
+                        <li><a href="machines.php">Machines</a></li>
+                        <li><a href="users.php">Users</a></li>
+                        <li><a href="segments.php">Segments</a></li>
+                        <li><a href="branches.php">Branches</a></li>
+                        <li><a href="sources.php">Sources</a></li>
+                        <li><a href="callmodes.php">Call Modes</a></li>
                     </ul>
                 </li>
                 <li class="sub-menu">
@@ -171,10 +185,46 @@
                     <div class="panel-body">
                     <div class="adv-table">
                     <div class="btn-group">
+					<a href="newopportunity.php">
                         <button id="editable-sample_new" class="btn btn-primary">
                             Add New Opportunity <i class="fa fa-plus"></i>
                         </button>
-                    </div>
+                    </a>
+					</div>
+                    <br><br>
+                    <div class="text-left">
+                            <a href="#myModal" data-toggle="modal" class="btn btn-success">
+                                Generate Quotation
+                            </a>
+					</div>
+					<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                        <h4 class="modal-title">Generate Quotation</h4>
+                                    </div>
+                                    <div class="modal-body">
+
+                                        <form role="form">
+                                            <div class="form-group">
+                                                <label for="OpportunityNames">Select Opportunity Name for which Quotation is to be generated</label>
+                                                <select class="form-control" id="OpportunityNames" required>
+                                                    <option value="OPP1">Opportunity1</option>
+                                                    <option value="OPP2">Opportunity2</option>
+                                                    <option value="OPP3">Opportunity3</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="machineNos">Number of machines</label>
+                                                <input type="number" class="form-control" id="machineNos" placeholder="Enter the number of machines">
+                                            </div>
+                                            <button type="submit" class="btn btn-default">Submit</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     <table  class="display table table-bordered table-striped" id="dynamic-table">
                     <thead>
                     <tr>
@@ -190,39 +240,24 @@
                     </tr>
                     </thead>
                     <tbody>
+					<?php
+						$query = mysqli_query($connection, "SELECT * FROM opportunities");
+						$rows = mysqli_num_rows($query);
+						for($i=0 ; $i<$rows ; $i++){
+							$result = mysqli_fetch_array($query);
+					?>
                     <tr class="gradeX">
-                        <td>Opportunity1</td>
-                        <td>Company1</td>
-                        <td>Branch1</td>
-                        <td>9-10-11</td>
-                        <td>User1</td>
-                        <td>Active</td>
-                        <td>9-11-11</td>
+                        <td><?php echo $result[1]; ?></td>
+                        <td><?php echo $result[2]; ?></td>
+                        <td><?php echo $result[5]; ?></td>
+                        <td><?php echo $result[7]; ?></td>
+                        <td><?php echo $result[8]; ?></td>
+                        <td><?php echo $result[9]; ?></td>
+                        <td><?php echo $result[13]; ?></td>
                         <td><a class="edit" href="">Edit</a></td>
-                        <td><a class="delete" href="">Delete</a></td>
+                        <td><a class="delete" href="opportunities.php?oid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Opportunity?')">Delete</a></td>
                     </tr>
-                    <tr class="gradeX">
-                        <td>Opportunity1</td>
-                        <td>Company1</td>
-                        <td>Branch1</td>
-                        <td>9-10-11</td>
-                        <td>User1</td>
-                        <td>Active</td>
-                        <td>9-11-11</td>
-                        <td><a class="edit" href="">Edit</a></td>
-                        <td><a class="delete" href="">Delete</a></td>
-                    </tr>
-                    <tr class="gradeX">
-                        <td>Opportunity1</td>
-                        <td>Company1</td>
-                        <td>Branch1</td>
-                        <td>9-10-11</td>
-                        <td>User1</td>
-                        <td>Active</td>
-                        <td>9-11-11</td>
-                        <td><a class="edit" href="">Edit</a></td>
-                        <td><a class="delete" href="">Delete</a></td>
-                    </tr>
+					<?php } ?>
                     </tbody>
                     <tfoot>
                     <tr>
@@ -267,3 +302,4 @@
 
 <!-- Mirrored from bucketadmin.themebucket.net/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 31 Jul 2014 11:12:48 GMT -->
 </html>
+<?php require_once("includes/footer.php"); ?>

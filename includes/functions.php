@@ -41,7 +41,7 @@
 	}
 	
 	function getbranchbyid($id, $connection){
-		$query = mysqli_query($connection,"SELECT Branch FROM users WHERE Email='$id'");
+		$query = mysqli_query($connection,"SELECT Branch FROM users WHERE email='$id'");
 		if($query == FALSE){
 			$error = "Invalid ID";
 			echo $error;
@@ -53,7 +53,7 @@
 	}
 
 	function getdesignationbyid($id, $connection){
-		$query = mysqli_query($connection,"SELECT Role FROM users WHERE Email='$id'");
+		$query = mysqli_query($connection,"SELECT Role FROM users WHERE email='$id'");
 		if($query == FALSE){
 			$error = "Invalid ID";
 			echo $error;
@@ -65,7 +65,7 @@
 	}
 	
 	function getnamebyid($id, $connection){
-		$query = mysqli_query($connection,"SELECT fullname FROM users WHERE Email='$id'");
+		$query = mysqli_query($connection,"SELECT fullname FROM users WHERE email='$id'");
 		if($query == FALSE){
 			$error = "Invalid ID";
 			echo $error;

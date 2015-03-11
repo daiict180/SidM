@@ -1,3 +1,25 @@
+<?php session_start(); ?>
+<?php require_once("includes/connection.php"); ?>
+<?php require_once("includes/functions.php"); ?>
+<?php require_once("includes/constants.php"); ?>
+<?php include("includes/checksession.php"); ?>
+
+<?php
+if(isset($_GET['bid'])){
+	$bid = $_GET['bid'];
+    $query = mysqli_query($connection, "DELETE FROM branches WHERE branchid='$bid'");
+}
+
+?>
+
+<?php
+if(isset($_POST['submit'])){
+	$branch = $_POST['Branch'];
+	$active = $_POST['active'];
+	$query = mysqli_query($connection, "INSERT INTO branches VALUES ('', '$branch', '$active')");
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -43,13 +65,13 @@
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                 <img alt="" src="images/avatar1_small.jpg">
-                <span class="username">John Doe</span>
+                <span class="username"><?php echo getnamebyid($_SESSION['user'], $connection) ?></span>
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu extended logout">
                 <li><a href="#"><i class="fa fa-suitcase"></i>Profile</a></li>
                 <li><a href="#"><i class="fa fa-cog"></i>Settings</a></li>
-                <li><a href="login.html"><i class="fa fa-key"></i>Log Out</a></li>
+                <li><a href="logout.php"><i class="fa fa-key"></i>Log Out</a></li>
             </ul>
         </li>
         <!-- user login dropdown end -->
@@ -65,43 +87,43 @@
         <div class="leftside-navigation">
             <ul class="sidebar-menu" id="nav-accordion">
                 <li>
-                    <a class="active" href="index.html">
+                    <a href="dashboard.php">
                         <i class="fa fa-dashboard"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="companies.php">
                         <i class="fa fa-university"></i>
                         <span>Companies</span>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="companycontacts.php">
                         <i class="fa fa-info"></i>
                         <span>Company Contacts</span>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="setupinfo.php">
                         <i class="fa fa-cog"></i>
                         <span>Setup Information</span>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="leads.php">
                         <i class="fa fa-magnet"></i>
                         <span>Leads</span>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="opportunities.php">
                         <i class="fa fa-level-up"></i>
                         <span>Opportunities</span>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html">
+                    <a href="calls.php">
                         <i class="fa fa-mobile"></i>
                         <span>Calls</span>
                     </a>
@@ -123,12 +145,12 @@
                         <span>Masters</span>
                     </a>
                     <ul class="sub">
-                        <li><a href="basic_table.html">Machines</a></li>
-                        <li><a href="responsive_table.html">Users</a></li>
-                        <li><a href="dynamic_table.html">Segments</a></li>
-                        <li><a href="editable_table.html">Branches</a></li>
-                        <li><a href="editable_table.html">Sources</a></li>
-                        <li><a href="editable_table.html">Call Modes</a></li>
+                        <li><a href="machines.php">Machines</a></li>
+                        <li><a href="users.php">Users</a></li>
+                        <li><a href="segments.php">Segments</a></li>
+                        <li><a href="branches.php">Branches</a></li>
+                        <li><a href="sources.php">Sources</a></li>
+                        <li><a href="callmodes.php">Call Modes</a></li>
                     </ul>
                 </li>
                 <li class="sub-menu">
@@ -162,7 +184,7 @@
                         </header>
                         <div class="panel-body">
                             <div class=" form">
-                                <form class="cmxform form-horizontal " id="commentForm" method="get" action="#">
+                                <form class="cmxform form-horizontal " id="commentForm" method="post" action="#">
                                     <div class="form-group ">
                                         <label for="BranchName" class="control-label col-lg-3">Branch Name</label>
                                         <div class="col-lg-6">
@@ -172,16 +194,15 @@
                                     <div class="form-group ">
                                         <label for="active" class="control-label col-lg-3">Active</label>
                                         <div class="col-lg-6">
-                                            <select class="form-control"  id="active" required>
-                                                <option value="Y">Yes</option>
-                                                <option value="N">No</option>
+                                            <select class="form-control"  id="active" name="active" required>
+                                                <option value="Yes">Yes</option>
+                                                <option value="No">No</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-lg-offset-3 col-lg-6">
-                                            <button class="btn btn-primary" type="submit">Save</button>
-                                            <button class="btn btn-default" type="button">Cancel</button>
+                                            <button class="btn btn-primary" type="submit" name="submit">Save</button>
                                         </div>
                                     </div>
                                 </form>
@@ -212,18 +233,19 @@
                                 </tr>
                                 </thead>
                                 <tbody>
+								<?php
+									$query = mysqli_query($connection, "SELECT * FROM branches");
+									$rows = mysqli_num_rows($query);
+									for($i=0 ; $i<$rows ; $i++){
+										$result = mysqli_fetch_array($query);
+								?>
                                 <tr>
-                                    <td>Branch1</td>
-                                    <td>Yes</td>
+                                    <td><?php echo $result[1]; ?></td>
+                                    <td><?php echo $result[2]; ?></td>
                                     <td><a class="edit" href="">Edit</a></td>
-                                    <td><a class="delete" href="">Delete</a></td>
+                                    <td><a class="delete" href="branches.php?bid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Branch?')">Delete</a></td>
                                 </tr>
-                                <tr>
-                                    <td>Branch2</td>
-                                    <td>Yes</td>
-                                    <td><a class="edit" href="">Edit</a></td>
-                                    <td><a class="delete" href="">Delete</a></td>
-                                </tr>
+								<?php } ?>
                                 </tbody>
                             </table>
                         </div>
@@ -250,3 +272,4 @@
 
 <!-- Mirrored from bucketadmin.themebucket.net/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 31 Jul 2014 11:12:48 GMT -->
 </html>
+<?php require_once("includes/footer.php"); ?>

@@ -145,12 +145,12 @@ if(isset($_GET['cid'])){
                         <span>Masters</span>
                     </a>
                     <ul class="sub">
-                        <li><a href="basic_table.html">Machines</a></li>
-                        <li><a href="responsive_table.html">Users</a></li>
-                        <li><a href="dynamic_table.html">Segments</a></li>
-                        <li><a href="editable_table.html">Branches</a></li>
-                        <li><a href="editable_table.html">Sources</a></li>
-                        <li><a href="editable_table.html">Call Modes</a></li>
+                        <li><a href="machines.php">Machines</a></li>
+                        <li><a href="users.php">Users</a></li>
+                        <li><a href="segments.php">Segments</a></li>
+                        <li><a href="branches.php">Branches</a></li>
+                        <li><a href="sources.php">Sources</a></li>
+                        <li><a href="callmodes.php">Call Modes</a></li>
                     </ul>
                 </li>
                 <li class="sub-menu">

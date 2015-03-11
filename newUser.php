@@ -149,12 +149,12 @@ if(isset($_POST['submit'])){
                         <span>Masters</span>
                     </a>
                     <ul class="sub">
-                        <li><a href="basic_table.html">Machines</a></li>
-                        <li><a href="responsive_table.html">Users</a></li>
-                        <li><a href="dynamic_table.html">Segments</a></li>
-                        <li><a href="editable_table.html">Branches</a></li>
-                        <li><a href="editable_table.html">Sources</a></li>
-                        <li><a href="editable_table.html">Call Modes</a></li>
+                        <li><a href="machines.php">Machines</a></li>
+                        <li><a href="users.php">Users</a></li>
+                        <li><a href="segments.php">Segments</a></li>
+                        <li><a href="branches.php">Branches</a></li>
+                        <li><a href="sources.php">Sources</a></li>
+                        <li><a href="callmodes.php">Call Modes</a></li>
                     </ul>
                 </li>
                 <li class="sub-menu">
@@ -224,8 +224,8 @@ if(isset($_POST['submit'])){
                                         <label for="uactive" class="control-label col-lg-3">Active</label>
                                         <div class="col-lg-6">
                                             <select class="form-control"  id="uactive" name="active" required>
-                                                <option value="Y">Yes</option>
-                                                <option value="N">No</option>
+                                                <option value="Yes">Yes</option>
+                                                <option value="No">No</option>
                                             </select>
                                         </div>
                                     </div>
@@ -258,7 +258,7 @@ if(isset($_POST['submit'])){
                                     <div class="form-group">
                                         <div class="col-lg-offset-3 col-lg-6">
                                             <button class="btn btn-primary" type="submit" name="submit">Save</button>
-                                            <button class="btn btn-default" type="button">Cancel</button>
+                                            <a href="users.php"><button class="btn btn-default" type="button">Cancel</button><a/>
                                         </div>
                                     </div>
                                 </form>
