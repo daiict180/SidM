@@ -1,3 +1,25 @@
+<?php session_start(); ?>
+<?php require_once("includes/connection.php"); ?>
+<?php require_once("includes/functions.php"); ?>
+<?php require_once("includes/constants.php"); ?>
+<?php include("includes/checksession.php"); ?>
+
+<?php
+if(isset($_GET['qcompany']) && $_GET['mnumber']){
+	$mnumber = $_GET['mnumber'];
+	$company = $_GET['qcompany'];
+	$date = $_GET['date'];
+	$tax = $_GET['tax'];
+	$dis = $_GET['discount'];
+	for($i=1 ; $i<=$mnumber ; $i++){
+		${'machine' . $i} = $_GET['machine'.$i];
+		${'quantity' . $i} = $_GET['quantity'.$i];
+		${'price' . $i} = $_GET['price'.$i];
+	}
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -45,7 +67,7 @@
 
         <div class="row">
             <div class="col-md-12">
-                <section class="panel">
+                <section class="panel1">
                     <div class="panel-body invoice">
                         <div class="invoice-header">
                             <div class="invoice-title col-md-2 col-xs-2">
@@ -72,12 +94,16 @@
                         <div class="row invoice-to">
                             <div class="col-md-4 col-sm-4 pull-left">
                                 <h4>Quotation To:</h4>
-                                <h2>Company Name</h2>
+                                <h2><?php echo $company; ?></h2>
+								<?php 
+									$query = mysqli_query($connection, "SELECT * FROM companies WHERE companyname='$company'");
+									$result = mysqli_fetch_array($query);
+								?>
                                 <p>
-                                    121 King Street, Melbourne<br>
-                                    Victoria 3000 Australia<br>
-                                    Phone: +61 3 8376 6284<br>
-                                    Email : email@gmail.com
+                                    <?php echo $result[3]; ?><br>
+                                    <?php echo $result[4]; ?><br>
+                                    Phone: <?php echo $result[14]; ?><br>
+                                    Email : <?php echo $result[13]; ?>
                                 </p>
                             </div>
                             <div class="col-md-4 col-sm-5 pull-right">
@@ -86,9 +112,14 @@
                                     <div class="col-md-8 col-sm-7">233426</div>
                                 </div>
                                 <br> -->
+								<?php
+									$mm=substr($date, 0, 2);
+									$dd=substr($date, 3, 2);
+									$yy=substr($date, 6, 4);
+								?>
                                 <div class="row">
                                     <div class="col-md-4 col-sm-5 inv-label">Date #</div>
-                                    <div class="col-md-8 col-sm-7">21 December 2013</div>
+                                    <div class="col-md-8 col-sm-7"><?php echo date("M jS, Y", strtotime($yy."-".$mm."-".$dd)); ?></div>
                                 </div>
                                 <!-- <br>
                                 <div class="row">
@@ -114,37 +145,28 @@
                             </tr>
                             </thead>
                             <tbody>
+							<?php
+							$subtotal = 0;
+							for($i = 1; $i <= $mnumber ; $i++){
+							?>
                             <tr>
-                                <td>1</td>
+                                <td><?php echo $i ; ?></td>
                                 <td>
-                                    <h4>Service One</h4>
-                                    <p>Service Four Description Lorem ipsum dolor sit amet.</p>
+                                    <h4><?php echo ${'machine' . $i} ; ?></h4>
+									<?php
+										$query = mysqli_query($connection, "SELECT description FROM machines WHERE machinename='${'machine' . $i}'");
+										$result = mysqli_fetch_array($query);
+									?>
+                                    <p><?php echo $result[0]; ?></p>
                                 </td>
-                                <td class="text-center">1</td>
-                                <td class="text-center">4</td>
-                                <td class="text-center">$1300.00</td>
+                                <td class="text-center"><span class="WebRupee">&#x20B9;</span><?php echo ${'price' . $i} ; ?></td>
+                                <td class="text-center"><?php echo ${'quantity' . $i} ; ?></td>
+                                <td class="text-center"><span class="WebRupee">&#x20B9;</span><?php echo ${'price' . $i}*${'quantity' . $i} ; ?></td>
                             </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>
-                                    <h4>Service Two</h4>
-                                    <p>Service Four Description Lorem ipsum dolor sit amet.</p>
-                                </td>
-                                <td class="text-center">2</td>
-                                <td class="text-center">5</td>
-                                <td class="text-center">$1300.00</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>
-                                    <h4>Service Three</h4>
-                                    <p>Service Four Description Lorem ipsum dolor sit amet.</p>
-                                </td>
-                                <td class="text-center">1</td>
-                                <td class="text-center">9</td>
-                                <td class="text-center">$1300.00</td>
-                            </tr>
-
+							<?php 
+							$subtotal = $subtotal + ${'price' . $i}*${'quantity' . $i} ;
+							} 
+							?>
                             </tbody>
                         </table>
                         <div class="row">
@@ -158,10 +180,14 @@
                             </div>
                             <div class="col-md-4 col-xs-5 invoice-block pull-right">
                                 <ul class="unstyled amounts">
-                                    <li>Sub - Total amount : $3820</li>
-                                    <li>Discount : 10% </li>
-                                    <li>TAX (15%) ----- </li>
-                                    <li class="grand-total">Grand Total : $7145</li>
+                                    <li>Sub - Total amount : <span class="WebRupee">&#x20B9;</span> <?php echo $subtotal; ?></li>
+                                    <li>Discount : <?php echo $dis."%"; ?> </li>
+                                    <li>TAX (<?php echo $tax."%"; ?>) ----- </li>
+									<?php
+									$grandtotal = $subtotal + ($subtotal/$tax);
+									$grandtotal = $grandtotal - ($grandtotal/$dis);
+									?>
+                                    <li class="grand-total">Grand Total : <span class="WebRupee">&#x20B9;</span> <?php echo $grandtotal ; ?></li>
                                 </ul>
                             </div>
                         </div>
@@ -209,3 +235,4 @@
 
 <!-- Mirrored from bucketadmin.themebucket.net/invoice_print.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 31 Jul 2014 11:21:30 GMT -->
 </html>
+<?php require_once("includes/footer.php"); ?>

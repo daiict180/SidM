@@ -168,6 +168,8 @@ if(isset($_GET['oid'])){
     </div>
 </aside>
 <!--sidebar end-->
+
+<!--sidebar end-->
 <section id="main-content">
         <section class="wrapper">
             <!-- page start-->
@@ -206,18 +208,23 @@ if(isset($_GET['oid'])){
                                     </div>
                                     <div class="modal-body">
 
-                                        <form role="form">
+                                        <form role="form" method="get" action="quotationform.php">
                                             <div class="form-group">
                                                 <label for="OpportunityNames">Select Opportunity Name for which Quotation is to be generated</label>
-                                                <select class="form-control" id="OpportunityNames" required>
-                                                    <option value="OPP1">Opportunity1</option>
-                                                    <option value="OPP2">Opportunity2</option>
-                                                    <option value="OPP3">Opportunity3</option>
-                                                </select>
+                                                <select class="form-control" id="OpportunityNames" name="oppid" required>
+                                                    <?php
+														$query = mysqli_query($connection, "SELECT * FROM opportunities");
+														$rows = mysqli_num_rows($query);
+														for($i = 0; $i < $rows ; $i++){
+															$result = mysqli_fetch_array($query);
+													?>
+													<option value="<?php echo $result[0] ; ?>"><?php echo $result[1] ; ?></option>
+                                                <?php } ?>
+												</select>
                                             </div>
                                             <div class="form-group">
                                                 <label for="machineNos">Number of machines</label>
-                                                <input type="number" class="form-control" id="machineNos" placeholder="Enter the number of machines">
+                                                <input type="number" class="form-control" id="machineNos" name="mnumber" placeholder="Enter the number of machines">
                                             </div>
                                             <button type="submit" class="btn btn-default">Submit</button>
                                         </form>

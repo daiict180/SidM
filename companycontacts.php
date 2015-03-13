@@ -168,6 +168,7 @@ if(isset($_GET['cid'])){
     </div>
 </aside>
 <!--sidebar end-->
+
 <section id="main-content">
         <section class="wrapper">
             <!-- page start-->
