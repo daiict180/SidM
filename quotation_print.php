@@ -184,8 +184,8 @@ if(isset($_GET['qcompany']) && $_GET['mnumber']){
                                     <li>Discount : <?php echo $dis."%"; ?> </li>
                                     <li>TAX (<?php echo $tax."%"; ?>) ----- </li>
 									<?php
-									$grandtotal = $subtotal + ($subtotal/$tax);
-									$grandtotal = $grandtotal - ($grandtotal/$dis);
+									$grandtotal = $subtotal + (($subtotal*$tax)/100);
+									$grandtotal = $grandtotal - (($grandtotal*$dis)/100);
 									?>
                                     <li class="grand-total">Grand Total : <span class="WebRupee">&#x20B9;</span> <?php echo $grandtotal ; ?></li>
                                 </ul>

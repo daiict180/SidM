@@ -196,7 +196,7 @@ else{
                         </header>
                         <div class="panel-body">
                             <div class=" form">
-                                <form class="cmxform form-horizontal " id="commentForm" method="get" action="quotation_print.php">
+                                <form class="cmxform form-horizontal" target="_blank" id="commentForm" method="get" action="quotation_print.php">
                                     <div class="form-group ">
                                         <label for="qCompany" class="control-label col-lg-3">Company</label>
                                         <div class="col-lg-6">
