@@ -12,6 +12,28 @@ if(isset($_GET['siid'])){
 
 ?>
 
+<?php
+if(isset($_POST['editsubmit'])){
+    $company = mysql_prep($_POST['company'], $connection);
+    $manufacturer = mysql_prep($_POST['manufacturer'], $connection);
+    $place = mysql_prep($_POST['place'], $connection);
+    $date = mysql_prep($_POST['date'], $connection);
+    $machine = mysql_prep($_POST['machine'], $connection);
+    $model = mysql_prep($_POST['model'], $connection);
+    $size = mysql_prep($_POST['size'], $connection);
+    $head = mysql_prep($_POST['head'], $connection);
+    $mnumber = mysql_prep($_POST['mnumber'], $connection);
+    $warranty = mysql_prep($_POST['warranty'], $connection);
+    $ink = mysql_prep($_POST['ink'], $connection);
+    $software = mysql_prep($_POST['software'], $connection);
+    $mremarks = mysql_prep($_POST['mremarks'], $connection);
+    $branch = getbranchbyid($_SESSION['user'], $connection);
+        
+    $query = mysqli_query($connection, "INSERT INTO setupinformation VALUES ('','$company', '$manufacturer', STR_TO_DATE('$date', '%m-%d-%Y'), '$place', '$machine', '$model', '$size', '$head', '$mnumber', '$warranty', '$ink', '$software', '$mremarks', '$branch')");   
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -30,6 +52,20 @@ if(isset($_GET['siid'])){
     <link href="bs3/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/bootstrap-reset.css" rel="stylesheet">
     <link href="font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/bootstrap-switch.css" />
+    <link rel="stylesheet" type="text/css" href="js/bootstrap-fileupload/bootstrap-fileupload.css" />
+    <link rel="stylesheet" type="text/css" href="js/bootstrap-wysihtml5/bootstrap-wysihtml5.css" />
+
+    <link rel="stylesheet" type="text/css" href="js/bootstrap-datepicker/css/datepicker.css" />
+    <link rel="stylesheet" type="text/css" href="js/bootstrap-timepicker/css/timepicker.css" />
+    <link rel="stylesheet" type="text/css" href="js/bootstrap-colorpicker/css/colorpicker.css" />
+    <link rel="stylesheet" type="text/css" href="js/bootstrap-daterangepicker/daterangepicker-bs3.css" />
+    <link rel="stylesheet" type="text/css" href="js/bootstrap-datetimepicker/css/datetimepicker.css" />
+
+    <link rel="stylesheet" type="text/css" href="js/jquery-multi-select/css/multi-select.css" />
+    <link rel="stylesheet" type="text/css" href="js/jquery-tags-input/jquery.tagsinput.css" />
+
+    <link rel="stylesheet" type="text/css" href="js/select2/select2.css" />
 
     <!--dynamic table-->
     <link href="js/advanced-datatable/css/demo_page.css" rel="stylesheet" />
@@ -58,9 +94,7 @@ if(isset($_GET['siid'])){
 <div class="top-nav clearfix">
     <!--search & user info start-->
     <ul class="nav pull-right top-menu">
-        <li>
-            <input type="text" class="form-control search" placeholder=" Search">
-        </li>
+        
         <!-- user login dropdown start-->
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -176,11 +210,6 @@ if(isset($_GET['siid'])){
                 <section class="panel">
                     <header class="panel-heading">
                         Setup Information
-                        <span class="tools pull-right">
-                            <a href="javascript:;" class="fa fa-chevron-down"></a>
-                            <a href="javascript:;" class="fa fa-cog"></a>
-                            <a href="javascript:;" class="fa fa-times"></a>
-                         </span>
                     </header>
                     <div class="panel-body">
                     <div class="adv-table">
@@ -221,10 +250,10 @@ if(isset($_GET['siid'])){
                         <td><?php echo $result[5] ; ?></td>
                         <td><?php echo $result[9] ; ?></td>
                         <td><?php echo $result[11] ; ?></td>
-                        <td><?php echo $result[1] ; ?></td>
+                        <td><?php echo $result[14] ; ?></td>
                         <td><?php echo $result[4] ; ?></td>
                         <td><?php echo $result[13] ; ?></td>
-                        <td><a class="edit" href="">Edit</a></td>
+                        <td><a class="edit" href="#myModal-1" data-toggle="modal">Edit</a></td>
                         <td><a class="delete" href="setupinfo.php?siid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Setup Info?')">Delete</a></td>
                     </tr>
                     <?php } ?>
@@ -245,6 +274,117 @@ if(isset($_GET['siid'])){
                     </tr>
                     </tfoot>
                     </table>
+                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal-1" class="modal fade">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                        <h4 class="modal-title">Edit Setup</h4>
+                                    </div>
+                                    <div class="modal-body">
+
+                                        <form class="form-horizontal" method="post" role="form">
+                                            <div class="form-group ">
+                                        <label for="contactCompany" class="control-label col-lg-3">Company</label>
+                                        <div class="col-lg-6">
+                                            <select class="form-control" name="company" id="contactCompany" required>
+                                                <?php
+                                                    $query = mysqli_query($connection, "SELECT companyname FROM companies");
+                                                    $rows = mysqli_num_rows($query);
+                                                    for($i = 0; $i < $rows ; $i++){
+                                                        $result = mysqli_fetch_array($query);
+                                                ?>
+                                                    <option value="<?php echo $result[0] ; ?>"> <?php echo $result[0] ; ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="manufacturer" class="control-label col-lg-3">Manufacturer</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="manufacturer" type="text" name="manufacturer" required/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="place" class="control-label col-lg-3">Place</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="place" type="text" name="place" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">Installation Date</label>
+                                        <div class="col-md-6 col-xs-11">
+                                            <input class="form-control form-control-inline input-medium default-date-picker" name="date"  size="16" type="text" value="" />
+                                            <!-- <span class="help-block">Select date</span> -->
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="mname" class="control-label col-lg-3">Machine Name</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="mname" type="text" name="machine" required />
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="mmodel" class="control-label col-lg-3">Model</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="mmodel" type="text" name="model"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="msize" class="control-label col-lg-3">Size</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="msize" type="text" name="size"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="mhead" class="control-label col-lg-3">Head</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="mhead" type="text" name="head"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="mno" class="control-label col-lg-3">Machine Number</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="mno" type="text" name="mnumber"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="warranty" class="control-label col-lg-3">Warranty Status</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="warranty" type="text" name="warranty"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="mink" class="control-label col-lg-3">Ink</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="mink" type="text" name="ink"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="msoftware" class="control-label col-lg-3">Software</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="msoftware" type="text" name="software"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="mremarks" class="control-label col-lg-3">Remarks</label>
+                                        <div class="col-lg-6">
+                                            <textarea class="form-control " id="mremarks" name="mremarks"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-lg-offset-3 col-lg-6">
+                                            <button class="btn btn-primary" name="editsubmit" type="submit">Save</button>
+                                            <button class="btn btn-default" type="button">Cancel</button>
+                                        </div>
+                                    </div>
+                                        </form>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     </div>
                 </section>
@@ -261,6 +401,14 @@ if(isset($_GET['siid'])){
 <script src="js/jquery.dcjqaccordion.2.7.js"></script>
 <script src="js/jquery.scrollTo.min.js"></script>
 <script src="js/jquery.nicescroll.js"></script>
+<script src="js/bootstrap-switch.js"></script>
+
+<script type="text/javascript" src="js/fuelux/js/spinner.min.js"></script>
+<script type="text/javascript" src="js/bootstrap-fileupload/bootstrap-fileupload.js"></script>
+<script type="text/javascript" src="js/bootstrap-wysihtml5/wysihtml5-0.3.0.js"></script>
+<script type="text/javascript" src="js/bootstrap-wysihtml5/bootstrap-wysihtml5.js"></script>
+
+<script type="text/javascript" src="js/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
 <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="js/flot-chart/excanvas.min.js"></script><![endif]-->
 
 <script type="text/javascript" language="javascript" src="js/advanced-datatable/js/jquery.dataTables.js"></script>
@@ -270,6 +418,9 @@ if(isset($_GET['siid'])){
 
 <!--dynamic table initialization -->
 <script src="js/dynamic_table_init.js"></script>
+<script src="js/toggle-init.js"></script>
+
+<script src="js/advanced-form.js"></script>
 </body>
 
 <!-- Mirrored from bucketadmin.themebucket.net/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 31 Jul 2014 11:12:48 GMT -->

@@ -75,5 +75,16 @@
 		
 			return $result[0];		
 	}
-	
+	function getpasswordbyid($id, $connection){
+		$query = mysqli_query($connection,"SELECT password FROM users WHERE email='$id'");
+		if($query == FALSE){
+			$error = "Invalid ID";
+			echo $error;
+		}
+		
+		$result = mysqli_fetch_array($query);
+		
+			return $result[0];		
+	}
+
 ?>

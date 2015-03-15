@@ -58,9 +58,7 @@ if(isset($_POST['submit'])){
 <div class="top-nav clearfix">
     <!--search & user info start-->
     <ul class="nav pull-right top-menu">
-        <li>
-            <input type="text" class="form-control search" placeholder=" Search">
-        </li>
+        
         <!-- user login dropdown start-->
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -177,11 +175,6 @@ if(isset($_POST['submit'])){
                     <section class="panel">
                         <header class="panel-heading">
                             <h4><b>Add Company Contact</b></h4>
-                            <span class="tools pull-right">
-                                <a class="fa fa-chevron-down" href="javascript:;"></a>
-                                <a class="fa fa-cog" href="javascript:;"></a>
-                                <a class="fa fa-times" href="javascript:;"></a>
-                            </span>
                         </header>
                         <div class="panel-body">
                             <div class=" form">

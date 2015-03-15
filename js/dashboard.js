@@ -490,9 +490,15 @@ if (Gauge) {
 
     var target = document.getElementById('gauge'); // your canvas element
     var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
-    gauge.maxValue = 3000; // set max gauge value
+    gauge.maxValue = Number(totalleads); // set max gauge value
+    if(conleads == 0)
+        gauge.maxValue = 1000000;
     gauge.animationSpeed = 32; // set animation speed (32 is default value)
-    gauge.set(1150); // set actual value
-    gauge.setTextField(document.getElementById("gauge-textfield"));
+    if(conleads == 0)
+        gauge.set(1);
+    else
+        gauge.set(Number(conleads)); // set actual value
+    if(conleads != 0)
+        gauge.setTextField(document.getElementById("gauge-textfield"));
 
 }

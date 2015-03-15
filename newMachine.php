@@ -5,6 +5,13 @@
 <?php include("includes/checksession.php"); ?>
 
 <?php
+if($_SESSION['role'] == 'SAE'){
+    redirect_to("dashboard.php");
+}
+
+?>
+
+<?php
 if(isset($_POST['submit'])){
 	$machine = mysql_prep($_POST['Machine'], $connection);
 	$category = mysql_prep($_POST['category'], $connection);
@@ -55,9 +62,7 @@ if(isset($_POST['submit'])){
 <div class="top-nav clearfix">
     <!--search & user info start-->
     <ul class="nav pull-right top-menu">
-        <li>
-            <input type="text" class="form-control search" placeholder=" Search">
-        </li>
+        
         <!-- user login dropdown start-->
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -174,11 +179,6 @@ if(isset($_POST['submit'])){
                     <section class="panel">
                         <header class="panel-heading">
                             <h4><b>Add Machine</b></h4>
-                            <span class="tools pull-right">
-                                <a class="fa fa-chevron-down" href="javascript:;"></a>
-                                <a class="fa fa-cog" href="javascript:;"></a>
-                                <a class="fa fa-times" href="javascript:;"></a>
-                            </span>
                         </header>
                         <div class="panel-body">
                             <div class=" form">
@@ -205,8 +205,8 @@ if(isset($_POST['submit'])){
                                         <label for="active" class="control-label col-lg-3">Active</label>
                                         <div class="col-lg-6">
                                             <select class="form-control"  id="active" name="active" required>
-                                                <option value="Y">Yes</option>
-                                                <option value="N">No</option>
+                                                <option value="Yes">Yes</option>
+                                                <option value="No">No</option>
                                             </select>
                                         </div>
                                     </div>

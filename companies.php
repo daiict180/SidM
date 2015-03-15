@@ -12,6 +12,35 @@ if(isset($_GET['cid'])){
 
 ?>
 
+<?php
+
+if(isset($_POST['editsubmit'])){
+    $name = mysql_prep($_POST['name'],$connection);
+    $type = mysql_prep($_POST['type'],$connection);
+    $oname = mysql_prep($_POST['oname'],$connection);
+    $branch = mysql_prep($_POST['branch'],$connection);
+    $add1 = mysql_prep($_POST['add1'], $connection);
+    $email = mysql_prep($_POST['email'],$connection);
+    $add2 = mysql_prep($_POST['add2'],$connection);
+    $bphone = mysql_prep($_POST['bphone'],$connection);
+    $city = mysql_prep($_POST['city'],$connection);
+    $mobile = mysql_prep($_POST['mobile'],$connection);
+    $pin = intval($_POST['pin']);
+    $phone2 = mysql_prep($_POST['phone2'],$connection);
+    $state = mysql_prep($_POST['state'],$connection);
+    $fax = mysql_prep($_POST['fax'],$connection);
+    $country = mysql_prep($_POST['country'],$connection);
+    $url = mysql_prep($_POST['url'],$connection);
+    $source = mysql_prep($_POST['source'],$connection);
+    $segment = mysql_prep($_POST['segment'],$connection);
+    $remarks = mysql_prep($_POST['remarks'],$connection);
+    $experience = mysql_prep($_POST['experience'],$connection);
+    
+    $query = mysqli_query($connection, "INSERT INTO companies VALUES ('','$name', '$oname', '$add1', '$add2', '$city', $pin, '$state', '$country', '$source', '$remarks', '$type', '$branch', '$email', '$bphone', '$mobile', '$phone2', '$fax', '$url', '$segment', '$experience')");
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -58,9 +87,6 @@ if(isset($_GET['cid'])){
 <div class="top-nav clearfix">
     <!--search & user info start-->
     <ul class="nav pull-right top-menu">
-        <li>
-            <input type="text" class="form-control search" placeholder=" Search">
-        </li>
         <!-- user login dropdown start-->
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -176,11 +202,6 @@ if(isset($_GET['cid'])){
                 <section class="panel">
                     <header class="panel-heading">
                         Companies
-                        <span class="tools pull-right">
-                            <a href="javascript:;" class="fa fa-chevron-down"></a>
-                            <a href="javascript:;" class="fa fa-cog"></a>
-                            <a href="javascript:;" class="fa fa-times"></a>
-                         </span>
                     </header>
                     <div class="panel-body">
                     <div class="adv-table">
@@ -227,7 +248,7 @@ if(isset($_GET['cid'])){
                         <td><?php echo $result[12] ; ?></td>
                         <td><?php echo $result[9] ; ?></td>
                         <td><?php echo $result[19] ; ?></td>
-                        <td><a class="edit" href="">Edit</a></td>
+                        <td><a class="edit" href="#myModal-1" data-toggle="modal">Edit</a></td>
                         <td><a class="delete" href="companies.php?cid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Company?')">Delete</a></td>
                     </tr>
 					
@@ -250,6 +271,160 @@ if(isset($_GET['cid'])){
                     </tr>
                     </tfoot>
                     </table>
+                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal-1" class="modal fade">
+                <div class="modal-dialog">
+                    <div class="modal-content" style="margin-left: -26.5%;width: 150%;">
+                        <div class="modal-header">
+                            <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                            <h4 class="modal-title">Edit Company</h4>
+                        </div>
+                        <div class="modal-body">
+
+                            <form class="form-horizontal" method="post" role="form">
+                                <div class="form-group ">
+                                        <label for="cname" class="control-label col-lg-3">Company Name</label>
+                                        <div class="col-lg-3">
+                                            <input class=" form-control" id="cname" name="name" minlength="2" type="text" required />
+                                        </div>
+                                        <label for="ctype" class="control-label col-lg-3">Type</label>
+                                        <div class="col-lg-3">
+                                            <select class="form-control" name="type"  id="ctype" required>
+                                                <option value="Our Machine Holder">Our Machine Holder</option>
+                                                <option value="Prospect">Prospect</option>
+                                                <option value="Lead">Lead</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="coname" class="control-label col-lg-3">Owner Name</label>
+                                        <div class="col-lg-3">
+                                            <input class="form-control " id="coname" type="text" name="oname" />
+                                        </div>
+                                        <label for="cbranch" class="control-label col-lg-3">Branch</label>
+                                        <div class="col-lg-3">
+                                            <select class="form-control" name="branch" id="cbranch" required>
+                                                <?php
+                                                    $query = mysqli_query($connection, "SELECT branchname FROM branches");
+                                                    $rows = mysqli_num_rows($query);
+                                                    for($i = 0; $i < $rows ; $i++){
+                                                        $result = mysqli_fetch_array($query);
+                                                ?>
+                                                    <option value="<?php echo $result[0] ; ?>"><?php echo $result[0] ; ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="cadd1" class="control-label col-lg-3">Address1</label>
+                                        <div class="col-lg-3">
+                                            <input class="form-control " id="cadd1" type="text" name="add1" />
+                                        </div>
+                                        <label for="cemail" class="control-label col-lg-3">Email-Id</label>
+                                        <div class="col-lg-3">
+                                            <input class="form-control " id="cemail" type="email" name="email" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="cadd2" class="control-label col-lg-3">Address2</label>
+                                        <div class="col-lg-3">
+                                            <input class="form-control " id="cadd2" type="text" name="add2" />
+                                        </div>
+                                        <label for="cbphone" class="control-label col-lg-3">Business Phone</label>
+                                        <div class="col-lg-3">
+                                            <input class="form-control " id="cbphone" type="number" name="bphone" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="ccity" class="control-label col-lg-3">City</label>
+                                        <div class="col-lg-3">
+                                            <input class="form-control " id="ccity" type="text" name="city" />
+                                        </div>
+                                        <label for="cmobile" class="control-label col-lg-3">Mobile</label>
+                                        <div class="col-lg-3">
+                                            <input class="form-control " id="cmobile" type="number" name="mobile" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="cpin" class="control-label col-lg-3">Pincode</label>
+                                        <div class="col-lg-3">
+                                            <input class="form-control " id="cpin" type="number" name="pin" />
+                                        </div>
+                                        <label for="cphone2" class="control-label col-lg-3">Phone2</label>
+                                        <div class="col-lg-3">
+                                            <input class="form-control " id="cphone2" type="number" name="phone2" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="cstate" class="control-label col-lg-3">State</label>
+                                        <div class="col-lg-3">
+                                            <input class="form-control " id="cstate" type="text" name="state" />
+                                        </div>
+                                        <label for="cfax" class="control-label col-lg-3">Fax</label>
+                                        <div class="col-lg-3">
+                                            <input class="form-control " id="cfax" type="number" name="fax" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="ccountry" class="control-label col-lg-3">Country</label>
+                                        <div class="col-lg-3">
+                                            <input class="form-control " id="ccountry" type="text" name="country" />
+                                        </div>
+                                         <label for="curl" class="control-label col-lg-3">Website</label>
+                                        <div class="col-lg-3">
+                                            <input class="form-control " id="curl" type="url" name="url" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="csource" class="control-label col-lg-3">Source</label>
+                                        <div class="col-lg-3">
+                                            <select class="form-control"  id="csource" name="source" required>
+                                                <?php
+                                                    $query = mysqli_query($connection, "SELECT value FROM sources");
+                                                    $rows = mysqli_num_rows($query);
+                                                    for($i = 0; $i < $rows ; $i++){
+                                                        $result = mysqli_fetch_array($query);
+                                                ?>
+                                                    <option value="<?php echo $result[0] ; ?>"><?php echo $result[0] ; ?></option>
+                                                <?php }  ?>
+                                            </select>
+                                        </div>
+                                        <label for="csegment" class="control-label col-lg-3">Segment</label>
+                                        <div class="col-lg-3">
+                                            <select class="form-control"  id="csegment" name="segment" required>
+                                                <?php
+                                                    $query = mysqli_query($connection, "SELECT segment FROM segments");
+                                                    $rows = mysqli_num_rows($query);
+                                                    for($i = 0; $i < $rows ; $i++){
+                                                        $result = mysqli_fetch_array($query);
+                                                ?>
+                                                    <option value="<?php echo $result[0] ; ?>"><?php echo $result[0] ; ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="cremarks" class="control-label col-lg-3">Remarks</label>
+                                        <div class="col-lg-3">
+                                            <textarea class="form-control " id="cremarks" name="remarks"></textarea>
+                                        </div>
+                                        <label for="cexperience" class="control-label col-lg-3">Experience</label>
+                                        <div class="col-lg-3">
+                                            <textarea class="form-control " id="cexperience" name="experience"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-lg-offset-3 col-lg-6">
+                                            <button class="btn btn-primary" name="editsubmit" type="submit">Save</button>
+                                        </div>
+                                    </div>
+                            </form>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
                     </div>
                     </div>
                 </section>

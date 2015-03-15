@@ -16,8 +16,9 @@ if(isset($_POST['submit'])){
 	$opportunity = mysql_prep($_POST['opportunity'], $connection);
 	$notes = mysql_prep($_POST['Notes'], $connection);
 	$followup = mysql_prep($_POST['followup'], $connection);
-	
-	$query = mysqli_query($connection, "INSERT INTO calls VALUES ('', STR_TO_DATE('$calldate', '%m-%d-%Y'), '$mode', '$user', '$for', '$company', '$lead', '$opportunity', '$notes', STR_TO_DATE('$followup', '%m-%d-%Y'))");	
+	$branch = getbranchbyid($user, $connection);
+
+	$query = mysqli_query($connection, "INSERT INTO calls VALUES ('', STR_TO_DATE('$calldate', '%m-%d-%Y'), '$mode', '$user', '$for', '$company', '$lead', '$opportunity', '$notes', STR_TO_DATE('$followup', '%m-%d-%Y'),'No','$branch')");	
 }
 
 ?>
@@ -75,9 +76,6 @@ if(isset($_POST['submit'])){
 <div class="top-nav clearfix">
     <!--search & user info start-->
     <ul class="nav pull-right top-menu">
-        <li>
-            <input type="text" class="form-control search" placeholder=" Search">
-        </li>
         <!-- user login dropdown start-->
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -194,11 +192,6 @@ if(isset($_POST['submit'])){
                     <section class="panel">
                         <header class="panel-heading">
                             <h4><b>Add Call</b></h4>
-                            <span class="tools pull-right">
-                                <a class="fa fa-chevron-down" href="javascript:;"></a>
-                                <a class="fa fa-cog" href="javascript:;"></a>
-                                <a class="fa fa-times" href="javascript:;"></a>
-                            </span>
                         </header>
                         <div class="panel-body">
                             <div class=" form">
@@ -230,12 +223,12 @@ if(isset($_POST['submit'])){
                                         <div class="col-lg-6">
                                             <select class="form-control" id="suser" name="user" required>
                                                 <?php
-													$query = mysqli_query($connection, "SELECT fullname FROM users");
+													$query = mysqli_query($connection, "SELECT * FROM users");
 													$rows = mysqli_num_rows($query);
 													for($i = 0; $i < $rows ; $i++){
 														$result = mysqli_fetch_array($query);
 												?>
-                                                	<option value="<?php echo $result[0] ; ?>"> <?php echo $result[0] ; ?></option>
+                                                	<option value="<?php echo $result['email'] ; ?>"> <?php echo $result['fullname'] ; ?></option>
 												<?php } ?>
                                             </select>
                                         </div>
@@ -244,9 +237,9 @@ if(isset($_POST['submit'])){
                                         <label for="callfor" class="control-label col-lg-3">For</label>
                                         <div class="col-lg-6">
                                             <select class="form-control"  id="callfor" name="for" required>
-                                                <option value="CSTM">Customer</option>
-                                                <option value="OPP">Opportunity</option>
-                                                <option value="LD">Lead</option>
+                                                <option value="Customer">Customer</option>
+                                                <option value="Opportunity">Opportunity</option>
+                                                <option value="Lead">Lead</option>
                                             </select>
                                         </div>
                                     </div>

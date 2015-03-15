@@ -71,9 +71,7 @@ if(isset($_POST['submit'])){
 <div class="top-nav clearfix">
     <!--search & user info start-->
     <ul class="nav pull-right top-menu">
-        <li>
-            <input type="text" class="form-control search" placeholder=" Search">
-        </li>
+        
         <!-- user login dropdown start-->
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -190,11 +188,6 @@ if(isset($_POST['submit'])){
                     <section class="panel">
                         <header class="panel-heading">
                             <h4><b>Add new company</b></h4>
-                            <span class="tools pull-right">
-                                <a class="fa fa-chevron-down" href="javascript:;"></a>
-                                <a class="fa fa-cog" href="javascript:;"></a>
-                                <a class="fa fa-times" href="javascript:;"></a>
-                             </span>
                         </header>
                         <div class="panel-body">
                             <div class=" form">
@@ -207,9 +200,9 @@ if(isset($_POST['submit'])){
                                         <label for="ctype" class="control-label col-lg-3">Type</label>
                                         <div class="col-lg-3">
                                             <select class="form-control"  id="ctype" name="type" required>
-                                                <option value="OMH">Our Machine Holder</option>
-                                                <option value="PR">Prospect</option>
-                                                <option value="LD">Lead</option>
+                                                <option value="Our Machine Holder">Our Machine Holder</option>
+                                                <option value="Prospect">Prospect</option>
+                                                <option value="Lead">Lead</option>
                                             </select>
                                         </div>
                                     </div>

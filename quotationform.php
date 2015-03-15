@@ -69,9 +69,6 @@ else{
 <div class="top-nav clearfix">
     <!--search & user info start-->
     <ul class="nav pull-right top-menu">
-        <li>
-            <input type="text" class="form-control search" placeholder=" Search">
-        </li>
         <!-- user login dropdown start-->
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -188,11 +185,6 @@ else{
                     <section class="panel">
                         <header class="panel-heading">
                             <h4><b>Add Quotation Information</b></h4>
-                            <span class="tools pull-right">
-                                <a class="fa fa-chevron-down" href="javascript:;"></a>
-                                <a class="fa fa-cog" href="javascript:;"></a>
-                                <a class="fa fa-times" href="javascript:;"></a>
-                            </span>
                         </header>
                         <div class="panel-body">
                             <div class=" form">
@@ -260,7 +252,7 @@ else{
                                     <div class="form-group">
                                         <div class="col-lg-offset-3 col-lg-6">
 											
-                                            <button class="btn btn-primary" type="submit">Generate Quotation</button>
+                                            <button class="btn btn-primary" type="submit"><i class="fa fa-download"></i> Download PDF</button>
                                             <button class="btn btn-default" type="button">Cancel</button>
                                         </div>
                                     </div>

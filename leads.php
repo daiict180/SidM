@@ -12,6 +12,21 @@ if(isset($_GET['lid'])){
 
 ?>
 
+<?php
+
+if(isset($_POST['editsubmit'])){
+    $company = mysql_prep($_POST['company'], $connection);
+    $user = mysql_prep($_POST['user'], $connection);
+    $status = mysql_prep($_POST['status'], $connection);
+    $branch = mysql_prep($_POST['branch'], $connection);
+    $source = mysql_prep($_POST['source'], $connection);
+    $mremarks = mysql_prep($_POST['mremarks'], $connection);
+    $query = mysqli_query($connection, "INSERT INTO leads VALUES ('','$company', '$user', '$status', '$branch', '$source', '$mremarks', now())");
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -58,9 +73,6 @@ if(isset($_GET['lid'])){
 <div class="top-nav clearfix">
     <!--search & user info start-->
     <ul class="nav pull-right top-menu">
-        <li>
-            <input type="text" class="form-control search" placeholder=" Search">
-        </li>
         <!-- user login dropdown start-->
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -176,11 +188,6 @@ if(isset($_GET['lid'])){
                 <section class="panel">
                     <header class="panel-heading">
                         Leads
-                        <span class="tools pull-right">
-                            <a href="javascript:;" class="fa fa-chevron-down"></a>
-                            <a href="javascript:;" class="fa fa-cog"></a>
-                            <a href="javascript:;" class="fa fa-times"></a>
-                         </span>
                     </header>
                     <div class="panel-body">
                     <div class="adv-table">
@@ -214,11 +221,11 @@ if(isset($_GET['lid'])){
                     <tr class="gradeX">
                         <td><?php echo $result[1]; ?></td>
                         <td><?php echo $result[3]; ?></td>
-                        <td><?php echo $result[1]; ?></td>
-                        <td><?php echo $result[2]; ?></td>
+                        <td><?php echo $result[7]; ?></td>
+                        <td><?php echo getnamebyid($result[2], $connection); ?></td>
                         <td><?php echo $result[4]; ?></td>
                         <td><?php echo $result[5]; ?></td>
-                        <td><a class="edit" href="">Edit</a></td>
+                        <td><a class="edit" href="#myModal-1" data-toggle="modal">Edit</a></td>
                         <td><a class="delete" href="leads.php?lid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Lead?')">Delete</a></td>
                     </tr>
 					<?php  } ?>
@@ -236,6 +243,106 @@ if(isset($_GET['lid'])){
                     </tr>
                     </tfoot>
                     </table>
+                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal-1" class="modal fade">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                        <h4 class="modal-title">Edit Lead</h4>
+                                    </div>
+                                    <div class="modal-body">
+
+                                        <form class="form-horizontal" method="post" role="form">
+                                            <div class="form-group ">
+                                        <label for="contactCompany" class="control-label col-lg-3">Company</label>
+                                        <div class="col-lg-6">
+                                            <select class="form-control" name="company" id="contactCompany" required>
+                                                <?php
+                                                    $query = mysqli_query($connection, "SELECT companyname FROM companies");
+                                                    $rows = mysqli_num_rows($query);
+                                                    for($i = 0; $i < $rows ; $i++){
+                                                        $result = mysqli_fetch_array($query);
+                                                ?>
+                                                    <option value="<?php echo $result[0] ; ?>"> <?php echo $result[0] ; ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="assigned" class="control-label col-lg-3">Assigned To</label>
+                                        <div class="col-lg-6">
+                                            <select class="form-control" name="user" id="assigned" required>
+                                                <?php
+                                                    $query = mysqli_query($connection, "SELECT * FROM users");
+                                                    $rows = mysqli_num_rows($query);
+                                                    for($i = 0; $i < $rows ; $i++){
+                                                        $result = mysqli_fetch_array($query);
+                                                ?>
+                                                    <option value="<?php echo $result['email'] ; ?>"> <?php echo $result['fullname'] ; ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="status" class="control-label col-lg-3">Status</label>
+                                        <div class="col-lg-6">
+                                            <select class="form-control" name="status" id="status" required>
+                                                <option value="New">New</option>
+                                                <option value="Active">Active</option>
+                                                <option value="Closed">Closed</option>
+                                                <option value="Converted">Converted</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="branch" class="control-label col-lg-3">Branch</label>
+                                        <div class="col-lg-6">
+                                            <select class="form-control" name="branch" id="branch" required>
+                                                <?php
+                                                    $query = mysqli_query($connection, "SELECT branchname FROM branches");
+                                                    $rows = mysqli_num_rows($query);
+                                                    for($i = 0; $i < $rows ; $i++){
+                                                        $result = mysqli_fetch_array($query);
+                                                ?>
+                                                    <option value="<?php echo $result[0] ; ?>"> <?php echo $result[0] ; ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="lsource" class="control-label col-lg-3">Source</label>
+                                        <div class="col-lg-6">
+                                            <select class="form-control" name="source" id="lsource" required>
+                                                <?php
+                                                    $query = mysqli_query($connection, "SELECT value FROM sources");
+                                                    $rows = mysqli_num_rows($query);
+                                                    for($i = 0; $i < $rows ; $i++){
+                                                        $result = mysqli_fetch_array($query);
+                                                ?>
+                                                    <option value="<?php echo $result[0] ; ?>"> <?php echo $result[0] ; ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="mremarks" class="control-label col-lg-3">Remarks</label>
+                                        <div class="col-lg-6">
+                                            <textarea class="form-control " id="mremarks" name="mremarks"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-lg-offset-3 col-lg-6">
+                                            <button class="btn btn-primary" name="editsubmit" type="submit">Save</button>
+                                            <button class="btn btn-default" type="button">Cancel</button>
+                                        </div>
+                                    </div>
+                                        </form>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     </div>
                 </section>
@@ -246,6 +353,7 @@ if(isset($_GET['lid'])){
 </section>
 <!-- Placed js at the end of the document so the pages load faster -->
 <!--Core js-->
+
 <script src="js/jquery.js"></script>
 <script src="js/jquery-ui/jquery-ui-1.10.1.custom.min.js"></script>
 <script src="bs3/js/bootstrap.min.js"></script>

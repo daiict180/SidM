@@ -6,7 +6,10 @@
 
 <?php
 
-if(isset($_POST['submit'])){
+if($_SESSION['role']=='SAE')
+    redirect_to("dashboard.php");
+
+if(isset($_POST['submit']) && ($_SESSION['role']=='ADM'||$_SESSION['role']=='COH'||$_SESSION['role']=='BRH')){
 	$FullName = mysql_prep($_POST['FullName'], $connection);
 	$useremail = mysql_prep($_POST['useremail'], $connection);
 	$password = md5(mysql_prep($_POST['password'], $connection));
@@ -16,9 +19,11 @@ if(isset($_POST['submit'])){
 	$role = mysql_prep($_POST['role'], $connection);
 	$branch = mysql_prep($_POST['branch'], $connection);
 	
-	if($password == $confirmPassword)
+	if($password == $confirmPassword && $_SESSION['role']!='BRH')
 		$query = mysqli_query($connection, "INSERT INTO users VALUES ('','$FullName', '$useremail', '$umobile', '$role', '$active', '$password', '$branch')");
-	
+	if($password == $confirmPassword && $_SESSION['role']=='BRH' && getbranchbyid($_SESSION['user'],$connection)==$branch)
+        $query = mysqli_query($connection, "INSERT INTO users VALUES ('','$FullName', '$useremail', '$umobile', '$role', '$active', '$password', '$branch')");
+
 }
 
 ?>
@@ -62,9 +67,6 @@ if(isset($_POST['submit'])){
 <div class="top-nav clearfix">
     <!--search & user info start-->
     <ul class="nav pull-right top-menu">
-        <li>
-            <input type="text" class="form-control search" placeholder=" Search">
-        </li>
         <!-- user login dropdown start-->
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -181,11 +183,7 @@ if(isset($_POST['submit'])){
                     <section class="panel">
                         <header class="panel-heading">
                             <h4><b>Add User</b></h4>
-                            <span class="tools pull-right">
-                                <a class="fa fa-chevron-down" href="javascript:;"></a>
-                                <a class="fa fa-cog" href="javascript:;"></a>
-                                <a class="fa fa-times" href="javascript:;"></a>
-                            </span>
+                            
                         </header>
                         <div class="panel-body">
                             <div class=" form">
@@ -233,10 +231,14 @@ if(isset($_POST['submit'])){
                                         <label for="urole" class="control-label col-lg-3">Role</label>
                                         <div class="col-lg-6">
                                             <select class="form-control"  id="urole" name="role" required>
+                                            <?php if($_SESSION['role'] == 'BRH'){ ?>
+                                            <option value="SAE">SAE</option>
+                                            <?php } else { ?>
                                                 <option value="SAE">SAE</option>
                                                 <option value="BRH">BRH</option>
                                                 <option value="COH">COH</option>
                                                 <option value="ADM">ADM</option>
+                                                <?php } ?>
                                             </select>
                                         </div>
                                     </div>
@@ -245,7 +247,12 @@ if(isset($_POST['submit'])){
                                         <div class="col-lg-6">
                                             <select class="form-control"  id="ubranch" name="branch" required>
                                                 <?php
-													$query = mysqli_query($connection, "SELECT branchname FROM branches");
+                                                    $exec = "SELECT branchname FROM branches ";
+                                                    if($_SESSION['role']=='BRH'){
+                                                        $br = getbranchbyid($_SESSION['user'],$connection);
+                                                        $exec = $exec."WHERE branchname='$br'";
+                                                    }
+													$query = mysqli_query($connection, $exec);
 													$rows = mysqli_num_rows($query);
 													for($i = 0; $i < $rows ; $i++){
 														$result = mysqli_fetch_array($query);

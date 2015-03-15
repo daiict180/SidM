@@ -5,9 +5,22 @@
 <?php include("includes/checksession.php"); ?>
 
 <?php
-if(isset($_GET['mid'])){
+if(isset($_GET['mid']) && $_SESSION['role']!='SAE'){
 	$mid = $_GET['mid'];
     $query = mysqli_query($connection, "DELETE FROM machines WHERE machineid='$mid'");
+}
+
+?>
+
+<?php
+if(isset($_POST['editsubmit'])){
+    $machine = mysql_prep($_POST['Machine'], $connection);
+    $category = mysql_prep($_POST['category'], $connection);
+    $description = mysql_prep($_POST['description'], $connection);
+    $active = mysql_prep($_POST['active'], $connection);
+    
+    
+    $query = mysqli_query($connection, "INSERT INTO machines VALUES ('','$machine', '$category', '$description', '$active')");  
 }
 
 ?>
@@ -58,9 +71,6 @@ if(isset($_GET['mid'])){
 <div class="top-nav clearfix">
     <!--search & user info start-->
     <ul class="nav pull-right top-menu">
-        <li>
-            <input type="text" class="form-control search" placeholder=" Search">
-        </li>
         <!-- user login dropdown start-->
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -176,21 +186,18 @@ if(isset($_GET['mid'])){
                 <section class="panel">
                     <header class="panel-heading">
                         Machines
-                        <span class="tools pull-right">
-                            <a href="javascript:;" class="fa fa-chevron-down"></a>
-                            <a href="javascript:;" class="fa fa-cog"></a>
-                            <a href="javascript:;" class="fa fa-times"></a>
-                         </span>
                     </header>
                     <div class="panel-body">
                     <div class="adv-table">
                     <div class="btn-group">
+                    <?php if($_SESSION['role'] != 'SAE'){ ?>
 					<a href="newmachine.php">
                         <button id="editable-sample_new" class="btn btn-primary">
                             Add New Machine <i class="fa fa-plus"></i>
                         </button>
                     </a>
-					</div>
+					<?php } ?>
+                    </div>
                     <table  class="display table table-bordered table-striped" id="dynamic-table">
                     <thead>
                     <tr>
@@ -198,8 +205,10 @@ if(isset($_GET['mid'])){
                         <th>Category</th>
                         <th>Description</th>
                         <th>Active</th>
+                        <?php if($_SESSION['role'] != 'SAE'){ ?>
                         <th>Edit</th>
                         <th>Delete</th>
+                        <?php } ?>
                     </tr>
                     </thead>
                     <tbody>
@@ -214,8 +223,10 @@ if(isset($_GET['mid'])){
                         <td><?php echo $result[2]; ?></td>
                         <td><?php echo $result[3]; ?></td>
                         <td><?php echo $result[4]; ?></td>
-                        <td><a class="edit" href="">Edit</a></td>
+                        <?php if($_SESSION['role'] != 'SAE'){ ?>
+                        <td><a class="edit" href="#myModal-1" data-toggle="modal">Edit</a></td>
                         <td><a class="delete" href="machines.php?mid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Machine?')">Delete</a></td>
+                        <?php } ?>
                     </tr>
 					<?php } ?>
                     </tbody>
@@ -225,11 +236,63 @@ if(isset($_GET['mid'])){
                         <th>Category</th>
                         <th>Description</th>
                         <th>Active</th>
+                        <?php if($_SESSION['role'] != 'SAE'){ ?>
                         <th>Edit</th>
                         <th>Delete</th>
+                        <?php } ?>
                     </tr>
                     </tfoot>
                     </table>
+                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal-1" class="modal fade">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                        <h4 class="modal-title">Edit Machine</h4>
+                                    </div>
+                                    <div class="modal-body">
+
+                                        <form class="form-horizontal" method="post" role="form">
+                                            <div class="form-group ">
+                                        <label for="MachineName" class="control-label col-lg-3">Machine Name</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="MachineName" type="text" name="Machine" required/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="category" class="control-label col-lg-3">Category</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="category" type="text" name="category"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="mdes" class="control-label col-lg-3">Description</label>
+                                        <div class="col-lg-6">
+                                            <textarea class="form-control " id="mdes" name="description"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="active" class="control-label col-lg-3">Active</label>
+                                        <div class="col-lg-6">
+                                            <select class="form-control"  id="active" name="active" required>
+                                                <option value="Yes">Yes</option>
+                                                <option value="No">No</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-lg-offset-3 col-lg-6">
+                                            <button class="btn btn-primary" name="editsubmit" type="submit">Save</button>
+                                            <button class="btn btn-default" type="button">Cancel</button>
+                                        </div>
+                                    </div>
+                                        </form>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     </div>
                 </section>

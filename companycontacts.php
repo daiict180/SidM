@@ -12,6 +12,22 @@ if(isset($_GET['cid'])){
 
 ?>
 
+<?php
+
+if(isset($_POST['editsubmit'])){
+    $cname = mysql_prep($_POST['company'],$connection);
+    $contact = mysql_prep($_POST['contact'],$connection);
+    $designation = mysql_prep($_POST['designation'],$connection);
+    $bphone = mysql_prep($_POST['bphone'],$connection);
+    $pphone = mysql_prep($_POST['pphone'],$connection);
+    $mobile = mysql_prep($_POST['mobile'],$connection);
+    $email = mysql_prep($_POST['email'],$connection);
+    
+    $query = mysqli_query($connection, "INSERT INTO companycontacts VALUES ('','$cname', '$contact', '$designation', '$bphone', '$pphone', '$mobile', '$email')");  
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -58,9 +74,6 @@ if(isset($_GET['cid'])){
 <div class="top-nav clearfix">
     <!--search & user info start-->
     <ul class="nav pull-right top-menu">
-        <li>
-            <input type="text" class="form-control search" placeholder=" Search">
-        </li>
         <!-- user login dropdown start-->
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -177,11 +190,6 @@ if(isset($_GET['cid'])){
                 <section class="panel">
                     <header class="panel-heading">
                         Company Contacts
-                        <span class="tools pull-right">
-                            <a href="javascript:;" class="fa fa-chevron-down"></a>
-                            <a href="javascript:;" class="fa fa-cog"></a>
-                            <a href="javascript:;" class="fa fa-times"></a>
-                         </span>
                     </header>
                     <div class="panel-body">
                     <div class="adv-table">
@@ -221,7 +229,7 @@ if(isset($_GET['cid'])){
                         <td><?php echo $result[5]; ?></td>
                         <td><?php echo $result[6]; ?></td>
                         <td><?php echo $result[7]; ?></td>
-                        <td><a class="edit" href="">Edit</a></td>
+                        <td><a class="edit" href="#myModal-1" data-toggle="modal">Edit</a></td>
                         <td><a class="delete" href="companycontacts.php?cid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Contact?')">Delete</a></td>
                     </tr>
 					<?php } ?>
@@ -240,6 +248,80 @@ if(isset($_GET['cid'])){
                     </tr>
                     </tfoot>
                     </table>
+                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal-1" class="modal fade">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                        <h4 class="modal-title">Edit Contact</h4>
+                                    </div>
+                                    <div class="modal-body">
+
+                                        <form class="form-horizontal" method="post" role="form">
+                                            <div class="form-group ">
+                                        <label for="contactCompany" class="control-label col-lg-3">Company</label>
+                                        <div class="col-lg-6">
+                                            <select class="form-control" name="company"  id="contactCompany" required>
+                                                <?php
+                                                    $query = mysqli_query($connection, "SELECT companyname FROM companies");
+                                                    $rows = mysqli_num_rows($query);
+                                                    for($i = 0; $i < $rows ; $i++){
+                                                        $result = mysqli_fetch_array($query);
+                                                ?>
+                                                    <option value="<?php echo $result[0] ; ?>"> <?php echo $result[0] ; ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="contactName" class="control-label col-lg-3">Contact Name</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="contactName" type="text" name="contact" required/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="cdesig" class="control-label col-lg-3">Contact Designation</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="cdesig" type="text" name="designation" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="bphone" class="control-label col-lg-3">Business Phone</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="bphone" type="number" name="bphone" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="pphone" class="control-label col-lg-3">Personal Phone</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="pphone" type="number" name="pphone" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="mobile" class="control-label col-lg-3">Mobile</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="mobile" type="number" name="mobile" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="ccemail" class="control-label col-lg-3">Email-Id</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="ccemail" type="email" name="email" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-lg-offset-3 col-lg-6">
+                                            <button class="btn btn-primary" name="editsubmit" type="submit">Save</button>
+                                            <button class="btn btn-default" type="button">Cancel</button>
+                                        </div>
+                                    </div>
+                                        </form>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     </div>
                 </section>

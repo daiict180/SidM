@@ -5,14 +5,14 @@
 <?php include("includes/checksession.php"); ?>
 
 <?php
-if(isset($_GET['sid'])){
+if(isset($_GET['sid']) && ($_SESSION['role']=='ADM'||$_SESSION['role']=='COH')){
 	$sid = $_GET['sid'];
     $query = mysqli_query($connection, "DELETE FROM sources WHERE sourceid='$sid'");
 }
 ?>
 
 <?php
-if(isset($_POST['submit'])){
+if(isset($_POST['submit']) && ($_SESSION['role']=='ADM'||$_SESSION['role']=='COH')){
 	$source = mysql_prep($_POST['Source'], $connection);
 	
 	$query = mysqli_query($connection, "INSERT INTO sources VALUES ('','$source')");	
@@ -58,9 +58,7 @@ if(isset($_POST['submit'])){
 <div class="top-nav clearfix">
     <!--search & user info start-->
     <ul class="nav pull-right top-menu">
-        <li>
-            <input type="text" class="form-control search" placeholder=" Search">
-        </li>
+        
         <!-- user login dropdown start-->
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -171,16 +169,12 @@ if(isset($_POST['submit'])){
 <section id="main-content">
         <section class="wrapper">
             <!-- page start-->
+            <?php if($_SESSION['role']=='ADM'||$_SESSION['role']=='COH'){ ?>
             <div class="row">
                 <div class="col-lg-12">
                     <section class="panel">
                         <header class="panel-heading">
                             <h4><b>Add/Edit Source</b></h4>
-                            <span class="tools pull-right">
-                                <a class="fa fa-chevron-down" href="javascript:;"></a>
-                                <a class="fa fa-cog" href="javascript:;"></a>
-                                <a class="fa fa-times" href="javascript:;"></a>
-                            </span>
                         </header>
                         <div class="panel-body">
                             <div class=" form">
@@ -203,15 +197,11 @@ if(isset($_POST['submit'])){
                     </section>
                 </div>
             </div>
+            <?php } ?>
             <div class="col-sm-6">
                     <section class="panel">
                         <header class="panel-heading">
                             Sources
-                            <span class="tools pull-right">
-                                <a href="javascript:;" class="fa fa-chevron-down"></a>
-                                <a href="javascript:;" class="fa fa-cog"></a>
-                                <a href="javascript:;" class="fa fa-times"></a>
-                             </span>
                         </header>
                         <div class="panel-body">
                             <table class="table table-striped">
@@ -219,8 +209,10 @@ if(isset($_POST['submit'])){
                                 <tr>
                                     <th>#</th>
                                     <th>Source</th>
+                                    <?php if($_SESSION['role']=='ADM'||$_SESSION['role']=='COH') { ?>
                                     <th>Edit</th>
                                     <th>Delete</th>
+                                    <?php } ?>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -233,8 +225,10 @@ if(isset($_POST['submit'])){
                                 <tr>
                                     <td><?php echo $i+1; ?></td>
                                     <td><?php echo $result[1]; ?></td>
+                                    <?php if($_SESSION['role']=='ADM'||$_SESSION['role']=='COH'){ ?>
                                     <td><a class="edit" href="">Edit</a></td>
                                     <td><a class="delete" href="sources.php?sid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Source?')">Delete</a></td>
+                                    <?php } ?>
                                 </tr>
 								<?php } ?>
                                 </tbody>

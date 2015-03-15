@@ -5,9 +5,31 @@
 <?php include("includes/checksession.php"); ?>
 
 <?php
-if(isset($_GET['uid'])){
+if(isset($_GET['uid']) && ($_SESSION['role']=='ADM'||$_SESSION['role']=='COH'||$_SESSION['role']=='BRH')){
 	$uid = $_GET['uid'];
+    $prequery = mysqli_query($connection, "SELECT branch FROM users WHERE userid='$uid'");
+    $result = mysqli_fetch_array($prequery);
+    if($_SESSION['role']=='ADM'||$_SESSION['role']=='COH'||($_SESSION['role']=='BRH'&&getbranchbyid($_SESSION['user'],$connection)==$result[0])){
     $query = mysqli_query($connection, "DELETE FROM users WHERE userid='$uid'");
+    }
+}
+
+?>
+<?php
+
+if(isset($_POST['editsubmit']) && ($_SESSION['role']=='ADM'||$_SESSION['role']=='COH'||$_SESSION['role']=='BRH')){
+    $FullName = mysql_prep($_POST['FullName'], $connection);
+    $useremail = mysql_prep($_POST['useremail'], $connection);
+    $umobile = mysql_prep($_POST['umobile'], $connection);
+    $active = mysql_prep($_POST['active'], $connection);
+    $role = mysql_prep($_POST['role'], $connection);
+    $branch = mysql_prep($_POST['branch'], $connection);
+    
+    if($_SESSION['role']!='BRH')
+        $query = mysqli_query($connection, "INSERT INTO users VALUES ('','$FullName', '$useremail', '$umobile', '$role', '$active', '', '$branch')");
+    if($_SESSION['role']=='BRH' && getbranchbyid($_SESSION['user'],$connection)==$branch)
+        $query = mysqli_query($connection, "INSERT INTO users VALUES ('','$FullName', '$useremail', '$umobile', '$role', '$active', '', '$branch')");
+
 }
 
 ?>
@@ -58,9 +80,6 @@ if(isset($_GET['uid'])){
 <div class="top-nav clearfix">
     <!--search & user info start-->
     <ul class="nav pull-right top-menu">
-        <li>
-            <input type="text" class="form-control search" placeholder=" Search">
-        </li>
         <!-- user login dropdown start-->
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -87,7 +106,7 @@ if(isset($_GET['uid'])){
         <div class="leftside-navigation">
             <ul class="sidebar-menu" id="nav-accordion">
                 <li>
-                    <a class="active" href="dashboard.php">
+                    <a href="dashboard.php">
                         <i class="fa fa-dashboard"></i>
                         <span>Dashboard</span>
                     </a>
@@ -176,20 +195,17 @@ if(isset($_GET['uid'])){
                 <section class="panel">
                     <header class="panel-heading">
                         Users
-                        <span class="tools pull-right">
-                            <a href="javascript:;" class="fa fa-chevron-down"></a>
-                            <a href="javascript:;" class="fa fa-cog"></a>
-                            <a href="javascript:;" class="fa fa-times"></a>
-                         </span>
                     </header>
                     <div class="panel-body">
                     <div class="adv-table">
                     <div class="btn-group">
-					<a href="newuser.php">
+					<?php if($_SESSION['role']=='ADM'||$_SESSION['role']=='COH'||$_SESSION['role']=='BRH'){ ?>
+                    <a href="newuser.php">
                         <button id="editable-sample_new" class="btn btn-primary">
                             Add New User <i class="fa fa-plus"></i>
                         </button>
                     </a>
+                    <?php } ?>
 					</div>
                     <table  class="display table table-bordered table-striped" id="dynamic-table">
                     <thead>
@@ -199,15 +215,25 @@ if(isset($_GET['uid'])){
                         <th>Mobile</th>
                         <th>Role</th>
                         <th>Active</th>
+                        <?php if($_SESSION['role']=='ADM'||$_SESSION['role']=='COH'||$_SESSION['role']=='BRH'){ ?>
                         <th>Edit</th>
-                        <th>Change Password</th>
                         <th>Delete</th>
+                        <?php } ?>
                     </tr>
                     </thead>
                     <tbody>
 					<?php
-						$query = mysqli_query($connection, "SELECT * FROM users");
-						$rows = mysqli_num_rows($query);
+                        $exec = "SELECT * FROM users ";
+                        if($_SESSION['role']=='BRH'||$_SESSION['role']=='SAE')
+                            {
+                                $br = getbranchbyid($_SESSION['user'],$connection);
+                                $exec = $exec."WHERE branch='$br'";
+                            }
+						$query = mysqli_query($connection, $exec);
+                        $rows = 0;
+                        if($query!=false){
+						  $rows = mysqli_num_rows($query);
+                        }
 						for($i=0 ; $i<$rows ; $i++){
 							$result = mysqli_fetch_array($query);
 					?>
@@ -217,9 +243,10 @@ if(isset($_GET['uid'])){
                         <td><?php echo $result[3] ; ?></td>
                         <td><?php echo $result[4] ; ?></td>
                         <td><?php echo $result[5] ; ?></td>
-                        <td><a class="edit" href="">Edit</a></td>
-                        <td><a class="edit" href="">Change Password</a></td>
+                        <?php if($_SESSION['role']=='ADM'||$_SESSION['role']=='COH'||$_SESSION['role']=='BRH'){ ?>
+                        <td><a class="edit" href="#myModal-1" data-toggle="modal">Edit</a></td>
                         <td><a class="delete" href="users.php?uid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete User?')">Delete</a></td>
+                        <?php } ?>
                     </tr>
                     <?php } ?>
 					</tbody>
@@ -230,12 +257,106 @@ if(isset($_GET['uid'])){
                         <th>Mobile</th>
                         <th>Role</th>
                         <th>Active</th>
+                        <?php if($_SESSION['role']=='ADM'||$_SESSION['role']=='COH'||$_SESSION['role']=='BRH'){ ?>
                         <th>Edit</th>
-                        <th>Change Password</th>
                         <th>Delete</th>
+                        <?php } ?>
                     </tr>
                     </tfoot>
                     </table>
+                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal-1" class="modal fade">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                        <h4 class="modal-title">Edit User</h4>
+                                    </div>
+                                    <div class="modal-body">
+
+                                        <form class="form-horizontal" method="post" role="form">
+                                            <div class="form-group ">
+                                        <label for="UserName" class="control-label col-lg-3">Full Name</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="UserName" type="text" name="FullName" required/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="uemail" class="control-label col-lg-3">Email-Id</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="uemail" type="email" name="useremail" required/>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="form-group ">
+                                        <label for="pass" class="control-label col-lg-3">Password</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="pass" type="password" name="password" required/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="cpass" class="control-label col-lg-3">Confirm Password</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="cpass" type="password" name="confirmPassword" required/>
+                                        </div>
+                                    </div> -->
+                                    <div class="form-group ">
+                                        <label for="umobile" class="control-label col-lg-3">Mobile</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="umobile" type="number" name="umobile"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="uactive" class="control-label col-lg-3">Active</label>
+                                        <div class="col-lg-6">
+                                            <select class="form-control" name="active" id="uactive" required>
+                                                <option value="Yes">Yes</option>
+                                                <option value="No">No</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="urole" class="control-label col-lg-3">Role</label>
+                                        <div class="col-lg-6">
+                                            <select class="form-control" name="role" id="urole" required>
+                                                <option value="SAE">SAE</option>
+                                                <option value="BRH">BRH</option>
+                                                <option value="COH">COH</option>
+                                                <option value="ADM">ADM</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="ubranch" class="control-label col-lg-3">Branch</label>
+                                        <div class="col-lg-6">
+                                            <select class="form-control" name="branch" id="ubranch" required>
+                                                <?php
+                                                    $exec = "SELECT branchname FROM branches ";
+                                                    if($_SESSION['role']=='BRH'){
+                                                        $br = getbranchbyid($_SESSION['user'],$connection);
+                                                        $exec = $exec."WHERE branchname='$br'";
+                                                    }
+                                                    $query = mysqli_query($connection, $exec);
+                                                    $rows = mysqli_num_rows($query);
+                                                    for($i = 0; $i < $rows ; $i++){
+                                                        $result = mysqli_fetch_array($query);
+                                                ?>
+                                                    <option value="<?php echo $result[0] ; ?>"><?php echo $result[0] ; ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-lg-offset-3 col-lg-6">
+                                            <button class="btn btn-primary" name="editsubmit" type="submit">Save</button>
+                                            <button class="btn btn-default" type="button">Cancel</button>
+                                        </div>
+                                    </div>
+                                        </form>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     </div>
                 </section>

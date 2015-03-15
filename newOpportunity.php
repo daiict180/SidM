@@ -10,7 +10,6 @@ if(isset($_POST['submit'])){
 	$oppname = mysql_prep($_POST['oppName'], $connection);
 	$company = mysql_prep($_POST['company'], $connection);
 	$lead = mysql_prep($_POST['lead'], $connection);
-	$branch = mysql_prep($_POST['branch'], $connection);
 	$crdate = mysql_prep($_POST['crdate'], $connection);
 	$user = mysql_prep($_POST['user'], $connection);
 	$assignedto = mysql_prep($_POST['assignedto'], $connection);
@@ -21,7 +20,8 @@ if(isset($_POST['submit'])){
 	$interest = mysql_prep($_POST['interest'], $connection);
 	$cdate = mysql_prep($_POST['cdate'], $connection);
 	$oremarks = mysql_prep($_POST['oremarks'], $connection);
-	
+	$branch = getbranchbyid($assignedto, $connection);
+
 	$query = mysqli_query($connection, "INSERT INTO opportunities VALUES ('','$oppname', '$company', '$lead', '$branch', STR_TO_DATE('$crdate', '%m-%d-%Y'), '$user', '$assignedto', '$status', '$stage', '$source', $amount, '$interest', STR_TO_DATE('$cdate', '%m-%d-%Y'), '$oremarks')");	
 }
 
@@ -62,6 +62,23 @@ if(isset($_POST['submit'])){
     <link href="css/style1.css" rel="stylesheet">
     <link href="css/style1.css" rel="stylesheet">
     <link href="css/style-responsive.css" rel="stylesheet"/>
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+
+    <script>                                       
+        function reload(form){
+        var val=form.contactCompany.options[form.contactCompany.options.selectedIndex].value; 
+        $.ajax({
+                    type: "POST",
+                    url: 'newopportunity.php',
+                    data: { val : val },
+                    success: function(data){
+                        //alert(val);
+                    }
+                });
+
+        //self.location='newopportunity.php?com=' + val ;
+        }                       
+    </script>
 </head>
 <body>
 <section id="container">
@@ -81,9 +98,7 @@ if(isset($_POST['submit'])){
 <div class="top-nav clearfix">
     <!--search & user info start-->
     <ul class="nav pull-right top-menu">
-        <li>
-            <input type="text" class="form-control search" placeholder=" Search">
-        </li>
+        
         <!-- user login dropdown start-->
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -191,24 +206,19 @@ if(isset($_POST['submit'])){
     </div>
 </aside>
 <!--sidebar end-->
+<!-- <div id = "OpportunityForm"> -->
 <section id="main-content">
         <section class="wrapper">
             <!-- page start-->
-            
             <div class="row">
                 <div class="col-lg-12">
                     <section class="panel">
                         <header class="panel-heading">
                             <h4><b>Add Opportunity</b></h4>
-                            <span class="tools pull-right">
-                                <a class="fa fa-chevron-down" href="javascript:;"></a>
-                                <a class="fa fa-cog" href="javascript:;"></a>
-                                <a class="fa fa-times" href="javascript:;"></a>
-                            </span>
                         </header>
                         <div class="panel-body">
-                            <div class=" form">
-                                <form class="cmxform form-horizontal " id="commentForm" method="post" action="#">
+                            <div class=" form" >
+                                <form class="cmxform form-horizontal " id = "Opportunity" method="post" action="#">
                                     <div class="form-group ">
                                         <label for="oppName" class="control-label col-lg-3">Opportunity Name</label>
                                         <div class="col-lg-6">
@@ -218,7 +228,7 @@ if(isset($_POST['submit'])){
                                     <div class="form-group ">
                                         <label for="contactCompany" class="control-label col-lg-3">Company</label>
                                         <div class="col-lg-6">
-                                            <select class="form-control" name="company" id="contactCompany" required>
+                                             <select class="form-control" id="contactCompany" name="company" onchange="reload(form)" required>
                                                 <?php
 													$query = mysqli_query($connection, "SELECT companyname FROM companies");
 													$rows = mysqli_num_rows($query);
@@ -230,28 +240,14 @@ if(isset($_POST['submit'])){
                                             </select>
                                         </div>
                                     </div>
-									
                                     <div class="form-group ">
-                                        <label for="clead" class="control-label col-lg-3">Lead</label>
+                                        <label for="OpportunityForm" class="control-label col-lg-3">Lead</label>
                                         <div class="col-lg-6">
-                                            <select class="form-control" id="contactCompany" name="lead" required>
+                                            <select class="form-control" id="OpportunityForm" name="lead" required>
                                                 <?php
-													$query = mysqli_query($connection, "SELECT customer FROM leads");
-													$rows = mysqli_num_rows($query);
-													for($i = 0; $i < $rows ; $i++){
-														$result = mysqli_fetch_array($query);
-												?>
-                                                	<option value="<?php echo $result[0] ; ?>"><?php echo $result[0] ; ?></option>
-                                            	<?php } ?>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group ">
-                                        <label for="cbranch" class="control-label col-lg-3">Branch</label>
-                                        <div class="col-lg-6">
-                                            <select class="form-control" id="cbranch" name="branch" required>
-                                                <?php
-													$query = mysqli_query($connection, "SELECT branchname FROM branches");
+                                                if(isset($_POST['val']))
+                                                    redirect_to("dashboard.php");
+													$query = mysqli_query($connection, "SELECT datetime FROM leads");
 													$rows = mysqli_num_rows($query);
 													for($i = 0; $i < $rows ; $i++){
 														$result = mysqli_fetch_array($query);
@@ -273,12 +269,12 @@ if(isset($_POST['submit'])){
                                         <div class="col-lg-6">
                                             <select class="form-control" name="user" id="suser" required>
                                                 <?php
-													$query = mysqli_query($connection, "SELECT fullname FROM users");
+													$query = mysqli_query($connection, "SELECT * FROM users");
 													$rows = mysqli_num_rows($query);
 													for($i = 0; $i < $rows ; $i++){
 														$result = mysqli_fetch_array($query);
 												?>
-                                                	<option value="<?php echo $result[0] ; ?>"> <?php echo $result[0] ; ?></option>
+                                                	<option value="<?php echo $result['email'] ; ?>"> <?php echo $result['fullname'] ; ?></option>
 												<?php } ?>
                                             </select>
                                         </div>
@@ -288,12 +284,12 @@ if(isset($_POST['submit'])){
                                         <div class="col-lg-6">
                                             <select class="form-control" name="assignedto" id="assignedto" required>
                                                 <?php
-													$query = mysqli_query($connection, "SELECT fullname FROM users");
+													$query = mysqli_query($connection, "SELECT * FROM users");
 													$rows = mysqli_num_rows($query);
 													for($i = 0; $i < $rows ; $i++){
 														$result = mysqli_fetch_array($query);
 												?>
-                                                	<option value="<?php echo $result[0] ; ?>"> <?php echo $result[0] ; ?></option>
+                                                	<option value="<?php echo $result['email'] ; ?>"> <?php echo $result['fullname'] ; ?></option>
 												<?php } ?>
                                             </select>
                                         </div>
@@ -303,7 +299,7 @@ if(isset($_POST['submit'])){
                                         <div class="col-lg-6">
                                             <select class="form-control" name="status" id="oppstatus" required>
                                                 <option value="Initial">Initial</option>
-                                                <option value="Qouted">Quoted</option>
+                                                <option value="Quoted">Quoted</option>
                                                 <option value="Negotiation">Negotiation</option>
                                                 <option value="Order Received">Order Received</option>
                                                 <option value="Order Lost">Order Lost</option>

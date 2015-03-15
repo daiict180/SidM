@@ -5,7 +5,7 @@
 <?php include("includes/checksession.php"); ?>
 
 <?php
-if(isset($_GET['bid'])){
+if(isset($_GET['bid']) && ($_SESSION['role']=='ADM'||$_SESSION['role']=='COH')){
 	$bid = $_GET['bid'];
     $query = mysqli_query($connection, "DELETE FROM branches WHERE branchid='$bid'");
 }
@@ -13,7 +13,7 @@ if(isset($_GET['bid'])){
 ?>
 
 <?php
-if(isset($_POST['submit'])){
+if(isset($_POST['submit']) && ($_SESSION['role']=='ADM'||$_SESSION['role']=='COH')){
 	$branch = $_POST['Branch'];
 	$active = $_POST['active'];
 	$query = mysqli_query($connection, "INSERT INTO branches VALUES ('', '$branch', '$active')");
@@ -58,9 +58,6 @@ if(isset($_POST['submit'])){
 <div class="top-nav clearfix">
     <!--search & user info start-->
     <ul class="nav pull-right top-menu">
-        <li>
-            <input type="text" class="form-control search" placeholder=" Search">
-        </li>
         <!-- user login dropdown start-->
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -171,16 +168,12 @@ if(isset($_POST['submit'])){
 <section id="main-content">
         <section class="wrapper">
             <!-- page start-->
+            <?php if($_SESSION['role']=='ADM'||$_SESSION['role']=='COH'){ ?>
             <div class="row">
                 <div class="col-lg-12">
                     <section class="panel">
                         <header class="panel-heading">
-                            <h4><b>Add/Edit Branches</b></h4>
-                            <span class="tools pull-right">
-                                <a class="fa fa-chevron-down" href="javascript:;"></a>
-                                <a class="fa fa-cog" href="javascript:;"></a>
-                                <a class="fa fa-times" href="javascript:;"></a>
-                            </span>
+                            <h4><b>Add Branch</b></h4>
                         </header>
                         <div class="panel-body">
                             <div class=" form">
@@ -212,15 +205,11 @@ if(isset($_POST['submit'])){
                     </section>
                 </div>
             </div>
+            <?php } ?>
             <div class="col-sm-6">
                     <section class="panel">
                         <header class="panel-heading">
                             Branches
-                            <span class="tools pull-right">
-                                <a href="javascript:;" class="fa fa-chevron-down"></a>
-                                <a href="javascript:;" class="fa fa-cog"></a>
-                                <a href="javascript:;" class="fa fa-times"></a>
-                             </span>
                         </header>
                         <div class="panel-body">
                             <table class="table table-striped">
@@ -228,8 +217,10 @@ if(isset($_POST['submit'])){
                                 <tr>
                                     <th>Branch Name</th>
                                     <th>Active</th>
+                                    <?php if($_SESSION['role']=='ADM'||$_SESSION['role']=='COH'){ ?>
                                     <th>Edit</th>
                                     <th>Delete</th>
+                                    <?php } ?>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -242,8 +233,10 @@ if(isset($_POST['submit'])){
                                 <tr>
                                     <td><?php echo $result[1]; ?></td>
                                     <td><?php echo $result[2]; ?></td>
+                                    <?php if($_SESSION['role']=='ADM'||$_SESSION['role']=='COH'){ ?>
                                     <td><a class="edit" href="">Edit</a></td>
                                     <td><a class="delete" href="branches.php?bid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Branch?')">Delete</a></td>
+                                    <?php } ?>
                                 </tr>
 								<?php } ?>
                                 </tbody>

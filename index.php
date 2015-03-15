@@ -48,6 +48,7 @@
                 <input type="text" name="uname" class="form-control" placeholder="User ID" autofocus>
                 <input type="password" name="pwd" class="form-control" placeholder="Password">
             </div>
+			<?php echo $error ; ?> 
             <label class="checkbox" style="margin-top:35px">
                 <!--<input type="checkbox" value="remember-me"> Remember me -->
                 <span class="pull-right" style="margin-top:28px">
