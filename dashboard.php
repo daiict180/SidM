@@ -264,11 +264,14 @@
                                     $e = $e."AND branch='$mybranch' AND assignedto='$me'";
                                 }
                                 $sales = mysqli_query($connection, $e);
-                                $totalsale = 0;
-                                if($sales == true)
+                                $tsale = 0;
+                                if($sales != false){
                                     $totalsale = mysqli_fetch_array($sales);
+                                    $tsale = $totalsale['SUM(totalamount)'];
+                                    if($tsale == 0) $tsale = 0;
+                                }
                             ?>
-                                <span>Rs. <?php echo $totalsale['SUM(totalamount)'] ?></span>
+                                <span>Rs. <?php echo $tsale ?></span>
                                 Total Sales
                             </div>
                         </div>
@@ -279,9 +282,21 @@
                                 <span class="mini-stat-icon" style="background:crimson"><i class="fa fa-chevron-up"></i></span>
                                 <div class="mini-stat-info">
                                     <?php
-                                        $actleads = mysqli_query($connection, "SELECT COUNT(*) FROM leads WHERE status='Active'");
+                                        $ae = "SELECT COUNT(*) FROM leads WHERE status='Active' ";
+                                        if($_SESSION['role'] == 'BRH')
+                                            {
+                                                $mybranch = getbranchbyid($_SESSION['user'], $connection);
+                                                $ae = $ae."AND branch='$mybranch'";
+                                            }
+                                        if($_SESSION['role'] == 'SAE')
+                                            {
+                                                $mybranch = getbranchbyid($_SESSION['user'], $connection);
+                                                $me = $_SESSION['user'];
+                                                $ae = $ae."AND branch='$mybranch' AND assignedto='$me'";
+                                            }
+                                        $actleads = mysqli_query($connection, $ae);
                                         $aleads = 0;
-                                        if($actleads == true)
+                                        if($actleads != false)
                                             $aleads = mysqli_fetch_array($actleads);
                                     ?>
                                     <span><?php echo $aleads['COUNT(*)'] ?></span>
@@ -294,7 +309,19 @@
                                 <span class="mini-stat-icon tar"><i class="fa fa-chevron-down"></i></span>
                                 <div class="mini-stat-info">
                                     <?php
-                                        $inactleads = mysqli_query($connection, "SELECT COUNT(*) FROM leads WHERE status='Active'");
+                                        $ie = "SELECT COUNT(*) FROM leads WHERE status='Closed' ";
+                                        if($_SESSION['role'] == 'BRH')
+                                            {
+                                                $mybranch = getbranchbyid($_SESSION['user'], $connection);
+                                                $ie = $ie."AND branch='$mybranch'";
+                                            }
+                                        if($_SESSION['role'] == 'SAE')
+                                            {
+                                                $mybranch = getbranchbyid($_SESSION['user'], $connection);
+                                                $me = $_SESSION['user'];
+                                                $ie = $ie."AND branch='$mybranch' AND assignedto='$me'";
+                                            }
+                                        $inactleads = mysqli_query($connection, $ie);
                                         $inaleads = 0;
                                         if($inactleads == true)
                                             $inaleads = mysqli_fetch_array($inactleads);

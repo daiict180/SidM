@@ -64,21 +64,29 @@ if(isset($_POST['submit'])){
     <link href="css/style-responsive.css" rel="stylesheet"/>
     <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 
-    <script>                                       
-        function reload(form){
-        var val=form.contactCompany.options[form.contactCompany.options.selectedIndex].value; 
-        $.ajax({
-                    type: "POST",
-                    url: 'newopportunity.php',
-                    data: { val : val },
-                    success: function(data){
-                        //alert(val);
-                    }
-                });
-
-        //self.location='newopportunity.php?com=' + val ;
-        }                       
-    </script>
+    <script>
+function show(str) {
+    if (str == "") {
+        document.getElementById("txtHint").innerHTML = "";
+        return;
+    } else { 
+        if (window.XMLHttpRequest) {
+            // code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        } else {
+            // code for IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                document.getElementById("targetDiv").innerHTML = xmlhttp.responseText;
+            }
+        }
+        xmlhttp.open("GET","getcompany.php?q="+str,true);
+        xmlhttp.send();
+    }
+}
+</script>
 </head>
 <body>
 <section id="container">
@@ -228,12 +236,14 @@ if(isset($_POST['submit'])){
                                     <div class="form-group ">
                                         <label for="contactCompany" class="control-label col-lg-3">Company</label>
                                         <div class="col-lg-6">
-                                             <select class="form-control" id="contactCompany" name="company" onchange="reload(form)" required>
+                                             <select class="form-control" id="contactCompany" name="company" onchange="show(this.value)" required>
                                                 <?php
 													$query = mysqli_query($connection, "SELECT companyname FROM companies");
 													$rows = mysqli_num_rows($query);
 													for($i = 0; $i < $rows ; $i++){
 														$result = mysqli_fetch_array($query);
+                                                        if($i == 0)
+                                                            $req_company = $result[0];
 												?>
                                                 	<option value="<?php echo $result[0] ; ?>"> <?php echo $result[0] ; ?></option>
 												<?php } ?>
@@ -242,13 +252,13 @@ if(isset($_POST['submit'])){
                                     </div>
                                     <div class="form-group ">
                                         <label for="OpportunityForm" class="control-label col-lg-3">Lead</label>
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-6" id = "targetDiv">
                                             <select class="form-control" id="OpportunityForm" name="lead" required>
                                                 <?php
-                                                if(isset($_POST['val']))
-                                                    redirect_to("dashboard.php");
-													$query = mysqli_query($connection, "SELECT datetime FROM leads");
-													$rows = mysqli_num_rows($query);
+													$query = mysqli_query($connection, "SELECT datetime FROM leads WHERE customer='$req_company'");
+                                                    $rows = 0;
+                                                    if($query != false)
+													   $rows = mysqli_num_rows($query);
 													for($i = 0; $i < $rows ; $i++){
 														$result = mysqli_fetch_array($query);
 												?>

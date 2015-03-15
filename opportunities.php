@@ -28,7 +28,7 @@ if(isset($_POST['editsubmit'])){
     $interest = mysql_prep($_POST['interest'], $connection);
     $cdate = mysql_prep($_POST['cdate'], $connection);
     $oremarks = mysql_prep($_POST['oremarks'], $connection);
-    $branch = getbranchbyid($assignedto, $connection);
+    $branch = getbranchbyid($assignedto , $connection);
 
     $query = mysqli_query($connection, "INSERT INTO opportunities VALUES ('','$oppname', '$company', '$lead', '$branch', STR_TO_DATE('$crdate', '%m-%d-%Y'), '$user', '$assignedto', '$status', '$stage', '$source', $amount, '$interest', STR_TO_DATE('$cdate', '%m-%d-%Y'), '$oremarks')");   
 }
