@@ -21,6 +21,17 @@ if(isset($_POST['submit']) && ($_SESSION['role']=='ADM'||$_SESSION['role']=='COH
 
 ?>
 
+<?php 
+if(isset($_POST['editsubmit'])){
+    $value = mysql_prep($_POST['editsegment'], $connection);
+    $segmentid = intval($_POST['segmentid']);
+
+    $prequery = mysqli_query($connection, "DELETE FROM segments WHERE segmentid='$segmentid'");
+    $query = mysqli_query($connection, "INSERT INTO segments VALUES ('$segmentid','$value')");  
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -40,6 +51,16 @@ if(isset($_POST['submit']) && ($_SESSION['role']=='ADM'||$_SESSION['role']=='COH
     <!-- Custom styles for this template -->
     <link href="css/style1.css" rel="stylesheet">
     <link href="css/style-responsive.css" rel="stylesheet"/>
+    <script type="text/javascript">
+        function populateForm(id) {
+            var values = [];
+            for(var i = 0; i < 2; i++) {
+                values[i] = document.getElementById("row"+id).cells[i].innerHTML; 
+            }
+            document.getElementById("eSegmentName").value = values[1];
+            document.getElementById("segmentid").value = id;
+        } 
+    </script>
 </head>
 <body>
 <section id="container">
@@ -223,17 +244,48 @@ if(isset($_POST['submit']) && ($_SESSION['role']=='ADM'||$_SESSION['role']=='COH
 								for($i=0 ; $i<$rows ; $i++){
 									$result = mysqli_fetch_array($query);
 								?>
-                                <tr>
+                                <tr  id="<?php echo "row".$result[0]; ?>">
                                     <td><?php echo $i+1 ; ?></td>
                                     <td><?php echo $result[1] ; ?></td>
                                     <?php if($_SESSION['role']=='ADM'||$_SESSION['role']=='COH'){ ?>
-                                    <td><a class="edit" href="">Edit</a></td>
+                                    <td><a class="edit" href="#myModal-1" data-toggle="modal" id="<?php echo $result[0]; ?>" onclick="populateForm(this.id)">Edit</a></td>
                                     <td><a class="delete" href="segments.php?sid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Segment?')">Delete</a></td>
                                     <?php } ?>
                                 </tr>
                                 <?php } ?>
 								</tbody>
                             </table>
+                            <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal-1" class="modal fade">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                        <h4 class="modal-title">Edit Segment</h4>
+                                    </div>
+                                    <div class="modal-body">
+
+                                        <form class="form-horizontal" method="post" role="form">
+                                            <div class="form-group ">
+                                        <label for="eSegmentName" class="control-label col-lg-3">Segment</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="eSegmentName" type="text" name="editsegment" required/>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <input class="form-control" id="segmentid" type="hidden" name="segmentid" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-lg-offset-3 col-lg-6">
+                                            <button class="btn btn-primary" name="editsubmit" type="submit">Save</button>
+                                        </div>
+                                    </div>
+                                        </form>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                         </div>
                     </section>
                 </div>

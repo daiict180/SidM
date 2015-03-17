@@ -28,8 +28,10 @@ if(isset($_POST['editsubmit'])){
     $software = mysql_prep($_POST['software'], $connection);
     $mremarks = mysql_prep($_POST['mremarks'], $connection);
     $branch = getbranchbyid($_SESSION['user'], $connection);
+    $setupid = intval($_POST['setupid']);
         
-    $query = mysqli_query($connection, "INSERT INTO setupinformation VALUES ('','$company', '$manufacturer', STR_TO_DATE('$date', '%m-%d-%Y'), '$place', '$machine', '$model', '$size', '$head', '$mnumber', '$warranty', '$ink', '$software', '$mremarks', '$branch')");   
+    $prequery = mysqli_query($connection, "DELETE FROM setupinformation WHERE setupinfoid='$setupid'");
+    $query = mysqli_query($connection, "INSERT INTO setupinformation VALUES ('$setupid','$company', '$manufacturer', STR_TO_DATE('$date', '%Y-%m-%d'), '$place', '$machine', '$model', '$size', '$head', '$mnumber', '$warranty', '$ink', '$software', '$mremarks', '$branch')");   
 }
 
 ?>
@@ -75,6 +77,29 @@ if(isset($_POST['editsubmit'])){
     <!-- Custom styles for this template -->
     <link href="css/style1.css" rel="stylesheet">
     <link href="css/style-responsive.css" rel="stylesheet" />
+    <script type="text/javascript">
+        function populateForm(id) {
+            var values = [];
+            for(var i = 0; i < 15; i++) {
+                values[i] = document.getElementById("row"+id).cells[i].innerHTML; 
+            }
+            document.getElementById("date").value = values[0];
+            document.getElementById("company").value = values[1];
+            document.getElementById("manufacturer").value = values[2];
+            document.getElementById("machine").value = values[3];
+            document.getElementById("mnumber").value = values[4];
+            document.getElementById("ink").value = values[5];
+            document.getElementById("place").value = values[7];
+            document.getElementById("mremarks").value = values[8];
+            document.getElementById("model").value = values[9];
+            document.getElementById("size").value = values[10];
+            document.getElementById("head").value = values[11];
+            document.getElementById("warranty").value = values[12];
+            document.getElementById("software").value = values[13];
+            document.getElementById("setupid").value = id;
+            
+        } 
+    </script>
 </head>
 <body>
 <section id="container">
@@ -232,6 +257,11 @@ if(isset($_POST['editsubmit'])){
                         <th>Branch</th>
                         <th>City</th>
                         <th>Remarks</th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </tr>
@@ -243,7 +273,7 @@ if(isset($_POST['editsubmit'])){
 						for($i=0 ; $i<$rows ; $i++){
 							$result = mysqli_fetch_array($query);
 					?>
-                    <tr class="gradeX">
+                    <tr class="gradeX"  id = "<?php echo "row".$result[0] ?>">
                         <td><?php echo $result[3] ; ?></td>
                         <td><?php echo $result[1] ; ?></td>
                         <td><?php echo $result[2] ; ?></td>
@@ -253,7 +283,12 @@ if(isset($_POST['editsubmit'])){
                         <td><?php echo $result[14] ; ?></td>
                         <td><?php echo $result[4] ; ?></td>
                         <td><?php echo $result[13] ; ?></td>
-                        <td><a class="edit" href="#myModal-1" data-toggle="modal">Edit</a></td>
+                        <td hidden><?php echo $result[6] ; ?></td>
+                        <td hidden><?php echo $result[7] ; ?></td>
+                        <td hidden><?php echo $result[8] ; ?></td>
+                        <td hidden><?php echo $result[10] ; ?></td>
+                        <td hidden><?php echo $result[12] ; ?></td>
+                        <td><a class="edit" href="#myModal-1"  id="<?php echo $result[0] ?>" onclick="populateForm(this.id)" data-toggle="modal">Edit</a></td>
                         <td><a class="delete" href="setupinfo.php?siid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Setup Info?')">Delete</a></td>
                     </tr>
                     <?php } ?>
@@ -269,6 +304,11 @@ if(isset($_POST['editsubmit'])){
                         <th>Branch</th>
                         <th>City</th>
                         <th>Remarks</th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </tr>
@@ -287,7 +327,7 @@ if(isset($_POST['editsubmit'])){
                                             <div class="form-group ">
                                         <label for="contactCompany" class="control-label col-lg-3">Company</label>
                                         <div class="col-lg-6">
-                                            <select class="form-control" name="company" id="contactCompany" required>
+                                            <select class="form-control" name="company" id="company" required>
                                                 <?php
                                                     $query = mysqli_query($connection, "SELECT companyname FROM companies");
                                                     $rows = mysqli_num_rows($query);
@@ -314,38 +354,38 @@ if(isset($_POST['editsubmit'])){
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Installation Date</label>
                                         <div class="col-md-6 col-xs-11">
-                                            <input class="form-control form-control-inline input-medium default-date-picker" name="date"  size="16" type="text" value="" />
+                                            <input class="form-control form-control-inline input-medium default-date-picker" id="date" name="date"  size="16" type="text" value="" />
                                             <!-- <span class="help-block">Select date</span> -->
                                         </div>
                                     </div>
                                     <div class="form-group ">
                                         <label for="mname" class="control-label col-lg-3">Machine Name</label>
                                         <div class="col-lg-6">
-                                            <input class="form-control " id="mname" type="text" name="machine" required />
+                                            <input class="form-control " id="machine" type="text" name="machine" required />
                                         </div>
                                     </div>
                                     <div class="form-group ">
                                         <label for="mmodel" class="control-label col-lg-3">Model</label>
                                         <div class="col-lg-6">
-                                            <input class="form-control " id="mmodel" type="text" name="model"/>
+                                            <input class="form-control " id="model" type="text" name="model"/>
                                         </div>
                                     </div>
                                     <div class="form-group ">
                                         <label for="msize" class="control-label col-lg-3">Size</label>
                                         <div class="col-lg-6">
-                                            <input class="form-control " id="msize" type="text" name="size"/>
+                                            <input class="form-control " id="size" type="text" name="size"/>
                                         </div>
                                     </div>
                                     <div class="form-group ">
                                         <label for="mhead" class="control-label col-lg-3">Head</label>
                                         <div class="col-lg-6">
-                                            <input class="form-control " id="mhead" type="text" name="head"/>
+                                            <input class="form-control " id="head" type="text" name="head"/>
                                         </div>
                                     </div>
                                     <div class="form-group ">
                                         <label for="mno" class="control-label col-lg-3">Machine Number</label>
                                         <div class="col-lg-6">
-                                            <input class="form-control " id="mno" type="text" name="mnumber"/>
+                                            <input class="form-control " id="mnumber" type="text" name="mnumber"/>
                                         </div>
                                     </div>
                                     <div class="form-group ">
@@ -357,13 +397,13 @@ if(isset($_POST['editsubmit'])){
                                     <div class="form-group ">
                                         <label for="mink" class="control-label col-lg-3">Ink</label>
                                         <div class="col-lg-6">
-                                            <input class="form-control " id="mink" type="text" name="ink"/>
+                                            <input class="form-control " id="ink" type="text" name="ink"/>
                                         </div>
                                     </div>
                                     <div class="form-group ">
                                         <label for="msoftware" class="control-label col-lg-3">Software</label>
                                         <div class="col-lg-6">
-                                            <input class="form-control " id="msoftware" type="text" name="software"/>
+                                            <input class="form-control " id="software" type="text" name="software"/>
                                         </div>
                                     </div>
                                     <div class="form-group ">
@@ -371,11 +411,13 @@ if(isset($_POST['editsubmit'])){
                                         <div class="col-lg-6">
                                             <textarea class="form-control " id="mremarks" name="mremarks"></textarea>
                                         </div>
+                                        <div class="col-lg-3">
+                                            <input class="form-control" id="setupid" type="hidden" name="setupid" />
+                                        </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-lg-offset-3 col-lg-6">
                                             <button class="btn btn-primary" name="editsubmit" type="submit">Save</button>
-                                            <button class="btn btn-default" type="button">Cancel</button>
                                         </div>
                                     </div>
                                         </form>

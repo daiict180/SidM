@@ -18,6 +18,15 @@ if(isset($_POST['submit']) && ($_SESSION['role']=='ADM'||$_SESSION['role']=='COH
 	$query = mysqli_query($connection, "INSERT INTO sources VALUES ('','$source')");	
 }
 
+if(isset($_POST['editsubmit'])){
+    $source = mysql_prep($_POST['esource'], $connection);
+    $sourceid = intval($_POST['sourceid']);
+    
+    $prequery = mysqli_query($connection, "DELETE FROM sources WHERE sourceid='$sourceid'");
+    echo mysqli_error($connection);
+    $query = mysqli_query($connection, "INSERT INTO sources VALUES ('$sourceid','$source')");       
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -39,6 +48,16 @@ if(isset($_POST['submit']) && ($_SESSION['role']=='ADM'||$_SESSION['role']=='COH
     <!-- Custom styles for this template -->
     <link href="css/style1.css" rel="stylesheet">
     <link href="css/style-responsive.css" rel="stylesheet"/>
+    <script type="text/javascript">
+        function populateForm(id) {
+            var values = [];
+            for(var i = 0; i < 2; i++) {
+                values[i] = document.getElementById("row"+id).cells[i].innerHTML; 
+            }
+            document.getElementById("eSourceName").value = values[1];
+            document.getElementById("sourceid").value = id;
+        } 
+    </script>
 </head>
 <body>
 <section id="container">
@@ -174,7 +193,7 @@ if(isset($_POST['submit']) && ($_SESSION['role']=='ADM'||$_SESSION['role']=='COH
                 <div class="col-lg-12">
                     <section class="panel">
                         <header class="panel-heading">
-                            <h4><b>Add/Edit Source</b></h4>
+                            <h4><b>Add Source</b></h4>
                         </header>
                         <div class="panel-body">
                             <div class=" form">
@@ -222,17 +241,48 @@ if(isset($_POST['submit']) && ($_SESSION['role']=='ADM'||$_SESSION['role']=='COH
 									for($i=0 ; $i<$rows ; $i++){
 										$result = mysqli_fetch_array($query);
 								?>
-                                <tr>
+                                <tr  id="<?php echo "row".$result[0]; ?>">
                                     <td><?php echo $i+1; ?></td>
                                     <td><?php echo $result[1]; ?></td>
                                     <?php if($_SESSION['role']=='ADM'||$_SESSION['role']=='COH'){ ?>
-                                    <td><a class="edit" href="">Edit</a></td>
+                                    <td><a class="edit" href="#myModal-1" data-toggle="modal" id="<?php echo $result[0]; ?>" onclick="populateForm(this.id)">Edit</a></td>
                                     <td><a class="delete" href="sources.php?sid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Source?')">Delete</a></td>
                                     <?php } ?>
                                 </tr>
 								<?php } ?>
                                 </tbody>
                             </table>
+                            <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal-1" class="modal fade">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                        <h4 class="modal-title">Edit Source</h4>
+                                    </div>
+                                    <div class="modal-body">
+
+                                        <form class="form-horizontal" method="post" role="form">
+                                            <div class="form-group ">
+                                        <label for="eSourceName" class="control-label col-lg-3">Source</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="eSourceName" type="text" name="esource" required/>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="sourceid" type="hidden" name="sourceid" required/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-lg-offset-3 col-lg-6">
+                                            <button class="btn btn-primary" name="editsubmit" type="submit">Save</button>
+                                        </div>
+                                    </div>
+                                        </form>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                         </div>
                     </section>
                 </div>

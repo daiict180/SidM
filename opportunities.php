@@ -29,8 +29,11 @@ if(isset($_POST['editsubmit'])){
     $cdate = mysql_prep($_POST['cdate'], $connection);
     $oremarks = mysql_prep($_POST['oremarks'], $connection);
     $branch = getbranchbyid($assignedto , $connection);
+    $oppid = intval($_POST['oppid']);
 
-    $query = mysqli_query($connection, "INSERT INTO opportunities VALUES ('','$oppname', '$company', '$lead', '$branch', STR_TO_DATE('$crdate', '%m-%d-%Y'), '$user', '$assignedto', '$status', '$stage', '$source', $amount, '$interest', STR_TO_DATE('$cdate', '%m-%d-%Y'), '$oremarks')");   
+    $prequery = mysqli_query($connection, "DELETE FROM opportunities WHERE opportunityid='$oppid'");
+    $query = mysqli_query($connection, "INSERT INTO opportunities VALUES ('','$oppname', '$company', '$lead', '$branch', STR_TO_DATE('$crdate', '%Y-%m-%d'), '$user', '$assignedto', '$status', '$stage', '$source', $amount, '$interest', STR_TO_DATE('$cdate', '%Y-%m-%d'), '$oremarks')");
+
 }
 
 ?>
@@ -76,6 +79,54 @@ if(isset($_POST['editsubmit'])){
     <!-- Custom styles for this template -->
     <link href="css/style1.css" rel="stylesheet">
     <link href="css/style-responsive.css" rel="stylesheet" />
+    <script type="text/javascript">
+        function populateForm(id) {
+            var values = [];
+            for(var i = 0; i < 15; i++) {
+                values[i] = document.getElementById("row"+id).cells[i].innerHTML; 
+            }
+
+            document.getElementById("oppid").value = id;
+            document.getElementById("oppName").value = values[0];
+            document.getElementById("contactCompany").value = values[1];
+            document.getElementById("crdate").value = values[3];
+            document.getElementById("assignedto").value = values[14];
+            document.getElementById("status").value = values[5];
+            document.getElementById("cdate").value = values[6];
+            document.getElementById("lead").value = values[7];
+            document.getElementById("user").value = values[8];
+            document.getElementById("stage").value = values[9];
+            document.getElementById("source").value = values[10];
+            document.getElementById("amount").value = values[11];
+            document.getElementById("interest").value = values[12];
+            document.getElementById("oremarks").value = values[13];
+            
+            
+        } 
+    </script>
+    <script>
+        function show(str) {
+            if (str == "") {
+                document.getElementById("txtHint").innerHTML = "";
+                return;
+            } else { 
+                if (window.XMLHttpRequest) {
+                    // code for IE7+, Firefox, Chrome, Opera, Safari
+                    xmlhttp = new XMLHttpRequest();
+                } else {
+                    // code for IE6, IE5
+                    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+                xmlhttp.onreadystatechange = function() {
+                    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                        document.getElementById("lead").innerHTML = xmlhttp.responseText;
+                    }
+                }
+                xmlhttp.open("GET","getcompany.php?q="+str,true);
+                xmlhttp.send();
+            }
+        }
+    </script>
 </head>
 <body>
 <section id="container">
@@ -272,6 +323,14 @@ if(isset($_POST['editsubmit'])){
                         <th>Assigned To</th>
                         <th>Status</th>
                         <th>Closing Date</th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </tr>
@@ -283,7 +342,7 @@ if(isset($_POST['editsubmit'])){
 						for($i=0 ; $i<$rows ; $i++){
 							$result = mysqli_fetch_array($query);
 					?>
-                    <tr class="gradeX">
+                    <tr class="gradeX" id="<?php echo 'row'.$result[0]; ?>">
                         <td><?php echo $result[1]; ?></td>
                         <td><?php echo $result[2]; ?></td>
                         <td><?php echo $result[4]; ?></td>
@@ -291,7 +350,15 @@ if(isset($_POST['editsubmit'])){
                         <td><?php echo getnamebyid($result[7], $connection); ?></td>
                         <td><?php echo $result[8]; ?></td>
                         <td><?php echo $result[13]; ?></td>
-                        <td><a class="edit" href="#myModal-1" data-toggle="modal">Edit</a></td>
+                        <td hidden><?php echo $result[3]; ?></td>
+                        <td hidden><?php echo $result[6]; ?></td>
+                        <td hidden><?php echo $result[9]; ?></td>
+                        <td hidden><?php echo $result[10]; ?></td>
+                        <td hidden><?php echo $result[11]; ?></td>
+                        <td hidden><?php echo $result[12]; ?></td>
+                        <td hidden><?php echo $result[14]; ?></td>
+                        <td hidden><?php echo $result[7]; ?></td>
+                        <td><a class="edit" href="#myModal-1" data-toggle="modal" id = "<?php echo $result[0]; ?>" onclick="populateForm(this.id)">Edit</a></td>
                         <td><a class="delete" href="opportunities.php?oid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Opportunity?')">Delete</a></td>
                     </tr>
 					<?php } ?>
@@ -305,6 +372,14 @@ if(isset($_POST['editsubmit'])){
                         <th>Assigned To</th>
                         <th>Status</th>
                         <th>Closing Date</th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </tr>
@@ -329,12 +404,14 @@ if(isset($_POST['editsubmit'])){
                                     <div class="form-group ">
                                         <label for="contactCompany" class="control-label col-lg-3">Company</label>
                                         <div class="col-lg-6">
-                                            <select class="form-control" id="contactCompany" name="company" required>
+                                            <select class="form-control" id="contactCompany" onchange="show(this.value)" name="company" required>
                                                 <?php
                                                     $query = mysqli_query($connection, "SELECT companyname FROM companies");
                                                     $rows = mysqli_num_rows($query);
                                                     for($i = 0; $i < $rows ; $i++){
                                                         $result = mysqli_fetch_array($query);
+                                                        if($i == 0)
+                                                            $req_company = $result[0];
                                                 ?>
                                                     <option value="<?php echo $result[0] ; ?>"> <?php echo $result[0] ; ?></option>
                                                 <?php } ?>
@@ -344,9 +421,9 @@ if(isset($_POST['editsubmit'])){
                                     <div class="form-group ">
                                         <label for="OpportunityForm" class="control-label col-lg-3">Lead</label>
                                         <div class="col-lg-6">
-                                            <select class="form-control" id="OpportunityForm" name="lead" required>
+                                            <select class="form-control" id="lead" name="lead" required>
                                                 <?php
-                                                    $query = mysqli_query($connection, "SELECT datetime FROM leads");
+                                                    $query = mysqli_query($connection, "SELECT datetime FROM leads WHERE customer='$req_company'");
                                                     $rows = mysqli_num_rows($query);
                                                     for($i = 0; $i < $rows ; $i++){
                                                         $result = mysqli_fetch_array($query);
@@ -359,14 +436,14 @@ if(isset($_POST['editsubmit'])){
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Creation Date</label>
                                         <div class="col-md-6 col-xs-11">
-                                            <input class="form-control form-control-inline input-medium default-date-picker" name="crdate"  size="16" type="text" value="" />
+                                            <input class="form-control form-control-inline input-medium default-date-picker" name="crdate" id="crdate" size="16" type="text" value="" />
                                             <!-- <span class="help-block">Select date</span> -->
                                         </div>
                                     </div>
                                     <div class="form-group ">
                                         <label for="suser" class="control-label col-lg-3">Sourced By</label>
                                         <div class="col-lg-6">
-                                            <select class="form-control" id="suser" name="user" required>
+                                            <select class="form-control" id="user" name="user" required>
                                                 <?php
                                                     $query = mysqli_query($connection, "SELECT * FROM users");
                                                     $rows = mysqli_num_rows($query);
@@ -396,7 +473,7 @@ if(isset($_POST['editsubmit'])){
                                     <div class="form-group ">
                                         <label for="oppstatus" class="control-label col-lg-3">Status</label>
                                         <div class="col-lg-6">
-                                            <select class="form-control" id="oppstatus" name="status" required>
+                                            <select class="form-control" id="status" name="status" required>
                                                 <option value="Initial">Initial</option>
                                                 <option value="Quoted">Quoted</option>
                                                 <option value="Negotiation">Negotiation</option>
@@ -409,7 +486,7 @@ if(isset($_POST['editsubmit'])){
                                     <div class="form-group ">
                                         <label for="oppstage" class="control-label col-lg-3">Stage</label>
                                         <div class="col-lg-6">
-                                            <select class="form-control"  id="oppstage" name="stage" required>
+                                            <select class="form-control"  id="stage" name="stage" required>
                                                 <option value="Hot">Hot</option>
                                                 <option value="Warm">Warm</option>
                                                 <option value="Cold">Cold</option>
@@ -419,7 +496,7 @@ if(isset($_POST['editsubmit'])){
                                     <div class="form-group ">
                                         <label for="lsource" class="control-label col-lg-3">Source</label>
                                         <div class="col-lg-6">
-                                            <select class="form-control" name="source"  id="lsource" required>
+                                            <select class="form-control" name="source"  id="source" required>
                                                 <?php
                                                     $query = mysqli_query($connection, "SELECT value FROM sources");
                                                     $rows = mysqli_num_rows($query);
@@ -434,19 +511,19 @@ if(isset($_POST['editsubmit'])){
                                     <div class="form-group ">
                                         <label for="amt" class="control-label col-lg-3">Total Amount</label>
                                         <div class="col-lg-6">
-                                            <input class="form-control " id="amt" type="number" name="amount" />
+                                            <input class="form-control " id="amount" type="number" name="amount" />
                                         </div>
                                     </div>
                                     <div class="form-group ">
                                         <label for="poi" class="control-label col-lg-3">Product of Interest</label>
                                         <div class="col-lg-6">
-                                            <input class="form-control " id="poi" type="text" name="interest" required/>
+                                            <input class="form-control " id="interest" type="text" name="interest" required/>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Approx. Closing date</label>
                                         <div class="col-md-6 col-xs-11">
-                                            <input class="form-control form-control-inline input-medium default-date-picker" name="cdate"  size="16" type="text" value="" />
+                                            <input class="form-control form-control-inline input-medium default-date-picker" id="cdate" name="cdate"  size="16" type="text" value="" />
                                             <!-- <span class="help-block">Select date</span> -->
                                         </div>
                                     </div>
@@ -455,11 +532,13 @@ if(isset($_POST['editsubmit'])){
                                         <div class="col-lg-6">
                                             <textarea class="form-control " id="oremarks" name="oremarks"></textarea>
                                         </div>
+                                        <div class="col-lg-3">
+                                            <input class="form-control" id="oppid" type="hidden" name="oppid" />
+                                        </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-lg-offset-3 col-lg-6">
                                             <button class="btn btn-primary" name="editsubmit" type="submit">Save</button>
-                                            <button class="btn btn-default" type="button">Cancel</button>
                                         </div>
                                     </div>
                                         </form>

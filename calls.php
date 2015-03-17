@@ -25,8 +25,10 @@ if(isset($_POST['editsubmit'])){
     $notes = mysql_prep($_POST['Notes'], $connection);
     $followup = mysql_prep($_POST['followup'], $connection);
     $branch = getbranchbyid($user, $connection);
+    $callid = intval($_POST['callid']);
 
-    $query = mysqli_query($connection, "INSERT INTO calls VALUES ('', STR_TO_DATE('$calldate', '%m-%d-%Y'), '$mode', '$user', '$for', '$company', '$lead', '$opportunity', '$notes', STR_TO_DATE('$followup', '%m-%d-%Y'),'No','$branch')");    
+    $prequery = mysqli_query($connection, "DELETE FROM calls WHERE callid='$callid'");
+    $query = mysqli_query($connection, "INSERT INTO calls VALUES ('$callid', STR_TO_DATE('$calldate', '%Y-%m-%d'), '$mode', '$user', '$for', '$company', '$lead', '$opportunity', '$notes', STR_TO_DATE('$followup', '%Y-%m-%d'),'No','$branch')");    
 }
 
 ?>
@@ -72,6 +74,47 @@ if(isset($_POST['editsubmit'])){
     <!-- Custom styles for this template -->
     <link href="css/style1.css" rel="stylesheet">
     <link href="css/style-responsive.css" rel="stylesheet" />
+    <script type="text/javascript">
+        function populateForm(id) {
+            var values = [];
+            for(var i = 0; i < 11; i++) {
+                values[i] = document.getElementById("row"+id).cells[i].innerHTML; 
+            }
+            document.getElementById("calldate").value = values[0];
+            document.getElementById("callMode").value = values[1];
+            document.getElementById("callfor").value = values[2];
+            document.getElementById("contactCompany").value = values[3];
+            document.getElementById("opportunity").value = values[4];
+            document.getElementById("suser").value = values[5];
+            document.getElementById("callNotes").value = values[6];
+            document.getElementById("followup").value = values[8];
+            document.getElementById("lead").value = values[10];
+            document.getElementById("callid").value = id;
+        } 
+    </script>
+    <script>
+        function show(str) {
+            if (str == "") {
+                document.getElementById("txtHint").innerHTML = "";
+                return;
+            } else { 
+                if (window.XMLHttpRequest) {
+                    // code for IE7+, Firefox, Chrome, Opera, Safari
+                    xmlhttp = new XMLHttpRequest();
+                } else {
+                    // code for IE6, IE5
+                    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+                xmlhttp.onreadystatechange = function() {
+                    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                        document.getElementById("targetid").innerHTML = xmlhttp.responseText;
+                    }
+                }
+                xmlhttp.open("GET","getcallcompany.php?q="+str,true);
+                xmlhttp.send();
+            }
+        }
+    </script>
 </head>
 <body>
 <section id="container">
@@ -228,7 +271,8 @@ if(isset($_POST['editsubmit'])){
                         <th>Notes</th>
                         <th>Branch</th>
                         <th>Next Follow Up</th>
-                        <th>Followed Up</th>  
+                        <th>Followed Up</th> 
+                        <th hidden></th> 
                         <th>Follow Up/Edit</th>
                         <th>Delete</th>
                     </tr>
@@ -240,7 +284,7 @@ if(isset($_POST['editsubmit'])){
 									for($i=0 ; $i<$rows ; $i++){
 										$result = mysqli_fetch_array($query);
 					?>
-                    <tr class="gradeX">
+                    <tr class="gradeX"  id="<?php echo "row".$result[0] ?>">
                         <td><?php echo $result[1]; ?></td>
                         <td><?php echo $result[2]; ?></td>
                         <td><?php echo $result[4]; ?></td>
@@ -255,7 +299,8 @@ if(isset($_POST['editsubmit'])){
 						<?php } else if($result[10] == "No"){ ?>
                         <td><span class="label label-danger">No</span></td>
 						<?php } ?>
-						<td><a class="edit" href="">Follow Up</a><br><a class="edit" href="#myModal-1" data-toggle="modal">Edit</a></td>
+                        <td hidden><?php echo $result[6]; ?></td>
+						<td><a class="edit" href="">Follow Up</a><br><a class="edit" href="#myModal-1" data-toggle="modal"  id="<?php echo $result[0]; ?>" onclick="populateForm(this.id)">Edit</a></td>
                         <td><a class="delete" href="calls.php?cid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Call?')">Delete</a></td>
                     </tr>
 					<?php  } ?>
@@ -272,6 +317,7 @@ if(isset($_POST['editsubmit'])){
                         <th>Branch</th>
                         <th>Next Follow Up</th>  
                         <th>Followed Up</th>
+                        <th hidden></th>
                         <th>Follow Up/Edit</th>
                         <th>Delete</th>
                     </tr>
@@ -290,14 +336,14 @@ if(isset($_POST['editsubmit'])){
                                             <div class="form-group">
                                         <label class="control-label col-md-3">Call Date</label>
                                         <div class="col-md-6 col-xs-11">
-                                            <input class="form-control form-control-inline input-medium default-date-picker" name="calldate"  size="16" type="text" value="" required/>
+                                            <input class="form-control form-control-inline input-medium default-date-picker" id="calldate" name="calldate"  size="16" type="text" value="" required/>
                                             <!-- <span class="help-block">Select date</span> -->
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Next Follow Up Call</label>
                                         <div class="col-md-6 col-xs-11">
-                                            <input class="form-control form-control-inline input-medium default-date-picker" name="followup" size="16" type="text" value="" />
+                                            <input class="form-control form-control-inline input-medium default-date-picker" id="followup" name="followup" size="16" type="text" value="" />
                                             <!-- <span class="help-block">Select date</span> -->
                                         </div>
                                     </div>
@@ -344,7 +390,7 @@ if(isset($_POST['editsubmit'])){
                                     <div class="form-group ">
                                         <label for="contactCompany" class="control-label col-lg-3">Company</label>
                                         <div class="col-lg-6">
-                                            <select class="form-control" name="company" id="contactCompany" required>
+                                            <select class="form-control" name="company" id="contactCompany" onchange="show(this.value)" required>
                                                 <?php
                                                     $query = mysqli_query($connection, "SELECT companyname FROM companies");
                                                     $rows = mysqli_num_rows($query);
@@ -356,12 +402,13 @@ if(isset($_POST['editsubmit'])){
                                             </select>
                                         </div>
                                     </div>
+                                    <div id="targetid">
                                     <div class="form-group ">
                                         <label for="clead" class="control-label col-lg-3">Lead</label>
                                         <div class="col-lg-6">
-                                            <select class="form-control" id="contactCompany" name="lead" required>
+                                            <select class="form-control" id="lead" name="lead" required>
                                                 <?php
-                                                    $query = mysqli_query($connection, "SELECT customer FROM leads");
+                                                    $query = mysqli_query($connection, "SELECT datetime FROM leads");
                                                     $rows = mysqli_num_rows($query);
                                                     for($i = 0; $i < $rows ; $i++){
                                                         $result = mysqli_fetch_array($query);
@@ -374,7 +421,7 @@ if(isset($_POST['editsubmit'])){
                                     <div class="form-group ">
                                         <label for="copp" class="control-label col-lg-3">Opportunity</label>
                                         <div class="col-lg-6">
-                                            <select class="form-control" id="contactCompany" name="opportunity" required>
+                                            <select class="form-control" id="opportunity" name="opportunity" required>
                                                 <?php
                                                     $query = mysqli_query($connection, "SELECT opportunityname FROM opportunities");
                                                     $rows = mysqli_num_rows($query);
@@ -386,16 +433,19 @@ if(isset($_POST['editsubmit'])){
                                             </select>
                                         </div>
                                     </div>
+                                    </div>
                                     <div class="form-group ">
                                         <label for="callNotes" class="control-label col-lg-3">Call Notes</label>
                                         <div class="col-lg-6">
                                             <textarea class="form-control " id="callNotes" name="Notes"></textarea>
                                         </div>
+                                        <div class="col-lg-3">
+                                            <input class="form-control" id="callid" type="hidden" name="callid" />
+                                        </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-lg-offset-3 col-lg-6">
                                             <button class="btn btn-primary" name="editsubmit" type="submit">Save</button>
-                                            <button class="btn btn-default" type="button">Cancel</button>
                                         </div>
                                     </div>
                                         </form>

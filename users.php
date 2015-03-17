@@ -24,11 +24,16 @@ if(isset($_POST['editsubmit']) && ($_SESSION['role']=='ADM'||$_SESSION['role']==
     $active = mysql_prep($_POST['active'], $connection);
     $role = mysql_prep($_POST['role'], $connection);
     $branch = mysql_prep($_POST['branch'], $connection);
-    
-    if($_SESSION['role']!='BRH')
-        $query = mysqli_query($connection, "INSERT INTO users VALUES ('','$FullName', '$useremail', '$umobile', '$role', '$active', '', '$branch')");
-    if($_SESSION['role']=='BRH' && getbranchbyid($_SESSION['user'],$connection)==$branch)
-        $query = mysqli_query($connection, "INSERT INTO users VALUES ('','$FullName', '$useremail', '$umobile', '$role', '$active', '', '$branch')");
+    $userid = intval($_POST['userid']);
+
+    if($_SESSION['role']!='BRH'){
+        $prequery = mysqli_query($connection, "DELETE FROM users WHERE userid='$userid'");
+        $query = mysqli_query($connection, "INSERT INTO users VALUES ('$userid','$FullName', '$useremail', '$umobile', '$role', '$active', '', '$branch')");
+    }
+    if($_SESSION['role']=='BRH' && getbranchbyid($_SESSION['user'],$connection)==$branch){
+        $prequery = mysqli_query($connection, "DELETE FROM users WHERE userid ='$userid'");
+        $query = mysqli_query($connection, "INSERT INTO users VALUES ('$userid','$FullName', '$useremail', '$umobile', '$role', '$active', '', '$branch')");
+    }
 
 }
 
@@ -61,6 +66,21 @@ if(isset($_POST['editsubmit']) && ($_SESSION['role']=='ADM'||$_SESSION['role']==
     <!-- Custom styles for this template -->
     <link href="css/style1.css" rel="stylesheet">
     <link href="css/style-responsive.css" rel="stylesheet" />
+    <script type="text/javascript">
+            function populateForm(id) {
+            var values = [];
+            for(var i = 0; i < 6; i++) {
+                values[i] = document.getElementById("row"+id).cells[i].innerHTML; 
+            }
+            document.getElementById("UserName").value = values[0];
+            document.getElementById("uemail").value = values[1];
+            document.getElementById("umobile").value = values[2];
+            document.getElementById("urole").value = values[3];
+            document.getElementById("uactive").value = values[4];
+            document.getElementById("ubranch").value = values[5];
+            document.getElementById("userid").value = id;
+        } 
+    </script>
 </head>
 <body>
 <section id="container">
@@ -215,6 +235,7 @@ if(isset($_POST['editsubmit']) && ($_SESSION['role']=='ADM'||$_SESSION['role']==
                         <th>Mobile</th>
                         <th>Role</th>
                         <th>Active</th>
+                        <th hidden></th>
                         <?php if($_SESSION['role']=='ADM'||$_SESSION['role']=='COH'||$_SESSION['role']=='BRH'){ ?>
                         <th>Edit</th>
                         <th>Delete</th>
@@ -237,14 +258,15 @@ if(isset($_POST['editsubmit']) && ($_SESSION['role']=='ADM'||$_SESSION['role']==
 						for($i=0 ; $i<$rows ; $i++){
 							$result = mysqli_fetch_array($query);
 					?>
-                    <tr class="gradeX">
+                    <tr class="gradeX"  id="<?php echo "row".$result[0]; ?>">
                         <td><?php echo $result[1] ; ?></td>
                         <td><?php echo $result[2] ; ?></td>
                         <td><?php echo $result[3] ; ?></td>
                         <td><?php echo $result[4] ; ?></td>
                         <td><?php echo $result[5] ; ?></td>
+                        <td hidden><?php echo $result[7] ; ?></td>
                         <?php if($_SESSION['role']=='ADM'||$_SESSION['role']=='COH'||$_SESSION['role']=='BRH'){ ?>
-                        <td><a class="edit" href="#myModal-1" data-toggle="modal">Edit</a></td>
+                        <td><a class="edit" href="#myModal-1" data-toggle="modal" id="<?php echo $result[0]; ?>" onclick="populateForm(this.id)">Edit</a></td>
                         <td><a class="delete" href="users.php?uid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete User?')">Delete</a></td>
                         <?php } ?>
                     </tr>
@@ -257,6 +279,7 @@ if(isset($_POST['editsubmit']) && ($_SESSION['role']=='ADM'||$_SESSION['role']==
                         <th>Mobile</th>
                         <th>Role</th>
                         <th>Active</th>
+                        <th hidden></th>
                         <?php if($_SESSION['role']=='ADM'||$_SESSION['role']=='COH'||$_SESSION['role']=='BRH'){ ?>
                         <th>Edit</th>
                         <th>Delete</th>
@@ -343,11 +366,13 @@ if(isset($_POST['editsubmit']) && ($_SESSION['role']=='ADM'||$_SESSION['role']==
                                                 <?php } ?>
                                             </select>
                                         </div>
+                                        <div class="col-lg-3">
+                                            <input class="form-control" id="userid" type="hidden" name="userid" />
+                                        </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-lg-offset-3 col-lg-6">
                                             <button class="btn btn-primary" name="editsubmit" type="submit">Save</button>
-                                            <button class="btn btn-default" type="button">Cancel</button>
                                         </div>
                                     </div>
                                         </form>

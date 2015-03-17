@@ -57,6 +57,29 @@ if(isset($_POST['submit'])){
     <link href="css/style1.css" rel="stylesheet">
     <link href="css/style1.css" rel="stylesheet">
     <link href="css/style-responsive.css" rel="stylesheet"/>
+    <script>
+        function show(str) {
+            if (str == "") {
+                document.getElementById("txtHint").innerHTML = "";
+                return;
+            } else { 
+                if (window.XMLHttpRequest) {
+                    // code for IE7+, Firefox, Chrome, Opera, Safari
+                    xmlhttp = new XMLHttpRequest();
+                } else {
+                    // code for IE6, IE5
+                    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+                xmlhttp.onreadystatechange = function() {
+                    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                        document.getElementById("targetid").innerHTML = xmlhttp.responseText;
+                    }
+                }
+                xmlhttp.open("GET","getcallcompany.php?q="+str,true);
+                xmlhttp.send();
+            }
+        }
+    </script>
 </head>
 <body>
 <section id="container">
@@ -246,24 +269,27 @@ if(isset($_POST['submit'])){
                                     <div class="form-group ">
                                         <label for="contactCompany" class="control-label col-lg-3">Company</label>
                                         <div class="col-lg-6">
-                                            <select class="form-control" id="contactCompany" name="company" required>
+                                            <select class="form-control" id="contactCompany" name="company" onchange="show(this.value)" required>
 												<?php
 													$query = mysqli_query($connection, "SELECT companyname FROM companies");
 													$rows = mysqli_num_rows($query);
 													for($i = 0; $i < $rows ; $i++){
 														$result = mysqli_fetch_array($query);
+                                                        if($i == 0)
+                                                            $req_company = $result[0];
 												?>
                                                 	<option value="<?php echo $result[0] ; ?>"> <?php echo $result[0] ; ?></option>
 												<?php } ?>
                                             </select>
                                         </div>
                                     </div>
+                                    <div id="targetid">
 									<div class="form-group ">
                                         <label for="clead" class="control-label col-lg-3">Lead</label>
                                         <div class="col-lg-6">
-                                            <select class="form-control" name="lead" id="contactCompany" required>
+                                            <select class="form-control" name="lead" id="lead" required>
                                                 <?php
-													$query = mysqli_query($connection, "SELECT customer FROM leads");
+													$query = mysqli_query($connection, "SELECT datetime FROM leads WHERE customer='$req_company'");
 													$rows = mysqli_num_rows($query);
 													for($i = 0; $i < $rows ; $i++){
 														$result = mysqli_fetch_array($query);
@@ -276,9 +302,9 @@ if(isset($_POST['submit'])){
                                     <div class="form-group ">
                                         <label for="copp" class="control-label col-lg-3">Opportunity</label>
                                         <div class="col-lg-6">
-                                            <select class="form-control" id="contactCompany" name="opportunity" required>
+                                            <select class="form-control" id="opportunity" name="opportunity" required>
                                                 <?php
-													$query = mysqli_query($connection, "SELECT opportunityname FROM opportunities");
+													$query = mysqli_query($connection, "SELECT opportunityname FROM opportunities WHERE customer='$req_company'");
 													$rows = mysqli_num_rows($query);
 													for($i = 0; $i < $rows ; $i++){
 														$result = mysqli_fetch_array($query);
@@ -287,6 +313,7 @@ if(isset($_POST['submit'])){
                                             	<?php } ?>
                                             </select>
                                         </div>
+                                    </div>
                                     </div>
                                     <div class="form-group ">
                                         <label for="callNotes" class="control-label col-lg-3">Call Notes</label>

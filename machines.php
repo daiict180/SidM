@@ -18,9 +18,10 @@ if(isset($_POST['editsubmit'])){
     $category = mysql_prep($_POST['category'], $connection);
     $description = mysql_prep($_POST['description'], $connection);
     $active = mysql_prep($_POST['active'], $connection);
+    $machineid = intval($_POST['machineid']);
     
-    
-    $query = mysqli_query($connection, "INSERT INTO machines VALUES ('','$machine', '$category', '$description', '$active')");  
+    $prequery = mysqli_query($connection, "DELETE FROM machines WHERE machineid='$machineid'");
+    $query = mysqli_query($connection, "INSERT INTO machines VALUES ('$machineid','$machine', '$category', '$description', '$active')");  
 }
 
 ?>
@@ -52,6 +53,19 @@ if(isset($_POST['editsubmit'])){
     <!-- Custom styles for this template -->
     <link href="css/style1.css" rel="stylesheet">
     <link href="css/style-responsive.css" rel="stylesheet" />
+    <script type="text/javascript">
+        function populateForm(id) {
+            var values = [];
+            for(var i = 0; i < 4; i++) {
+                values[i] = document.getElementById("row"+id).cells[i].innerHTML; 
+            }
+            document.getElementById("MachineName").value = values[0];
+            document.getElementById("category").value = values[1];
+            document.getElementById("mdes").value = values[2];
+            document.getElementById("active").value = values[3];
+            document.getElementById("machineid").value = id;
+        } 
+    </script>
 </head>
 <body>
 <section id="container">
@@ -218,13 +232,13 @@ if(isset($_POST['editsubmit'])){
 						for($i=0 ; $i<$rows ; $i++){
 							$result = mysqli_fetch_array($query);
 					?>
-                    <tr class="gradeX">
+                    <tr class="gradeX"  id="<?php echo "row".$result[0]; ?>">
                         <td><?php echo $result[1]; ?></td>
                         <td><?php echo $result[2]; ?></td>
                         <td><?php echo $result[3]; ?></td>
                         <td><?php echo $result[4]; ?></td>
                         <?php if($_SESSION['role'] != 'SAE'){ ?>
-                        <td><a class="edit" href="#myModal-1" data-toggle="modal">Edit</a></td>
+                        <td><a class="edit" href="#myModal-1" data-toggle="modal"  id="<?php echo $result[0]; ?>" onclick="populateForm(this.id)">Edit</a></td>
                         <td><a class="delete" href="machines.php?mid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Machine?')">Delete</a></td>
                         <?php } ?>
                     </tr>
@@ -278,6 +292,9 @@ if(isset($_POST['editsubmit'])){
                                                 <option value="Yes">Yes</option>
                                                 <option value="No">No</option>
                                             </select>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <input class="form-control" id="machineid" type="hidden" name="machineid" />
                                         </div>
                                     </div>
                                     <div class="form-group">

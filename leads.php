@@ -21,7 +21,10 @@ if(isset($_POST['editsubmit'])){
     $branch = mysql_prep($_POST['branch'], $connection);
     $source = mysql_prep($_POST['source'], $connection);
     $mremarks = mysql_prep($_POST['mremarks'], $connection);
-    $query = mysqli_query($connection, "INSERT INTO leads VALUES ('','$company', '$user', '$status', '$branch', '$source', '$mremarks', now())");
+    $leadid = intval($_POST['leadid']);
+
+    $prequery = mysqli_query($connection, "DELETE FROM leads WHERE leadid='$leadid'");
+    $query = mysqli_query($connection, "INSERT INTO leads VALUES ('$leadid','$company', '$user', '$status', '$branch', '$source', '$mremarks', now())");
 }
 
 ?>
@@ -54,6 +57,21 @@ if(isset($_POST['editsubmit'])){
     <!-- Custom styles for this template -->
     <link href="css/style1.css" rel="stylesheet">
     <link href="css/style-responsive.css" rel="stylesheet" />
+    <script type="text/javascript">
+        function populateForm(id) {
+            var values = [];
+            for(var i = 0; i < 8; i++) {
+                values[i] = document.getElementById("row"+id).cells[i].innerHTML; 
+            }
+            document.getElementById("contactCompany").value = values[0];
+            document.getElementById("status").value = values[1];
+            document.getElementById("assignedto").value = values[7];
+            document.getElementById("branch").value = values[4];
+            document.getElementById("lsource").value = values[5];
+            document.getElementById("mremarks").value = values[6];
+            document.getElementById("leadid").value = id;
+        } 
+    </script>
 </head>
 <body>
 <section id="container">
@@ -207,6 +225,8 @@ if(isset($_POST['editsubmit'])){
                         <th>Assigned To</th>
                         <th>Branch</th>
                         <th>Source</th>
+                        <th hidden></th>
+                        <th hidden></th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </tr>
@@ -218,14 +238,16 @@ if(isset($_POST['editsubmit'])){
 						for($i=0 ; $i<$rows ; $i++){
 							$result = mysqli_fetch_array($query);
 					?>
-                    <tr class="gradeX">
+                    <tr id="<?php echo "row".$result[0] ; ?>" class="gradeX">
                         <td><?php echo $result[1]; ?></td>
                         <td><?php echo $result[3]; ?></td>
                         <td><?php echo $result[7]; ?></td>
                         <td><?php echo getnamebyid($result[2], $connection); ?></td>
                         <td><?php echo $result[4]; ?></td>
                         <td><?php echo $result[5]; ?></td>
-                        <td><a class="edit" href="#myModal-1" data-toggle="modal">Edit</a></td>
+                        <td hidden><?php echo $result[6]; ?></td>
+                        <td hidden><?php echo $result[2]; ?></td>
+                        <td><a class="edit" href="#myModal-1" data-toggle="modal"  id = "<?php echo $result[0]; ?>" onclick="populateForm(this.id)">Edit</a></td>
                         <td><a class="delete" href="leads.php?lid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Lead?')">Delete</a></td>
                     </tr>
 					<?php  } ?>
@@ -238,6 +260,8 @@ if(isset($_POST['editsubmit'])){
                         <th>Assigned To</th>
                         <th>Branch</th>
                         <th>Source</th>
+                        <th hidden></th>
+                        <th hidden></th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </tr>
@@ -271,7 +295,7 @@ if(isset($_POST['editsubmit'])){
                                     <div class="form-group ">
                                         <label for="assigned" class="control-label col-lg-3">Assigned To</label>
                                         <div class="col-lg-6">
-                                            <select class="form-control" name="user" id="assigned" required>
+                                            <select class="form-control" name="user" id="assignedto" required>
                                                 <?php
                                                     $query = mysqli_query($connection, "SELECT * FROM users");
                                                     $rows = mysqli_num_rows($query);
@@ -329,11 +353,13 @@ if(isset($_POST['editsubmit'])){
                                         <div class="col-lg-6">
                                             <textarea class="form-control " id="mremarks" name="mremarks"></textarea>
                                         </div>
+                                        <div class="col-lg-3">
+                                            <input class="form-control" id="leadid" type="hidden" name="leadid" />
+                                        </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-lg-offset-3 col-lg-6">
                                             <button class="btn btn-primary" name="editsubmit" type="submit">Save</button>
-                                            <button class="btn btn-default" type="button">Cancel</button>
                                         </div>
                                     </div>
                                         </form>

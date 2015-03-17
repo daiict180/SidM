@@ -15,6 +15,7 @@ if(isset($_GET['cid'])){
 <?php
 
 if(isset($_POST['editsubmit'])){
+    $companyid = intval($_POST['companyid']);
     $name = mysql_prep($_POST['name'],$connection);
     $type = mysql_prep($_POST['type'],$connection);
     $oname = mysql_prep($_POST['oname'],$connection);
@@ -35,8 +36,8 @@ if(isset($_POST['editsubmit'])){
     $segment = mysql_prep($_POST['segment'],$connection);
     $remarks = mysql_prep($_POST['remarks'],$connection);
     $experience = mysql_prep($_POST['experience'],$connection);
-    
-    $query = mysqli_query($connection, "INSERT INTO companies VALUES ('','$name', '$oname', '$add1', '$add2', '$city', $pin, '$state', '$country', '$source', '$remarks', '$type', '$branch', '$email', '$bphone', '$mobile', '$phone2', '$fax', '$url', '$segment', '$experience')");
+    $prequery = mysqli_query($connection, "DELETE FROM companies WHERE companyid='$companyid'");
+    $query = mysqli_query($connection, "INSERT INTO companies VALUES ('$companyid','$name', '$oname', '$add1', '$add2', '$city', $pin, '$state', '$country', '$source', '$remarks', '$type', '$branch', '$email', '$bphone', '$mobile', '$phone2', '$fax', '$url', '$segment', '$experience')");
 }
 
 ?>
@@ -68,6 +69,51 @@ if(isset($_POST['editsubmit'])){
     <!-- Custom styles for this template -->
     <link href="css/style1.css" rel="stylesheet">
     <link href="css/style-responsive.css" rel="stylesheet" />
+    <script type="text/javascript">
+        function populateForm(id) {
+            var Company = document.getElementById("row"+id).cells[0].innerHTML;
+            var Owner = document.getElementById("row"+id).cells[1].innerHTML;
+            var Email = document.getElementById("row"+id).cells[2].innerHTML;
+            var Phone = document.getElementById("row"+id).cells[3].innerHTML;
+            var Mobile = document.getElementById("row"+id).cells[4].innerHTML;
+            var City = document.getElementById("row"+id).cells[5].innerHTML;
+            var Type = document.getElementById("row"+id).cells[6].innerHTML;
+            var Branch = document.getElementById("row"+id).cells[7].innerHTML;
+            var Source = document.getElementById("row"+id).cells[8].innerHTML;
+            var Segment = document.getElementById("row"+id).cells[9].innerHTML;
+            var add1 = document.getElementById("row"+id).cells[10].innerHTML;
+            var add2 = document.getElementById("row"+id).cells[11].innerHTML;
+            var pcode = document.getElementById("row"+id).cells[12].innerHTML;
+            var state = document.getElementById("row"+id).cells[13].innerHTML;
+            var country = document.getElementById("row"+id).cells[14].innerHTML;
+            var remarks = document.getElementById("row"+id).cells[15].innerHTML;
+            var phone2 = document.getElementById("row"+id).cells[16].innerHTML;
+            var fax = document.getElementById("row"+id).cells[17].innerHTML;
+            var website = document.getElementById("row"+id).cells[18].innerHTML;
+            var experience = document.getElementById("row"+id).cells[19].innerHTML;
+            document.getElementById("companyid").value = id;
+            document.getElementById("cname").value = Company;
+            document.getElementById("coname").value = Owner;
+            document.getElementById("cemail").value = Email;
+            document.getElementById("cbphone").value = Phone;
+            document.getElementById("cmobile").value = Mobile;
+            document.getElementById("ccity").value = City;
+            document.getElementById("ctype").value = Type;
+            document.getElementById("cbranch").value = Branch;
+            document.getElementById("csource").value = Source;
+            document.getElementById("csegment").value = Segment;
+            document.getElementById("cadd1").value = add1;
+            document.getElementById("cadd2").value = add2;
+            document.getElementById("cpin").value = pcode;
+            document.getElementById("cstate").value = state;
+            document.getElementById("ccountry").value = country;
+            document.getElementById("cremarks").value = remarks;
+            document.getElementById("cphone2").value = phone2;
+            document.getElementById("cfax").value = fax;
+            document.getElementById("curl   ").value = website;
+            document.getElementById("cexperience").value = experience;
+        } 
+    </script>
 </head>
 <body>
 <section id="container">
@@ -225,6 +271,16 @@ if(isset($_POST['editsubmit'])){
                         <th>Branch</th>
                         <th>Source</th>
                         <th>Segment</th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </tr>
@@ -237,7 +293,7 @@ if(isset($_POST['editsubmit'])){
 							$result = mysqli_fetch_array($query);
 					?>
 					
-                    <tr class="gradeX">
+                    <tr id="<?php echo "row".$result[0] ; ?>" class="gradeX">
                         <td><?php echo $result[1] ; ?></td>
                         <td><?php echo $result[2] ; ?></td>
                         <td><?php echo $result[13] ; ?></td>
@@ -248,7 +304,17 @@ if(isset($_POST['editsubmit'])){
                         <td><?php echo $result[12] ; ?></td>
                         <td><?php echo $result[9] ; ?></td>
                         <td><?php echo $result[19] ; ?></td>
-                        <td><a class="edit" href="#myModal-1" data-toggle="modal">Edit</a></td>
+                        <td hidden><?php echo $result[3] ; ?></td>
+                        <td hidden><?php echo $result[4] ; ?></td>
+                        <td hidden><?php echo $result[6] ; ?></td>
+                        <td hidden><?php echo $result[7] ; ?></td>
+                        <td hidden><?php echo $result[8] ; ?></td>
+                        <td hidden><?php echo $result[10] ; ?></td>
+                        <td hidden><?php echo $result[16] ; ?></td>
+                        <td hidden><?php echo $result[17] ; ?></td>
+                        <td hidden><?php echo $result[18] ; ?></td>
+                        <td hidden><?php echo $result[20] ; ?></td>
+                        <td><a class="edit" id="<?php echo $result[0] ; ?>" href="#myModal-1" data-toggle="modal" onclick="populateForm(this.id)">Edit</a></td>
                         <td><a class="delete" href="companies.php?cid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Company?')">Delete</a></td>
                     </tr>
 					
@@ -266,6 +332,16 @@ if(isset($_POST['editsubmit'])){
                         <th>Branch</th>
                         <th>Source</th>
                         <th>Segment</th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </tr>
@@ -412,7 +488,9 @@ if(isset($_POST['editsubmit'])){
                                             <textarea class="form-control " id="cexperience" name="experience"></textarea>
                                         </div>
                                     </div>
-
+                                    <div class="col-lg-3">
+                                            <input class="form-control" id="companyid" type="hidden" name="companyid" />
+                                    </div>
                                     <div class="form-group">
                                         <div class="col-lg-offset-3 col-lg-6">
                                             <button class="btn btn-primary" name="editsubmit" type="submit">Save</button>

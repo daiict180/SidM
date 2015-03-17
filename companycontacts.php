@@ -15,6 +15,7 @@ if(isset($_GET['cid'])){
 <?php
 
 if(isset($_POST['editsubmit'])){
+    $id = intval($_POST['contactid']);
     $cname = mysql_prep($_POST['company'],$connection);
     $contact = mysql_prep($_POST['contact'],$connection);
     $designation = mysql_prep($_POST['designation'],$connection);
@@ -23,7 +24,8 @@ if(isset($_POST['editsubmit'])){
     $mobile = mysql_prep($_POST['mobile'],$connection);
     $email = mysql_prep($_POST['email'],$connection);
     
-    $query = mysqli_query($connection, "INSERT INTO companycontacts VALUES ('','$cname', '$contact', '$designation', '$bphone', '$pphone', '$mobile', '$email')");  
+    $prequery = mysqli_query($connection, "DELETE FROM companycontacts WHERE contactid='$id'");
+    $query = mysqli_query($connection, "INSERT INTO companycontacts VALUES ('$id','$cname', '$contact', '$designation', '$bphone', '$pphone', '$mobile', '$email')");  
 }
 
 ?>
@@ -55,6 +57,23 @@ if(isset($_POST['editsubmit'])){
     <!-- Custom styles for this template -->
     <link href="css/style1.css" rel="stylesheet">
     <link href="css/style-responsive.css" rel="stylesheet" />
+    <script type="text/javascript">
+        function populateForm(id) {
+            var values = [];
+            for(var i = 0; i < 7; i++) {
+                values[i] = document.getElementById("row"+id).cells[i].innerHTML;  
+            }
+            document.getElementById("contactCompany").value = values[0];
+            document.getElementById("contactName").value = values[1];
+            document.getElementById("cdesig").value = values[2];
+            document.getElementById("bphone").value = values[3];
+            document.getElementById("pphone").value = values[4];
+            document.getElementById("mobile").value = values[5];
+            document.getElementById("ccemail").value = values[6];
+            document.getElementById("contactid").value = id;
+
+        } 
+    </script>
 </head>
 <body>
 <section id="container">
@@ -221,7 +240,7 @@ if(isset($_POST['editsubmit'])){
 						for($i=0 ; $i<$rows ; $i++){
 							$result = mysqli_fetch_array($query);
 					?>
-                    <tr class="gradeX">
+                    <tr class="gradeX" id="<?php echo 'row'.$result[0]; ?>">
                         <td><?php echo $result[1]; ?></td>
                         <td><?php echo $result[2]; ?></td>
                         <td><?php echo $result[3]; ?></td>
@@ -229,7 +248,7 @@ if(isset($_POST['editsubmit'])){
                         <td><?php echo $result[5]; ?></td>
                         <td><?php echo $result[6]; ?></td>
                         <td><?php echo $result[7]; ?></td>
-                        <td><a class="edit" href="#myModal-1" data-toggle="modal">Edit</a></td>
+                        <td><a class="edit" href="#myModal-1" data-toggle="modal" id="<?php echo $result[0]; ?>" onclick="populateForm(this.id)">Edit</a></td>
                         <td><a class="delete" href="companycontacts.php?cid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Contact?')">Delete</a></td>
                     </tr>
 					<?php } ?>
@@ -308,11 +327,13 @@ if(isset($_POST['editsubmit'])){
                                         <div class="col-lg-6">
                                             <input class="form-control " id="ccemail" type="email" name="email" />
                                         </div>
+                                        <div class="col-lg-3">
+                                            <input class="form-control" id="contactid" type="hidden" name="contactid" />
+                                        </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-lg-offset-3 col-lg-6">
                                             <button class="btn btn-primary" name="editsubmit" type="submit">Save</button>
-                                            <button class="btn btn-default" type="button">Cancel</button>
                                         </div>
                                     </div>
                                         </form>
