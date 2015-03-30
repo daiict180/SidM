@@ -90,6 +90,46 @@ if(isset($_POST['editsubmit'])){
             document.getElementById("followup").value = values[8];
             document.getElementById("lead").value = values[10];
             document.getElementById("callid").value = id;
+
+
+            }
+        function searchRows(tblId) {
+            var tbl = document.getElementById(tblId);
+            var headRow = tbl.rows[1];
+            var arrayOfHTxt = new Array();
+            var arrayOfHtxtCellIndex = new Array();
+
+            for (var v = 0; v < headRow.cells.length-2; v++) {
+             if (headRow.cells[v].getElementsByTagName('input')[0]) {
+             var Htxtbox = headRow.cells[v].getElementsByTagName('input')[0];
+              if (Htxtbox.value.replace(/^\s+|\s+$/g, '') != '') {
+                arrayOfHTxt.push(Htxtbox.value.replace(/^\s+|\s+$/g, ''));
+                arrayOfHtxtCellIndex.push(v);
+              }
+             }
+            }
+
+            for (var i = 2; i < tbl.rows.length; i++) {
+             
+                tbl.rows[i].style.display = 'table-row';
+             
+                for (var v = 0; v < arrayOfHTxt.length; v++) {
+             
+                    var CurCell = tbl.rows[i].cells[arrayOfHtxtCellIndex[v]];
+             
+                    var CurCont = CurCell.innerHTML.replace(/<[^>]+>/g, "");
+             
+                    var reg = new RegExp(arrayOfHTxt[v] + ".*", "i");
+             
+                    if (CurCont.match(reg) == null) {
+             
+                        tbl.rows[i].style.display = 'none';
+             
+                    }
+             
+                }
+             
+            }
         } 
     </script>
     <script>
@@ -275,6 +315,22 @@ if(isset($_POST['editsubmit'])){
                         <th hidden></th> 
                         <th>Follow Up/Edit</th>
                         <th>Delete</th>
+                    </tr>
+                    </thead>
+                    <thead>
+                        <tr class="gradeX">
+                        <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
+                        <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
+                        <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
+                        <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
+                        <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
+                        <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
+                        <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
+                        <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
+                        <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
+                        <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
+                        <td></td>
+                        <td></td>
                     </tr>
                     </thead>
                     <tbody>
