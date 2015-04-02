@@ -19,7 +19,7 @@ if(isset($_POST['submit'])){
 		$username = mysql_prep($username, $connection);
 		$password = md5(mysql_prep($password, $connection));
 		
-		$query = mysqli_query($connection,"SELECT * from users where Password='$password' AND Email='$username'");
+		$query = mysqli_query($connection,"SELECT * from users where password='$password' AND email='$username'");
 		if($query == FALSE){
 			$error = "Username or Password is invalid";
 			echo mysqli_error($connection);
@@ -32,8 +32,9 @@ if(isset($_POST['submit'])){
 				$error = "Username or Password is invalid";	
 			} else {
 				session_start();
-				$_SESSION['user'] = $username; // Initializing Session
-				$_SESSION['role'] = getdesignationbyid($username, $connection);
+				$result = mysqli_fetch_array($query);
+				$_SESSION['user'] = $result['userid']; // Initializing Session
+				$_SESSION['role'] = getdesignationbyid($result['userid'], $connection);
 				
 				$usr = md5($username);
 				if(isset($_SESSION['user']))

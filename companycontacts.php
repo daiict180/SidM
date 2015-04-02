@@ -60,10 +60,10 @@ if(isset($_POST['editsubmit'])){
     <script type="text/javascript">
         function populateForm(id) {
             var values = [];
-            for(var i = 0; i < 7; i++) {
+            for(var i = 0; i < 8; i++) {
                 values[i] = document.getElementById("row"+id).cells[i].innerHTML;  
             }
-            document.getElementById("contactCompany").value = values[0];
+            document.getElementById("contactCompany").value = values[7];
             document.getElementById("contactName").value = values[1];
             document.getElementById("cdesig").value = values[2];
             document.getElementById("bphone").value = values[3];
@@ -267,6 +267,7 @@ if(isset($_POST['editsubmit'])){
                         <th>Personal Phone</th>
                         <th>Mobile</th>
                         <th>Email</th>
+                        <th hidden></th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </tr>
@@ -290,15 +291,18 @@ if(isset($_POST['editsubmit'])){
 						$rows = mysqli_num_rows($query);
 						for($i=0 ; $i<$rows ; $i++){
 							$result = mysqli_fetch_array($query);
+                            $q2 = mysqli_query($connection, "SELECT companyname FROM companies WHERE companyid='$result[1]'");
+                            $r2 = mysqli_fetch_array($q2);
 					?>
                     <tr class="gradeX" id="<?php echo 'row'.$result[0]; ?>">
-                        <td><?php echo $result[1]; ?></td>
+                        <td><?php echo $r2[0]; ?></td>
                         <td><?php echo $result[2]; ?></td>
                         <td><?php echo $result[3]; ?></td>
                         <td><?php echo $result[4]; ?></td>
                         <td><?php echo $result[5]; ?></td>
                         <td><?php echo $result[6]; ?></td>
                         <td><?php echo $result[7]; ?></td>
+                        <td hidden><?php echo $result[1]; ?></td>
                         <td><a class="edit" href="#myModal-1" data-toggle="modal" id="<?php echo $result[0]; ?>" onclick="populateForm(this.id)">Edit</a></td>
                         <td><a class="delete" href="companycontacts.php?cid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Contact?')">Delete</a></td>
                     </tr>
@@ -313,6 +317,7 @@ if(isset($_POST['editsubmit'])){
                         <th>Personal Phone</th>
                         <th>Mobile</th>
                         <th>Email</th>
+                        <th hidden></th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </tr>
@@ -333,12 +338,12 @@ if(isset($_POST['editsubmit'])){
                                         <div class="col-lg-6">
                                             <select class="form-control" name="company"  id="contactCompany" required>
                                                 <?php
-                                                    $query = mysqli_query($connection, "SELECT companyname FROM companies");
+                                                    $query = mysqli_query($connection, "SELECT * FROM companies");
                                                     $rows = mysqli_num_rows($query);
                                                     for($i = 0; $i < $rows ; $i++){
                                                         $result = mysqli_fetch_array($query);
                                                 ?>
-                                                    <option value="<?php echo $result[0] ; ?>"> <?php echo $result[0] ; ?></option>
+                                                    <option value="<?php echo $result[0] ; ?>"> <?php echo $result[1] ; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </div>

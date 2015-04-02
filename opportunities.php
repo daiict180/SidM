@@ -82,13 +82,13 @@ if(isset($_POST['editsubmit'])){
     <script type="text/javascript">
         function populateForm(id) {
             var values = [];
-            for(var i = 0; i < 15; i++) {
+            for(var i = 0; i < 16; i++) {
                 values[i] = document.getElementById("row"+id).cells[i].innerHTML; 
             }
 
             document.getElementById("oppid").value = id;
             document.getElementById("oppName").value = values[0];
-            document.getElementById("contactCompany").value = values[1];
+            document.getElementById("contactCompany").value = values[15];
             document.getElementById("crdate").value = values[3];
             document.getElementById("assignedto").value = values[14];
             document.getElementById("status").value = values[5];
@@ -345,7 +345,7 @@ if(isset($_POST['editsubmit'])){
                                                 <label for="machineNos">Number of machines</label>
                                                 <input type="number" class="form-control" id="machineNos" name="mnumber" placeholder="Enter the number of machines">
                                             </div>
-                                            <button type="submit" name="editsubmit" class="btn btn-default">Submit</button>
+                                            <button type="submit" class="btn btn-default">Submit</button>
                                         </form>
                                     </div>
                                 </div>
@@ -369,33 +369,36 @@ if(isset($_POST['editsubmit'])){
                         <th hidden></th>
                         <th hidden></th>
                         <th hidden></th>
+                        <th hidden></th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </tr>
                     </thead>
                     <thead>
-+                    <tr class="gradeX">
-+                        <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
-+                        <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
-+                        <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
-+                        <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
-+                        <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
-+                        <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
-+                        <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
-+                        <td></td>
-+                        <td></td>
-+                    </tr>
-+                    </thead>
+                    <tr class="gradeX">
+                        <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
+                        <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
+                        <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
+                        <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
+                        <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
+                        <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
+                        <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    </thead>
                     <tbody>
 					<?php
 						$query = mysqli_query($connection, "SELECT * FROM opportunities");
 						$rows = mysqli_num_rows($query);
 						for($i=0 ; $i<$rows ; $i++){
 							$result = mysqli_fetch_array($query);
+                            $q2 = mysqli_query($connection, "SELECT companyname FROM companies WHERE companyid='$result[2]'");
+                            $r2 = mysqli_fetch_array($q2);
 					?>
                     <tr class="gradeX" id="<?php echo 'row'.$result[0]; ?>">
                         <td><?php echo $result[1]; ?></td>
-                        <td><?php echo $result[2]; ?></td>
+                        <td><?php echo $r2[0]; ?></td>
                         <td><?php echo $result[4]; ?></td>
                         <td><?php echo $result[5]; ?></td>
                         <td><?php echo getnamebyid($result[7], $connection); ?></td>
@@ -409,6 +412,7 @@ if(isset($_POST['editsubmit'])){
                         <td hidden><?php echo $result[12]; ?></td>
                         <td hidden><?php echo $result[14]; ?></td>
                         <td hidden><?php echo $result[7]; ?></td>
+                        <td hidden><?php echo $result[2]; ?></td>
                         <td><a class="edit" href="#myModal-1" data-toggle="modal" id = "<?php echo $result[0]; ?>" onclick="populateForm(this.id)">Edit</a></td>
                         <td><a class="delete" href="opportunities.php?oid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Opportunity?')">Delete</a></td>
                     </tr>
@@ -423,6 +427,7 @@ if(isset($_POST['editsubmit'])){
                         <th>Assigned To</th>
                         <th>Status</th>
                         <th>Closing Date</th>
+                        <th hidden></th>
                         <th hidden></th>
                         <th hidden></th>
                         <th hidden></th>
@@ -457,14 +462,14 @@ if(isset($_POST['editsubmit'])){
                                         <div class="col-lg-6">
                                             <select class="form-control" id="contactCompany" onchange="show(this.value)" name="company" required>
                                                 <?php
-                                                    $query = mysqli_query($connection, "SELECT companyname FROM companies");
+                                                    $query = mysqli_query($connection, "SELECT * FROM companies");
                                                     $rows = mysqli_num_rows($query);
                                                     for($i = 0; $i < $rows ; $i++){
                                                         $result = mysqli_fetch_array($query);
                                                         if($i == 0)
                                                             $req_company = $result[0];
                                                 ?>
-                                                    <option value="<?php echo $result[0] ; ?>"> <?php echo $result[0] ; ?></option>
+                                                    <option value="<?php echo $result[0] ; ?>"> <?php echo $result[1] ; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </div>
@@ -501,7 +506,7 @@ if(isset($_POST['editsubmit'])){
                                                     for($i = 0; $i < $rows ; $i++){
                                                         $result = mysqli_fetch_array($query);
                                                 ?>
-                                                    <option value="<?php echo $result['email'] ; ?>"> <?php echo $result['fullname'] ; ?></option>
+                                                    <option value="<?php echo $result['userid'] ; ?>"> <?php echo $result['fullname'] ; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </div>
@@ -516,7 +521,7 @@ if(isset($_POST['editsubmit'])){
                                                     for($i = 0; $i < $rows ; $i++){
                                                         $result = mysqli_fetch_array($query);
                                                 ?>
-                                                    <option value="<?php echo $result['email'] ; ?>"> <?php echo $result['fullname'] ; ?></option>
+                                                    <option value="<?php echo $result['userid'] ; ?>"> <?php echo $result['fullname'] ; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </div>

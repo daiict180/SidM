@@ -22,9 +22,13 @@ if(isset($_POST['editsubmit'])){
     $source = mysql_prep($_POST['source'], $connection);
     $mremarks = mysql_prep($_POST['mremarks'], $connection);
     $leadid = intval($_POST['leadid']);
+    
+    $pquery = mysqli_query($connection, "SELECT createdby FROM leads WHERE leadid='$leadid'");
+    $result = $mysqli_fetch_array($pquery);
+    $by = $result[0];
 
     $prequery = mysqli_query($connection, "DELETE FROM leads WHERE leadid='$leadid'");
-    $query = mysqli_query($connection, "INSERT INTO leads VALUES ('$leadid','$company', '$user', '$status', '$branch', '$source', '$mremarks', now())");
+    $query = mysqli_query($connection, "INSERT INTO leads VALUES ('$leadid','$company', '$user', '$status', '$branch', '$source', '$mremarks', now()), '$by'");
 }
 
 ?>
@@ -60,10 +64,10 @@ if(isset($_POST['editsubmit'])){
     <script type="text/javascript">
         function populateForm(id) {
             var values = [];
-            for(var i = 0; i < 8; i++) {
+            for(var i = 0; i < 9; i++) {
                 values[i] = document.getElementById("row"+id).cells[i].innerHTML; 
             }
-            document.getElementById("contactCompany").value = values[0];
+            document.getElementById("contactCompany").value = values[8];
             document.getElementById("status").value = values[1];
             document.getElementById("assignedto").value = values[7];
             document.getElementById("branch").value = values[4];
@@ -266,6 +270,7 @@ if(isset($_POST['editsubmit'])){
                         <th>Source</th>
                         <th hidden></th>
                         <th hidden></th>
+                        <th hidden></th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </tr>
@@ -288,9 +293,11 @@ if(isset($_POST['editsubmit'])){
 						$rows = mysqli_num_rows($query);
 						for($i=0 ; $i<$rows ; $i++){
 							$result = mysqli_fetch_array($query);
+                            $q2 = mysqli_query($connection, "SELECT companyname FROM companies WHERE companyid='$result[1]'");
+                            $r2 = mysqli_fetch_array($q2);
 					?>
                     <tr id="<?php echo "row".$result[0] ; ?>" class="gradeX">
-                        <td><?php echo $result[1]; ?></td>
+                        <td><?php echo $r2[0]; ?></td>
                         <td><?php echo $result[3]; ?></td>
                         <td><?php echo $result[7]; ?></td>
                         <td><?php echo getnamebyid($result[2], $connection); ?></td>
@@ -298,6 +305,7 @@ if(isset($_POST['editsubmit'])){
                         <td><?php echo $result[5]; ?></td>
                         <td hidden><?php echo $result[6]; ?></td>
                         <td hidden><?php echo $result[2]; ?></td>
+                        <td hidden><?php echo $result[1]; ?></td>
                         <td><a class="edit" href="#myModal-1" data-toggle="modal"  id = "<?php echo $result[0]; ?>" onclick="populateForm(this.id)">Edit</a></td>
                         <td><a class="delete" href="leads.php?lid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Lead?')">Delete</a></td>
                     </tr>
@@ -311,6 +319,7 @@ if(isset($_POST['editsubmit'])){
                         <th>Assigned To</th>
                         <th>Branch</th>
                         <th>Source</th>
+                        <th hidden></th>
                         <th hidden></th>
                         <th hidden></th>
                         <th>Edit</th>
@@ -333,12 +342,12 @@ if(isset($_POST['editsubmit'])){
                                         <div class="col-lg-6">
                                             <select class="form-control" name="company" id="contactCompany" required>
                                                 <?php
-                                                    $query = mysqli_query($connection, "SELECT companyname FROM companies");
+                                                    $query = mysqli_query($connection, "SELECT * FROM companies");
                                                     $rows = mysqli_num_rows($query);
                                                     for($i = 0; $i < $rows ; $i++){
                                                         $result = mysqli_fetch_array($query);
                                                 ?>
-                                                    <option value="<?php echo $result[0] ; ?>"> <?php echo $result[0] ; ?></option>
+                                                    <option value="<?php echo $result[0] ; ?>"> <?php echo $result[1] ; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </div>
@@ -353,7 +362,7 @@ if(isset($_POST['editsubmit'])){
                                                     for($i = 0; $i < $rows ; $i++){
                                                         $result = mysqli_fetch_array($query);
                                                 ?>
-                                                    <option value="<?php echo $result['email'] ; ?>"> <?php echo $result['fullname'] ; ?></option>
+                                                    <option value="<?php echo $result['userid'] ; ?>"> <?php echo $result['fullname'] ; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </div>

@@ -188,7 +188,7 @@ if(isset($_POST['editsubmit'])){
 <section id="main-content">
         <section class="wrapper">
             <!-- page start-->
-            <?php if($_SESSION['role']=='ADM'||$_SESSION['role']=='COH'){ ?>
+            <?php if($_SESSION['role'] == 'ADM' || $_SESSION['role'] == 'COH'){ ?>
             <div class="row">
                 <div class="col-lg-12">
                     <section class="panel">

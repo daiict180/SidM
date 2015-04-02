@@ -251,7 +251,7 @@ if(isset($_POST['submit'])){
 													for($i = 0; $i < $rows ; $i++){
 														$result = mysqli_fetch_array($query);
 												?>
-                                                	<option value="<?php echo $result['email'] ; ?>"> <?php echo $result['fullname'] ; ?></option>
+                                                	<option value="<?php echo $result['userid'] ; ?>"> <?php echo $result['fullname'] ; ?></option>
 												<?php } ?>
                                             </select>
                                         </div>
@@ -271,14 +271,14 @@ if(isset($_POST['submit'])){
                                         <div class="col-lg-6">
                                             <select class="form-control" id="contactCompany" name="company" onchange="show(this.value)" required>
 												<?php
-													$query = mysqli_query($connection, "SELECT companyname FROM companies");
+													$query = mysqli_query($connection, "SELECT * FROM companies");
 													$rows = mysqli_num_rows($query);
 													for($i = 0; $i < $rows ; $i++){
 														$result = mysqli_fetch_array($query);
                                                         if($i == 0)
                                                             $req_company = $result[0];
 												?>
-                                                	<option value="<?php echo $result[0] ; ?>"> <?php echo $result[0] ; ?></option>
+                                                	<option value="<?php echo $result[0] ; ?>"> <?php echo $result[1] ; ?></option>
 												<?php } ?>
                                             </select>
                                         </div>

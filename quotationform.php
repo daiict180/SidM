@@ -188,11 +188,11 @@ else{
                         </header>
                         <div class="panel-body">
                             <div class=" form">
-                                <form class="cmxform form-horizontal" target="_blank" id="commentForm" method="get" action="quotation_print.php">
+                                <form class="cmxform form-horizontal" target="_blank" id="commentForm" method="post" action="quotation_print.php">
                                     <div class="form-group ">
                                         <label for="qCompany" class="control-label col-lg-3">Company</label>
                                         <div class="col-lg-6">
-                                            <input class="form-control " id="qCompany" type="text" name="qcompany" readonly="readonly" value=<?php echo $result[0]; ?> placeholder=<?php echo $result[0]; ?>>
+                                            <input class="form-control " id="qcompany" type="text" name="qcompany" readonly="readonly" value=<?php echo $result[0]; ?> placeholder=<?php echo $result[0]; ?>>
                                         </div>
                                     </div>
                                     <div class="form-group ">
@@ -252,7 +252,7 @@ else{
                                     <div class="form-group">
                                         <div class="col-lg-offset-3 col-lg-6">
 											
-                                            <button class="btn btn-primary" type="submit"><i class="fa fa-download"></i> Download PDF</button>
+                                            <button class="btn btn-primary" name="submit" type="submit"><i class="fa fa-download"></i> Download PDF</button>
                                             <button class="btn btn-default" type="button">Cancel</button>
                                         </div>
                                     </div>

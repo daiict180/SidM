@@ -71,7 +71,7 @@ if(isset($_POST['editsubmit'])){
     <link href="css/style-responsive.css" rel="stylesheet" />
     <script type="text/javascript">
         function populateForm(id) {
-            var Company = document.getElementById("row"+id).cells[0].innerHTML;
+            var Company = document.getElementById("row"+id).cells[20].innerHTML;
             var Owner = document.getElementById("row"+id).cells[1].innerHTML;
             var Email = document.getElementById("row"+id).cells[2].innerHTML;
             var Phone = document.getElementById("row"+id).cells[3].innerHTML;
@@ -320,6 +320,7 @@ if(isset($_POST['editsubmit'])){
                         <th hidden></th>
                         <th hidden></th>
                         <th hidden></th>
+                        <th hidden></th>
                         <th>Edit</th>
                         <th>Delete</th>
                         </tr>
@@ -347,7 +348,7 @@ if(isset($_POST['editsubmit'])){
                             $result = mysqli_fetch_array($query);
                     ?>
                     <tr id="<?php echo "row".$result[0] ; ?>" class="gradeX">
-                        <td><?php echo $result[1] ; ?></td>
+                        <td><a href='companydetails.php?company=<?php echo $result[0]; ?>'><?php echo $result[1] ; ?></a></td>
                         <td><?php echo $result[2] ; ?></td>
                         <td><?php echo $result[13] ; ?></td>
                         <td><?php echo $result[14] ; ?></td>
@@ -367,6 +368,7 @@ if(isset($_POST['editsubmit'])){
                         <td hidden><?php echo $result[17] ; ?></td>
                         <td hidden><?php echo $result[18] ; ?></td>
                         <td hidden><?php echo $result[20] ; ?></td>
+                        <td hidden><?php echo $result[1] ; ?></td>
                         <td><a class="edit" id="<?php echo $result[0] ; ?>" href="#myModal-1" data-toggle="modal" onclick="populateForm(this.id)">Edit</a></td>
                         <td><a class="delete" href="companies.php?cid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Company?')">Delete</a></td>
                     </tr>
@@ -385,6 +387,7 @@ if(isset($_POST['editsubmit'])){
                         <th>Branch</th>
                         <th>Source</th>
                         <th>Segment</th>
+                        <th hidden></th>
                         <th hidden></th>
                         <th hidden></th>
                         <th hidden></th>

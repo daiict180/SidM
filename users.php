@@ -290,7 +290,6 @@ if(isset($_POST['editsubmit']) && ($_SESSION['role']=='ADM'||$_SESSION['role']==
                         <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
                         <td></td>
                         <td></td>
-                        <td></td>
                     </tr>
                     </thead>
                     <tbody>

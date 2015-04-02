@@ -5,16 +5,20 @@
 <?php include("includes/checksession.php"); ?>
 
 <?php
-if(isset($_GET['qcompany']) && $_GET['mnumber']){
-	$mnumber = $_GET['mnumber'];
-	$company = $_GET['qcompany'];
-	$date = $_GET['date'];
-	$tax = $_GET['tax'];
-	$dis = $_GET['discount'];
+if(!isset($_POST['submit'])){
+    redirect_to("opportunities.php");
+}
+
+if(isset($_POST['qcompany']) && $_POST['mnumber']){
+	$mnumber = $_POST['mnumber'];
+	$company = $_POST['qcompany'];
+	$date = $_POST['date'];
+	$tax = $_POST['tax'];
+	$dis = $_POST['discount'];
 	for($i=1 ; $i<=$mnumber ; $i++){
-		${'machine' . $i} = $_GET['machine'.$i];
-		${'quantity' . $i} = $_GET['quantity'.$i];
-		${'price' . $i} = $_GET['price'.$i];
+		${'machine' . $i} = $_POST['machine'.$i];
+		${'quantity' . $i} = $_POST['quantity'.$i];
+		${'price' . $i} = $_POST['price'.$i];
 	}
 }
 

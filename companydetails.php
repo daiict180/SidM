@@ -1,3 +1,15 @@
+<?php session_start(); ?>
+<?php require_once("includes/connection.php"); ?>
+<?php require_once("includes/functions.php"); ?>
+<?php require_once("includes/constants.php"); ?>
+<?php include("includes/checksession.php"); ?>
+
+<?php
+if(isset($_GET['company'])){
+  $companyid = $_GET['company'];
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,6 +30,18 @@
     <link href="css/table-responsive.css" rel="stylesheet" />
     <link href="css/style1.css" rel="stylesheet">
     <link href="css/style-responsive.css" rel="stylesheet"/>
+    <style type="text/css">
+      .wrapword{
+        white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+        white-space: -webkit-pre-wrap; /*Chrome & Safari */ 
+        white-space: -pre-wrap;      /* Opera 4-6 */
+        white-space: -o-pre-wrap;    /* Opera 7 */
+        white-space: pre-wrap;       /* css-3 */
+        word-wrap: break-word;       /* Internet Explorer 5.5+ */
+        word-break: break-all;
+        white-space: normal;
+      }
+    </style>
 </head>
 <body>
     <section id="container">
@@ -44,13 +68,13 @@
                     <li class="dropdown">
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <img alt="" src="images/avatar1_small.jpg">
-                            <span class="username">John Doe</span>
+                            <span class="username"><?php echo getnamebyid($_SESSION['user'], $connection) ?></span>
                             <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu extended logout">
                             <li><a href="#"><i class="fa fa-suitcase"></i>Profile</a></li>
                             <li><a href="#"><i class="fa fa-cog"></i>Settings</a></li>
-                            <li><a href="login.html"><i class="fa fa-key"></i>Log Out</a></li>
+                            <li><a href="logout.php"><i class="fa fa-key"></i>Log Out</a></li>
                         </ul>
                     </li>
                     <!-- user login dropdown end -->
@@ -64,89 +88,93 @@
             <div id="sidebar" class="nav-collapse">
                 <!-- sidebar menu start-->
                 <div class="leftside-navigation">
-                    <ul class="sidebar-menu" id="nav-accordion">
-                        <li>
-                            <a class="active" href="index.html">
-                                <i class="fa fa-dashboard"></i>
-                                <span>Dashboard</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="index.html">
-                                <i class="fa fa-university"></i>
-                                <span>Companies</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="index.html">
-                                <i class="fa fa-info"></i>
-                                <span>Company Contacts</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="index.html">
-                                <i class="fa fa-cog"></i>
-                                <span>Setup Information</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="index.html">
-                                <i class="fa fa-magnet"></i>
-                                <span>Leads</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="index.html">
-                                <i class="fa fa-level-up"></i>
-                                <span>Opportunities</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="index.html">
-                                <i class="fa fa-mobile"></i>
-                                <span>Calls</span>
-                            </a>
-                        </li>
-                        <li class="sub-menu">
-                            <a href="javascript:;">
-                                <i class="fa fa-bar-chart"></i>
-                                <span>Reports</span>
-                            </a>
-                            <ul class="sub">
-                                <li><a href="general.html">Monthly Sales</a></li>
-                                <li><a href="buttons.html">Open Opportunities</a></li>
-                                <li><a href="widget.html">Upcoming calls</a></li>
-                            </ul>
-                        </li>
-                        <li class="sub-menu">
-                            <a href="javascript:;">
-                                <i class="fa fa-user"></i>
-                                <span>Masters</span>
-                            </a>
-                            <ul class="sub">
-                                <li><a href="basic_table.html">Machines</a></li>
-                                <li><a href="responsive_table.html">Users</a></li>
-                                <li><a href="dynamic_table.html">Segments</a></li>
-                                <li><a href="editable_table.html">Branches</a></li>
-                                <li><a href="editable_table.html">Sources</a></li>
-                                <li><a href="editable_table.html">Call Modes</a></li>
-                            </ul>
-                        </li>
-                        <li class="sub-menu">
-                            <a href="javascript:;">
-                                <i class="fa fa-th"></i>
-                                <span>Utilities</span>
-                            </a>
-                            <ul class="sub">
-                                <li><a href="basic_table.html">Group Email/Labels</a></li>
-                            </ul>
-                        </li>
-                    </ul>            
-                </div>
+            <ul class="sidebar-menu" id="nav-accordion">
+                <li>
+                    <a href="dashboard.php">
+                        <i class="fa fa-dashboard"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="active" href="companies.php">
+                        <i class="fa fa-university"></i>
+                        <span>Companies</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="companycontacts.php">
+                        <i class="fa fa-info"></i>
+                        <span>Company Contacts</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="setupinfo.php">
+                        <i class="fa fa-cog"></i>
+                        <span>Setup Information</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="leads.php">
+                        <i class="fa fa-magnet"></i>
+                        <span>Leads</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="opportunities.php">
+                        <i class="fa fa-level-up"></i>
+                        <span>Opportunities</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="calls.php">
+                        <i class="fa fa-mobile"></i>
+                        <span>Calls</span>
+                    </a>
+                </li>
+                <li class="sub-menu">
+                    <a href="javascript:;">
+                        <i class="fa fa-bar-chart"></i>
+                        <span>Reports</span>
+                    </a>
+                    <ul class="sub">
+                        <li><a href="general.html">Monthly Sales</a></li>
+                        <li><a href="buttons.html">Open Opportunities</a></li>
+                        <li><a href="widget.html">Upcoming calls</a></li>
+                    </ul>
+                </li>
+                <li class="sub-menu">
+                    <a href="javascript:;">
+                        <i class="fa fa-user"></i>
+                        <span>Masters</span>
+                    </a>
+                    <ul class="sub">
+                        <li><a href="machines.php">Machines</a></li>
+                        <li><a href="users.php">Users</a></li>
+                        <li><a href="segments.php">Segments</a></li>
+                        <li><a href="branches.php">Branches</a></li>
+                        <li><a href="sources.php">Sources</a></li>
+                        <li><a href="callmodes.php">Call Modes</a></li>
+                    </ul>
+                </li>
+                <li class="sub-menu">
+                    <a href="javascript:;">
+                        <i class="fa fa-th"></i>
+                        <span>Utilities</span>
+                    </a>
+                    <ul class="sub">
+                        <li><a href="basic_table.html">Group Email/Labels</a></li>
+                    </ul>
+                </li>
+            </ul>            
+        </div>
                 <!-- sidebar menu end-->
             </div>
         </aside>
         <!--sidebar end-->
+        <?php
+          $query = mysqli_query($connection, "SELECT * FROM companies WHERE companyid='$companyid'");
+          $result = mysqli_fetch_array($query);
+        ?>
         <section id="main-content">
             <section class="wrapper">
                 <!-- page start-->
@@ -155,111 +183,111 @@
                     <div class="col-lg-12">
                         <section class="panel">
                             <header class="panel-heading">
-                                <h4><b>Company details</b></h4>
+                                <h4><b><?php echo $result[1]; ?> - Company details</b></h4>
 
                             </header>
                             <div class="panel-body">
                                 <div class=" form">
                                     <form class="cmxform form-horizontal " id="commentForm" method="get" action="#">
                                         <div class="form-group ">
-                                            <label for="cname" class="control-label col-lg-3">Company Name</label>
-                                            <div class="col-lg-3" style="margin-top:7px">
-                                              asdf
-                                          </div>
-                                          <label for="ctype" class="control-label col-lg-3">Type</label>
-                                          <div class="col-lg-3" style="margin-top:7px">
-                                              asdf
+                                            <label for="cname" class="control-label col-lg-3 wrapword">Company Name</label>
+                                            <div class="col-lg-3 wrapword" style="margin-top:7px">
+                                              <?php echo $result[1]; ?>
+                                            </div>
+                                          <label for="ctype" class="control-label col-lg-3 wrapword">Type</label>
+                                          <div class="col-lg-3 wrapword" style="margin-top:7px">
+                                              <?php echo $result[11]; ?>
                                           </div>
                                       </div>
                                       <div class="form-group ">
-                                        <label for="coname" class="control-label col-lg-3">Owner Name</label>
-                                        <div class="col-lg-3" style="margin-top:7px">
-                                          asdf
+                                        <label for="coname" class="control-label col-lg-3 wrapword">Owner Name</label>
+                                        <div class="col-lg-3 wrapword" style="margin-top:7px">
+                                          <?php echo $result[2]; ?>
                                       </div>
-                                      <label for="cbranch" class="control-label col-lg-3">Branch</label>
-                                      <div class="col-lg-3" style="margin-top:7px">
-                                          asdf
+                                      <label for="cbranch" class="control-label col-lg-3 wrapword">Branch</label>
+                                      <div class="col-lg-3 wrapword" style="margin-top:7px">
+                                          <?php echo $result[12]; ?>
                                       </div>
                                   </div>
                                   <div class="form-group ">
-                                    <label for="cadd1" class="control-label col-lg-3">Address1</label>
-                                    <div class="col-lg-3" style="margin-top:7px">
-                                      asdf
+                                    <label for="cadd1" class="control-label col-lg-3 wrapword">Address1</label>
+                                    <div class="col-lg-3 wrapword" style="margin-top:7px">
+                                      <?php echo $result[3]; ?>
                                   </div>
-                                  <label for="cemail" class="control-label col-lg-3">Email-Id</label>
-                                  <div class="col-lg-3" style="margin-top:7px">
-                                      asdf
+                                  <label for="cemail" class="control-label col-lg-3 wrapword">Email-Id</label>
+                                  <div class="col-lg-3 wrapword" style="margin-top:7px">
+                                      <?php echo $result[13]; ?>
                                   </div>
                               </div>
                               <div class="form-group ">
-                                <label for="cadd2" class="control-label col-lg-3">Address2</label>
-                                <div class="col-lg-3" style="margin-top:7px">
-                                  asdf
+                                <label for="cadd2" class="control-label col-lg-3 wrapword">Address2</label>
+                                <div class="col-lg-3 wrapword" style="margin-top:7px">
+                                  <?php echo $result[4]; ?>
                               </div>
-                              <label for="cbphone" class="control-label col-lg-3">Business Phone</label>
-                              <div class="col-lg-3" style="margin-top:7px">
-                                  asdf
+                              <label for="cbphone" class="control-label col-lg-3 wrapword">Business Phone</label>
+                              <div class="col-lg-3 wrapword" style="margin-top:7px">
+                                  <?php echo $result[14]; ?>
                               </div>
                           </div>
                           <div class="form-group ">
-                            <label for="ccity" class="control-label col-lg-3">City</label>
-                            <div class="col-lg-3" style="margin-top:7px">
-                              asdf
+                            <label for="ccity" class="control-label col-lg-3 wrapword">City</label>
+                            <div class="col-lg-3 wrapword" style="margin-top:7px">
+                              <?php echo $result[5]; ?>
                           </div>
-                          <label for="cmobile" class="control-label col-lg-3">Mobile</label>
-                          <div class="col-lg-3" style="margin-top:7px">
-                              asdf
+                          <label for="cmobile" class="control-label col-lg-3 wrapword">Mobile</label>
+                          <div class="col-lg-3 wrapword" style="margin-top:7px">
+                              <?php echo $result[15]; ?>
                           </div>
                       </div>
                       <div class="form-group ">
-                        <label for="cpin" class="control-label col-lg-3">Pincode</label>
-                        <div class="col-lg-3" style="margin-top:7px">
-                          asdf
+                        <label for="cpin" class="control-label col-lg-3 wrapword">Pincode</label>
+                        <div class="col-lg-3 wrapword" style="margin-top:7px">
+                          <?php echo $result[6]; ?>
                       </div>
-                      <label for="cphone2" class="control-label col-lg-3">Phone2</label>
-                      <div class="col-lg-3" style="margin-top:7px">
-                          asdf
+                      <label for="cphone2" class="control-label col-lg-3 wrapword">Phone2</label>
+                      <div class="col-lg-3 wrapword" style="margin-top:7px">
+                          <?php echo $result[16]; ?>
                       </div>
                   </div>
                   <div class="form-group ">
-                    <label for="cstate" class="control-label col-lg-3">State</label>
-                    <div class="col-lg-3" style="margin-top:7px">
-                      asdf
+                    <label for="cstate" class="control-label col-lg-3 wrapword">State</label>
+                    <div class="col-lg-3 wrapword" style="margin-top:7px">
+                      <?php echo $result[7]; ?>
                   </div>
-                  <label for="cfax" class="control-label col-lg-3">Fax</label>
-                  <div class="col-lg-3" style="margin-top:7px">
-                      asdf
+                  <label for="cfax" class="control-label col-lg-3 wrapword">Fax</label>
+                  <div class="col-lg-3 wrapword" style="margin-top:7px">
+                      <?php echo $result[17]; ?>
                   </div>
               </div>
               <div class="form-group ">
-                <label for="ccountry" class="control-label col-lg-3">Country</label>
-                <div class="col-lg-3" style="margin-top:7px">
-                  asdf
+                <label for="ccountry" class="control-label col-lg-3 wrapword">Country</label>
+                <div class="col-lg-3 wrapword" style="margin-top:7px">
+                  <?php echo $result[8]; ?>
               </div>
-              <label for="curl" class="control-label col-lg-3">Website</label>
-              <div class="col-lg-3" style="margin-top:7px">
-                  asdf
+              <label for="curl" class="control-label col-lg-3 wrapword">Website</label>
+              <div class="col-lg-3 wrapword" style="margin-top:7px">
+                  <?php echo $result[18]; ?>
               </div>
           </div>
           <div class="form-group ">
-            <label for="csource" class="control-label col-lg-3">Source</label>
-            <div class="col-lg-3" style="margin-top:7px">
-              asdf
+            <label for="csource" class="control-label col-lg-3 wrapword">Source</label>
+            <div class="col-lg-3 wrapword" style="margin-top:7px">
+              <?php echo $result[9]; ?>
           </div>
-          <label for="csegment" class="control-label col-lg-3">Segment</label>
-          <div class="col-lg-3" style="margin-top:7px">
-              asdf
+          <label for="csegment" class="control-label col-lg-3 wrapword">Segment</label>
+          <div class="col-lg-3 wrapword" style="margin-top:7px">
+              <?php echo $result[19]; ?>
           </div>
       </div>
       <div class="form-group ">
-        <label for="cremarks" class="control-label col-lg-3">Remarks</label>
-        <div class="col-lg-3" style="margin-top:7px">
-          asdf
-      </div>
-      <label for="cexperience" class="control-label col-lg-3">Experience</label>
-      <div class="col-lg-3" style="margin-top:7px">
-          asdf
-      </div>
+        <label for="cremarks" class="col-lg-3 wrapword control-label" style="margin-top:0px">Remarks</label>
+          <div class="col-lg-3 wrapword" style="margin-top:7px">
+             <?php echo $result[10]; ?>
+          </div>
+      <label for="cexperience" class="col-lg-3 wrapword control-label" style="margin-top:0px">Experience</label>
+          <div class="col-lg-3 wrapword" style="margin-top:7px">
+              <?php echo $result[20]; ?>
+          </div>
   </div>
 
 
@@ -309,22 +337,21 @@
                              </tr>
                          </thead>
                          <tbody>
+                         <?php
+                            $query = mysqli_query($connection, "SELECT * FROM companycontacts WHERE company = '$companyid'");
+                            $rows = mysqli_num_rows($query);
+                            for($i=0; $i<$rows ; $i++){
+                              $result = mysqli_fetch_array($query);
+                         ?>
                              <tr>
-                                 <td>AAC</td>
-                                 <td>AUSTRALIAN AGRICULTURAL COMPANY LIMITED.</td>
-                                 <td class="numeric">$1.38</td>
-                                 <td class="numeric">-0.01</td>
-                                 <td class="numeric">-0.36%</td>
-                                 <td class="numeric">$1.39</td>
+                                 <td><?php echo $result[2]; ?></td>
+                                 <td><?php echo $result[3]; ?></td>
+                                 <td class="numeric"><?php echo $result[4]; ?></td>
+                                 <td class="numeric"><?php echo $result[5]; ?></td>
+                                 <td class="numeric"><?php echo $result[6]; ?></td>
+                                 <td class="numeric"><?php echo $result[7]; ?></td>
                              </tr>
-                             <tr>
-                                 <td>AAD</td>
-                                 <td>ARDENT LEISURE GROUP</td>
-                                 <td class="numeric">$1.15</td>
-                                 <td class="numeric">  +0.02</td>
-                                 <td class="numeric">1.32%</td>
-                                 <td class="numeric">$1.14</td>
-                             </tr>
+                             <?php } ?>
                          </tbody>
                      </table>
                  </section>
@@ -346,22 +373,21 @@
                             </tr>
                         </thead>
                         <tbody>
+                        <?php
+                              $query = mysqli_query($connection, "SELECT * FROM setupinformation WHERE company = '$companyid'");
+                              $rows = mysqli_num_rows($query);
+                              for($i=0; $i<$rows ; $i++){
+                                $result = mysqli_fetch_array($query);
+                            ?>
                             <tr>
-                                <td>AAC</td>
-                                <td>AUSTRALIAN AGRICULTURAL COMPANY LIMITED.</td>
-                                <td class="numeric">$1.38</td>
-                                <td class="numeric">-0.01</td>
-                                <td class="numeric">-0.36%</td>
-                                <td class="numeric">$1.39</td>
+                                <td><?php echo $result[3]; ?></td>
+                                <td><?php echo $result[2]; ?></td>
+                                <td class="numeric"><?php echo $result[5]; ?></td>
+                                <td class="numeric"><?php echo $result[9]; ?></td>
+                                <td class="numeric"><?php echo $result[11]; ?></td>
+                                <td class="numeric"><?php echo $result[13]; ?></td>
                             </tr>
-                            <tr>
-                                <td>AAD</td>
-                                <td>ARDENT LEISURE GROUP</td>
-                                <td class="numeric">$1.15</td>
-                                <td class="numeric">  +0.02</td>
-                                <td class="numeric">1.32%</td>
-                                <td class="numeric">$1.14</td>
-                            </tr>
+                            <?php } ?>
                         </tbody>
                     </table>
                 </section>
@@ -385,20 +411,20 @@
                             </tr>
                         </thead>
                         <tbody>
+                        <?php
+                              $query = mysqli_query($connection, "SELECT * FROM leads WHERE customer = '$companyid'");
+                              $rows = mysqli_num_rows($query);
+                              for($i=0; $i<$rows ; $i++){
+                                $result = mysqli_fetch_array($query);
+                            ?>
                             <tr>
-                                <td>AAC</td>
-                                <td>AUSTRALIAN AGRICULTURAL COMPANY LIMITED.</td>
-                                <td class="numeric">$1.38</td>
-                                <td class="numeric">-00001</td>
-                                <td class="numeric">-0.36%</td>
+                                <td><?php echo $result[7]; ?></td>
+                                <td><?php echo getnamebyid($result[2],$connection); ?></td>
+                                <td class="numeric"><?php echo getnamebyid($result[8], $connection); ?></td>
+                                <td class="numeric"><?php echo $result[6]; ?></td>
+                                <td class="numeric"><?php echo $result[3]; ?></td>
                             </tr>
-                            <tr>
-                                <td>AAD</td>
-                                <td>ARDENT LEISURE GROUP</td>
-                                <td class="numeric">$1.15</td>
-                                <td class="numeric">0.02</td>
-                                <td class="numeric">1.32%</td>
-                            </tr>
+                            <?php } ?>
                         </tbody>
                     </table>
                 </section>
@@ -420,18 +446,19 @@
                                 </tr>
                             </thead>
                             <tbody>
+                            <?php
+                              $query = mysqli_query($connection, "SELECT * FROM opportunities WHERE customer = '$companyid'");
+                              $rows = mysqli_num_rows($query);
+                              for($i=0; $i<$rows ; $i++){
+                                $result = mysqli_fetch_array($query);
+                            ?>
                                 <tr>
-                                    <td>AAC</td>
-                                    <td>AUSTRALIAN AGRICULTURAL COMPANY LIMITED.</td>
-                                    <td class="numeric">$1.38</td>
-                                      <td class="numeric">1.32%</td>
+                                    <td><?php echo $result[1]; ?></td>
+                                    <td><?php echo $result[5]; ?></td>
+                                    <td class="numeric"><?php echo getnamebyid($result[7],$connection); ?></td>
+                                      <td class="numeric"><?php echo $result[8]; ?></td>
                                 </tr>
-                                <tr>
-                                    <td>AAD</td>
-                                    <td>ARDENT LEISURE GROUP</td>
-                                    <td class="numeric">$1.15</td>
-                                    <td class="numeric">1.32%</td>
-                                </tr>
+                              <?php } ?>
                             </tbody>
                         </table>
                     </section>
@@ -457,22 +484,21 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <?php
+                              $query = mysqli_query($connection, "SELECT * FROM calls WHERE customer = '$companyid'");
+                              $rows = mysqli_num_rows($query);
+                              for($i=0; $i<$rows ; $i++){
+                                $result = mysqli_fetch_array($query);
+                            ?>
                                 <tr>
-                                    <td>AAC</td>
-                                    <td>AUSTRALIAN AGRICULTURAL COMPANY LIMITED.</td>
-                                    <td class="numeric">$1.38</td>
-                                    <td class="numeric">1.32%</td>
-                                    <td class="numeric">$1.38</td>
-                                    <td class="numeric">1.32%</td>
+                                    <td><?php echo $result[1]; ?></td>
+                                    <td><?php echo $result[2]; ?></td>
+                                    <td class="numeric"><?php echo $result[4]; ?></td>
+                                    <td class="numeric"><?php echo getnamebyid($result[3], $connection); ?></td>
+                                    <td class="numeric"><?php echo $result[8]; ?></td>
+                                    <td class="numeric"><?php echo $result[9]; ?></td>
                                 </tr>
-                                <tr>
-                                    <td>AAD</td>
-                                    <td>ARDENT LEISURE GROUP</td>
-                                    <td class="numeric">$1.15</td>
-                                    <td class="numeric">1.32%</td>
-                                    <td class="numeric">$1.38</td>
-                                    <td class="numeric">1.32%</td>
-                                </tr>
+                                <?php } ?>
                             </tbody>
                         </table>
                     </section>
@@ -510,3 +536,5 @@
 
 <!-- Mirrored from bucketadmin.themebucket.net/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 31 Jul 2014 11:12:48 GMT -->
 </html>
+
+<?php require_once("includes/footer.php"); ?>
