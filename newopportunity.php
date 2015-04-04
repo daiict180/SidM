@@ -82,6 +82,7 @@ if(isset($_POST['submit']) && ($_SESSION['role'] == 'COH'||$_SESSION['role'] == 
                 }
                 xmlhttp.onreadystatechange = function() {
                     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                        alert(xmlhttp.responseText);
                         document.getElementById("targetDiv").innerHTML = xmlhttp.responseText;
                     }
                 }
