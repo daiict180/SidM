@@ -14,7 +14,7 @@
     <meta name="description" content="">
     <meta name="author" content="Sidharth Machinaries">
     <link rel="shortcut icon" href="images/favicon.html">
-    <title>Sales person wise chart</title>
+    <title>Machine-wise Report</title>
     <!--Core CSS -->
     <link href="bs3/css/bootstrap.min.css" rel="stylesheet">
     <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
@@ -23,75 +23,74 @@
     <!-- Custom styles for this template -->
     <link href="css/style1.css" rel="stylesheet">
     <link href="css/style-responsive.css" rel="stylesheet"/>
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-        <script type="text/javascript">
-   $(function () {
-       $('#chart').highcharts({
-           chart: {
-               zoomType: 'xy'
-           },
-           title: {
-               text: 'Machinewise Sales'
-           },
-           subtitle: {
-               
-           },
-           xAxis: [{
-               categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-               crosshair: true
-           }],
-           yAxis: [{ // Primary yAxis
-               labels: {
-                   format: '',
-                   style: {
-                       color: Highcharts.getOptions().colors[1]
+          <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+          <style type="text/css">
+       #chart, #sliders {
+        min-width: 310px; 
+        max-width: 800px;
+        margin: 0 auto;
+       }
+       #chart {
+        height: 400px; 
+       }
+          </style>
+          <script type="text/javascript">
+       $(function () {
+           // Set up the chart
+           var chart = new Highcharts.Chart({
+               chart: {
+                   renderTo: 'chart',
+                   type: 'column',
+                   margin: 75,
+                   options3d: {
+                       enabled: true,
+                       alpha: 15,
+                       beta: 15,
+                       depth: 50,
+                       viewDistance: 25
                    }
                },
                title: {
-                   text: '',
-                   style: {
-                       color: Highcharts.getOptions().colors[1]
-                   }
-               }
-           }, { // Secondary yAxis
-               title: {
-                   text: 'Machines',
-                   style: {
-                       color: Highcharts.getOptions().colors[0]
+                   text: 'Amount wise Graph'
+               },
+               subtitle: {
+               },
+               plotOptions: {
+                   column: {
+                       depth: 25
                    }
                },
-               labels: {
-                   format: '{value}',
-                   style: {
-                       color: Highcharts.getOptions().colors[0]
-                   }
-               },
-               opposite: true
-           }],
-           tooltip: {
-               shared: true
-           },
-           legend: {
-               layout: 'vertical',
-               align: 'left',
-               x: 120,
-               verticalAlign: 'top',
-               y: 100,
-               floating: true,
-               backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
-           },
-           series: [{
-               name: 'Machine 1',
-               type: 'spline',
-               data: [7, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6],
-               tooltip: {
-                   valueSuffix: ''
-               }
-           }]
+               xAxis: [{
+                   categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                   crosshair: true
+               }],
+               series: [{
+                   name: 'Machines',
+                   data: [29, 71, 106, 129.2, 144, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+               }]
+           });
+
+           function showValues() {
+               $('#R0-value').html(chart.options.chart.options3d.alpha);
+               $('#R1-value').html(chart.options.chart.options3d.beta);
+           }
+
+           // Activate the sliders
+           $('#R0').on('change', function () {
+               chart.options.chart.options3d.alpha = this.value;
+               showValues();
+               chart.redraw(false);
+           });
+           $('#R1').on('change', function () {
+               chart.options.chart.options3d.beta = this.value;
+               showValues();
+               chart.redraw(false);
+           });
+
+           showValues();
        });
-   });
-        </script>
+          </script>
 </head>
 <?php include("includes/sidebar.php"); ?>
  <section id="main-content">
@@ -113,9 +112,9 @@
           <div class="form-group">
             <select class="form-control" id="source">
               <optgroup label="">
-                <option value="CT">Employee 1</option>
-                <option value="DE">Employee 2</option>
-                <option value="FL">Employee 3</option>
+                <option value="CT">5k-10k</option>
+                <option value="DE">10k-15k</option>
+                <option value="FL">15k-20k</option>
               </optgroup>
             </select>
           </div>
@@ -136,7 +135,13 @@
         <div class="col-md-12">
           <section class="panel">
             <div class="panel-body">
-                <div id="chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                <div id="chart"></div>
+                <div id="sliders">
+                  <table>
+                    <tr><td>Alpha Angle</td><td><input id="R0" type="range" min="0" max="45" value="15"/> <span id="R0-value" class="value"></span></td></tr>
+                      <tr><td>Beta Angle</td><td><input id="R1" type="range" min="0" max="45" value="15"/> <span id="R1-value" class="value"></span></td></tr>
+                  </table>
+                </div>
             </div>
           </section>
         </div>
@@ -156,6 +161,7 @@
 <script src="js/scripts.js"></script>
 <!--script for this page-->
 <script src="js/highcharts.js"></script>
+<script src="js/highcharts-3d.js"></script>
 <script src="js/exporting.js"></script>
 
 </body>

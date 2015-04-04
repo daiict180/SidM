@@ -6,6 +6,9 @@
 
 <?php
 
+$address = "India";
+
+
 if($_SESSION['role']!='ADM' && $_SESSION['role']!='COH' && $_SESSION['role']!='BRH'){
     redirect_to("dashboard.php");
 } 
@@ -31,6 +34,21 @@ if(isset($_POST['submit'])){
 	$segment = mysql_prep($_POST['segment'],$connection);
 	$remarks = mysql_prep($_POST['remarks'],$connection);
 	$experience = mysql_prep($_POST['experience'],$connection);
+
+    $address = $add1;
+    $url = "http://maps.google.com/maps/api/geocode/json?address='$address'&sensor=false&region=India";
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($ch, CURLOPT_PROXYPORT, 3128);
+curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+$response = curl_exec($ch);
+curl_close($ch);
+$response_a = json_decode($response);
+echo $lat = $response_a->results[0]->geometry->location->lat;
+echo "<br />";
+echo $long = $response_a->results[0]->geometry->location->lng;
 
 	if($_SESSION['role']=='BRH' && $branch == getbranchbyid($_SESSION['user'], $connection))
 	   $query = mysqli_query($connection, "INSERT INTO companies VALUES ('','$name', '$oname', '$add1', '$add2', '$city', $pin, '$state', '$country', '$source', '$remarks', '$type', '$branch', '$email', '$bphone', '$mobile', '$phone2', '$fax', '$url', '$segment', '$experience')");
@@ -60,132 +78,7 @@ if(isset($_POST['submit'])){
     <link href="css/style1.css" rel="stylesheet">
     <link href="css/style-responsive.css" rel="stylesheet"/>
 </head>
-<body>
-<section id="container">
-<!--header start-->
-<header class="header fixed-top clearfix">
-<!--logo start-->
-<div class="brand">
-    <a href="dashboard.php" class="logo">
-        <img src="images/logo1.png" alt="">
-    </a>
-    <div class="sidebar-toggle-box">
-        <!--<i class="fa fa-angle-left fa-2x" style="margin-left:9px; margin-top:3px"></i> -->
-        <div class="fa fa-bars"></div>
-    </div>
-</div>
-<!--logo end-->
-<div class="top-nav clearfix">
-    <!--search & user info start-->
-    <ul class="nav pull-right top-menu">
-        
-        <!-- user login dropdown start-->
-        <li class="dropdown">
-            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                <img alt="" src="images/avatar1_small.jpg">
-                <span class="username"><?php echo getnamebyid($_SESSION['user'], $connection) ?></span>
-                <b class="caret"></b>
-            </a>
-            <ul class="dropdown-menu extended logout">
-                <li><a href="#"><i class="fa fa-suitcase"></i>Profile</a></li>
-                <li><a href="#"><i class="fa fa-cog"></i>Settings</a></li>
-                <li><a href="logout.php"><i class="fa fa-key"></i>Log Out</a></li>
-            </ul>
-        </li>
-        <!-- user login dropdown end -->
-    </ul>
-    <!--search & user info end-->
-</div>
-</header>
-<!--header end-->
-<!--sidebar start-->
-<aside>
-    <div id="sidebar" class="nav-collapse">
-        <!-- sidebar menu start-->
-        <div class="leftside-navigation">
-            <ul class="sidebar-menu" id="nav-accordion">
-                <li>
-                    <a href="dashboard.php">
-                        <i class="fa fa-dashboard"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="active" href="companies.php">
-                        <i class="fa fa-university"></i>
-                        <span>Companies</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="companycontacts.php">
-                        <i class="fa fa-info"></i>
-                        <span>Company Contacts</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="setupinfo.php">
-                        <i class="fa fa-cog"></i>
-                        <span>Setup Information</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="leads.php">
-                        <i class="fa fa-magnet"></i>
-                        <span>Leads</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="opportunities.php">
-                        <i class="fa fa-level-up"></i>
-                        <span>Opportunities</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="calls.php">
-                        <i class="fa fa-mobile"></i>
-                        <span>Calls</span>
-                    </a>
-                </li>
-                <li class="sub-menu">
-                    <a href="javascript:;">
-                        <i class="fa fa-bar-chart"></i>
-                        <span>Reports</span>
-                    </a>
-                    <ul class="sub">
-                        <li><a href="general.html">Monthly Sales</a></li>
-                        <li><a href="buttons.html">Open Opportunities</a></li>
-                        <li><a href="widget.html">Upcoming calls</a></li>
-                    </ul>
-                </li>
-                <li class="sub-menu">
-                    <a href="javascript:;">
-                        <i class="fa fa-user"></i>
-                        <span>Masters</span>
-                    </a>
-                    <ul class="sub">
-                        <li><a href="machines.php">Machines</a></li>
-                        <li><a href="users.php">Users</a></li>
-                        <li><a href="segments.php">Segments</a></li>
-                        <li><a href="branches.php">Branches</a></li>
-                        <li><a href="sources.php">Sources</a></li>
-                        <li><a href="callmodes.php">Call Modes</a></li>
-                    </ul>
-                </li>
-                <li class="sub-menu">
-                    <a href="javascript:;">
-                        <i class="fa fa-th"></i>
-                        <span>Utilities</span>
-                    </a>
-                    <ul class="sub">
-                        <li><a href="basic_table.html">Group Email/Labels</a></li>
-                    </ul>
-                </li>
-            </ul>            
-        </div>
-        <!-- sidebar menu end-->
-    </div>
-</aside>
-<!--sidebar end-->
+<?php include("includes/sidebar.php"); ?>
 <section id="main-content">
         <section class="wrapper">
             <!-- page start-->
