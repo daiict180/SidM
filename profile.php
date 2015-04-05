@@ -27,7 +27,21 @@ if(isset($_POST['submit'])){
   $email = $_POST['email'];
   $mobile = $_POST['mobile'];
 
-  $id = $_SESSION['user'];
+  if (!empty($_FILES["profilepic"]["name"])) {
+    $file_name=$_FILES["profilepic"]["name"];
+    $temp_name=$_FILES["profilepic"]["tmp_name"];
+    $imgtype=$_FILES["profilepic"]["type"];
+    $ext= GetImageExtension($imgtype);
+    $imagename=date("d-m-Y")."-".time().$ext;
+    $target_path = "images/".$_SESSION['user'];
+    $id = $_SESSION['user'];
+    if(move_uploaded_file($temp_name, $target_path)) {
+            $query_upload=mysqli_query($connection, "UPDATE users SET image_path='$target_path' WHERE userid='$id'");
+        }else{
+           exit("Error While uploading image on the server");
+        }
+    }
+
   $query = mysqli_query($connection, "UPDATE users SET fullname='$fullname', email='$email', mobile='$mobile' WHERE userid='$id'");
 }
 
@@ -72,7 +86,7 @@ if(isset($_POST['submit'])){
               <div class="panel-body profile-information">
                <div class="col-md-5">
                  <div class="profile-pic text-center">
-                   <img src="images/lock_thumb.jpg" alt=""/>
+                   <img src="<?php echo "images/".$_SESSION['user']; ?>" alt=""/>
                  </div>
                  <div class="row" style="margin-top:5%;margin-left:25%">
                   <a href="#myModal-2" data-toggle="modal" class="btn btn-primary" onclick="editProfile();">
@@ -130,7 +144,7 @@ if(isset($_POST['submit'])){
                      <h4 class="modal-title">Edit Profile</h4>
                    </div>
                    <div class="modal-body">
-                     <form class="cmxform form-horizontal " id="commentForm" method="post" action="#">
+                     <form class="cmxform form-horizontal" enctype="multipart/form-data" id="commentForm" method="post">
                        <div class="form-group ">
                          <label for="UserName" class="control-label col-lg-3">Full Name</label>
                          <div class="col-lg-6">
@@ -152,7 +166,7 @@ if(isset($_POST['submit'])){
                        <div class="form-group">
                            <label for="ubranch" class="control-label col-lg-3">Avatar</label>
                            <div class="col-lg-6">
-                               <input type="file" id="exampleInputFile" class="file-pos">
+                               <input type="file" id="profilepic" name="profilepic" >
                            </div>
                        </div>
                        <div class="form-group">
