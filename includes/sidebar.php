@@ -90,12 +90,12 @@
                     </a>
                     <ul class="sub">
                         <li><a href="leadsreports.php">Leads</a></li>
-                        <li><a href="general.html">Opportunities</a></li>
+                        <li><a href="openopportunityreports.php">Opportunities</a></li>
                         <li><a href="live-vs-dead-reports.php">Live/Dead Leads</a></li>
                         <li><a href="branchwisecharts.php">Opportunities Vs. Leads</a></li>
-                        <li><a href="buttons.html">Machinewise Sales</a></li>
-                        <li><a href="buttons.html">Sales Report</a></li>
-                        <li><a href="buttons.html">Forecast/Exception Report</a></li>
+                        <li><a href="machinewisereport.php">Machinewise Sales</a></li>
+                        <li><a href="salesreport.php">Sales Report</a></li>
+                        <li><a href="forecastchart.php">Forecast/Exception Report</a></li>
                     </ul>
                 </li>
                 <li class="sub-menu">
@@ -110,7 +110,7 @@
                         <li><a href="branches.php">Branches</a></li>
                         <li><a href="sources.php">Sources</a></li>
                         <li><a href="callmodes.php">Call Modes</a></li>
-                        <li><a href="">Document Types</a></li>
+                        <li><a href="documentsmaster.php">Document Types</a></li>
                     </ul>
                 </li>
                 <li class="sub-menu">
@@ -119,9 +119,9 @@
                         <span>Utilities</span>
                     </a>
                     <ul class="sub">
-                        <li><a href="">Nearby Clients</a></li>
-                        <li><a href="">Routes</a></li>
-                        <li><a href="basic_table.html">Document Manager</a></li>
+                        <li><a href="maps.php">Nearby Clients</a></li>
+                        <li><a href="clientroutes.php">Routes</a></li>
+                        <li><a href="filemanager.php">Document Manager</a></li>
                         <li><a href="basic_table.html">Group Email</a></li>
                         
                     </ul>

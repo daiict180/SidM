@@ -6,6 +6,22 @@
 
 <?php
 
+if(isset($_POST['changepass'])){
+  $oldpassword = $_POST['oldpassword'];
+  $newpassword = $_POST['newpassword'];
+  $confirmpassword = $_POST['confirmpassword'];
+
+  $id = $_SESSION['user'];
+
+  $prequery = mysqli_query($connection,"SELECT password FROM users WHERE userid='$id'");
+  $res = mysqli_fetch_array($prequery);
+  $oldpass = $res[0];
+
+  if(md5($oldpassword)==$oldpass && $newpassword==$confirmpassword)
+    $query = mysqli_query($connection, "UPDATE users SET password=md5('$newpassword') WHERE userid='$id'");
+
+}
+
 if(isset($_POST['submit'])){
   $fullname = $_POST['fullname'];
   $email = $_POST['email'];
@@ -75,28 +91,28 @@ if(isset($_POST['submit'])){
                    </div>
                    <div class="modal-body">
 
-                     <form class="form-horizontal" role="form">
+                     <form class="form-horizontal" role="form" method="post" action="#">
                        <div class="form-group ">
                          <label for="pass" class="control-label col-lg-3">Old Password</label>
                          <div class="col-lg-6">
-                           <input class="form-control " id="oldpass" type="password" name="password" required/>
+                           <input class="form-control " id="oldpass" type="password" name="oldpassword" required/>
                          </div>
                        </div>
                        <div class="form-group ">
                          <label for="pass" class="control-label col-lg-3">New Password</label>
                          <div class="col-lg-6">
-                           <input class="form-control " id="newpass" type="password" name="password" required/>
+                           <input class="form-control " id="newpass" type="password" name="newpassword" required/>
                          </div>
                        </div>
                        <div class="form-group ">
                          <label for="cpass" class="control-label col-lg-3">Confirm Password</label>
                          <div class="col-lg-6">
-                           <input class="form-control " id="confirmpass" type="password" name="confirmPassword" required/>
+                           <input class="form-control " id="confirmpass" type="password" name="confirmpassword" required/>
                          </div>
                        </div>
                        <div class="form-group">
                          <div class="col-lg-offset-3 col-lg-6">
-                           <button class="btn btn-primary" type="submit" name="submit">Save</button>
+                           <button class="btn btn-primary" type="submit" name="changepass">Save</button>
                          </div>
                        </div>
                      </form>
