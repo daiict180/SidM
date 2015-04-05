@@ -14,7 +14,7 @@
     <meta name="description" content="">
     <meta name="author" content="Sidharth Machinaries">
     <link rel="shortcut icon" href="images/favicon.html">
-    <title>Sales person wise chart</title>
+    <title>Machine Sales</title>
     <!--Core CSS -->
     <link href="bs3/css/bootstrap.min.css" rel="stylesheet">
     <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
@@ -24,7 +24,26 @@
     <link href="css/style1.css" rel="stylesheet">
     <link href="css/style-responsive.css" rel="stylesheet"/>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
         <script type="text/javascript">
+        $(document).ready(function() {
+        $('#button').click(function(){
+              var branch = document.getElementById("branch").value;
+              var year = document.getElementById("year").value;
+              var machine = document.getElementById("machine").value;
+            $.ajax({
+
+                type: "GET",
+                url: "getmachinewisereport.php",
+                data: 'branch='+branch+'&year='+year+'&machine='+machine,
+                success: function(msg){
+                    $('#chart').html(msg);
+                    
+                }
+
+            }); // Ajax Call
+        }); //event handler
+    }); //document.ready
    $(function () {
        $('#chart').highcharts({
            chart: {
@@ -82,9 +101,9 @@
                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
            },
            series: [{
-               name: 'Machine 1',
+               name: machine,
                type: 'spline',
-               data: [7, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6],
+               data: machineresult,
                tooltip: {
                    valueSuffix: ''
                }
@@ -99,36 +118,62 @@
         <div class="row">
           <div class="col-lg-2">
            <div class="form-group">
-            <select class="form-control" id="source">
+            <select class="form-control" id="branch">
               <optgroup label="">
-                <option value="CT">Vadodara</option>
-                <option value="DE">Ahmedabad</option>
-                <option value="FL">Mumbai</option>
-                <option value="GA">Georgia</option>
+              <?php
+                $query = mysqli_query($connection, "SELECT * FROM branches");
+                $rows = mysqli_num_rows($query);
+                for($i = 0 ;$i <$rows ; $i++){
+                  $result = mysqli_fetch_array($query);
+                  if($i == 0)
+                    $reqbranch = $result[1];
+              ?>
+                <option value="<?php echo $result[1]; ?>"><?php echo $result[1]; ?></option>
+                <?php } ?>
               </optgroup>
             </select>
           </div>
         </div>
         <div class="col-lg-2">
           <div class="form-group">
-            <select class="form-control" id="source">
+            <select class="form-control" id="machine">
               <optgroup label="">
-                <option value="CT">Employee 1</option>
-                <option value="DE">Employee 2</option>
-                <option value="FL">Employee 3</option>
+                <?php
+                $query = mysqli_query($connection, "SELECT * FROM machines");
+                $rows = mysqli_num_rows($query);
+                for($i = 0 ;$i <$rows ; $i++){
+                  $result = mysqli_fetch_array($query);
+                  if($i == 0)
+                    $reqmachine = $result[1];
+              ?>
+                <option value="<?php echo $result[1]; ?>"><?php echo $result[1]; ?></option>
+                <?php } ?>
               </optgroup>
             </select>
           </div>
         </div>
         <div class="col-lg-2">
           <div class="form-group">
-            <select class="form-control" id="source">
+            <select class="form-control" id="year">
               <optgroup label="">
-                <option value="CT">2013-2014</option>
-                <option value="DE">2014-2015</option>
-                <option value="FL">2015-2016</option>
+                <?php
+                $query = mysqli_query($connection, "SELECT YEAR(closingdate) FROM opportunities ORDER BY closingdate ASC");
+                $rows = mysqli_num_rows($query);
+                for($i = 0 ;$i <$rows ; $i++){
+                  $result = mysqli_fetch_array($query);
+                  if($i == 0)
+                    $reqyear = $result[1];
+              ?>
+                <option value="<?php echo $result[0]; ?>"><?php echo $result[0]."-".($result[0]+1) ; ?></option>
+                <?php } ?>
               </optgroup>
             </select>
+          </div>
+        </div>
+   
+      <div class="col-lg-2">
+          <div class="form-group">
+            <button class="btn btn-primary" id="button">Generate</button>
           </div>
         </div>
       </div>
@@ -143,6 +188,25 @@
       </div>
     </section>
   </section>
+
+<?php
+$branch = $reqbranch;
+$year = $reqyear;
+$machine = $reqmachine;
+
+$machineresult = array(12);
+for($i = 0; $i < 12 ; $i++){
+$m = $i+1;
+$query = mysqli_query($connection, "SELECT * FROM opportunities WHERE branch='$branch' AND productofinterest='$machine' AND YEAR(closingdate)='$year' AND MONTH(closingdate)='$m'");
+$machineresult[$i] = mysqli_num_rows($query);
+}
+?>
+
+<script type="text/javascript">
+    var machineresult = <?php echo json_encode($machineresult); ?>;
+    var machine = <?php echo json_encode($machine); ?>;
+    </script>
+
 <!-- Placed js at the end of the document so the pages load faster -->
 <!--Core js-->
 <script src="js/jquery.js"></script>

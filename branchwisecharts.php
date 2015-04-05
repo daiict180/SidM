@@ -2,7 +2,7 @@
 <?php require_once("includes/connection.php"); ?>
 <?php require_once("includes/functions.php"); ?>
 <?php require_once("includes/constants.php"); ?>
-<?php// include("includes/checksession.php"); ?>
+<?php include("includes/checksession.php"); ?>
 
 <!DOCTYPE html>
 <html lang="en">

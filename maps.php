@@ -25,11 +25,45 @@
     <link href="css/style-responsive.css" rel="stylesheet"/>
     <script src="http://maps.google.com/maps?file=api&v=3&key=AIzaSyBfgel079s6ly4yusiUhn-K9MfCmPlzWoM" type="text/javascript"></script>
     <script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    <?php
+        $query = mysqli_query($connection, "SELECT * FROM companies");
+        $totalcompany = intval(mysqli_num_rows($query));
+        $companies = array($totalcompany);
+        $latitudes = array($totalcompany);
+        $longitudes = array($totalcompany);
+        $address = array($totalcompany);
+        for($i = 0 ; $i < $totalcompany ; $i++){
+            $result = mysqli_fetch_array($query);
+            $companies[$i] = $result[1];
+            $latitudes[$i] = $result[21];
+            $longitudes[$i] = $result[22];
+            $address[$i] = $result[3].$result[4].$result[5].$result[7];
+        }
+
+    ?>
     <script>
+        var companies = <?php echo json_encode($companies); ?>;
+        var latitudes = <?php echo json_encode($latitudes); ?>;
+        var longitudes = <?php echo json_encode($longitudes); ?>;
+        var address = <?php echo json_encode($address); ?>;
+        var l = <?php echo json_encode($totalcompany); ?>;
+
+        // var locations = [{cname: "abc", lat:23.19, lon:72.63, place:"Infocity, Gandhinagar, India"}, 
+        //             {cname: "xyz",lat:23.02, lon:72.57, place:"Ahmedabad, India"}, 
+        //             {cname: "qwer", lat:21.17, lon:72.83, place:"Surat, India"}];
+        //              alert(locations[0].cname);
+       
+        var locations = [];
+        //var len = oFullResponse.results.length;
+        for (var i = 0; i < l; i++) {
+            locations.push({
+                cname: companies[i],
+                lat: latitudes[i],
+                lon: longitudes[i],
+                place: address[i]
+            });
+        }
     var map;
-    var locations = [{cname: "abc", lat:23.19, lon:72.63, place:"Infocity, Gandhinagar, India"}, 
-                    {cname: "xyz",lat:23.02, lon:72.57, place:"Ahmedabad, India"}, 
-                    {cname: "qwer", lat:21.17, lon:72.83, place:"Surat, India"}];
     
     function calculateDistance(location1, location2) {
         try {
@@ -122,9 +156,14 @@
                             </div> 
                             <div class="form-group">
                                 <select class="form-control" id="company" placeholder="Select Company">
-                                <option value="0">abc</option>
-                                <option value="1">xyz</option>
-                                <option value="2">qwer</option>
+                                <?php
+                                $query = mysqli_query($connection, "SELECT * FROM companies");
+                                $rows = mysqli_num_rows($query);
+                                for($i=0; $i <$rows ; $i++){
+                                    $result = mysqli_fetch_array($query);
+                                ?>
+                                <option value="<?php echo $i; ?>"><?php echo $result[1]; ?></option>
+                                <?php } ?>
                             </select>
                             </div>
                             <div class="form-group">
@@ -164,6 +203,9 @@
 </section>
 <!-- Placed js at the end of the document so the pages load faster -->
 <!--Core js-->
+<script type="text/javascript">
+    
+</script>
 <script src="js/jquery.js"></script>
 <script src="js/jquery-ui/jquery-ui-1.10.1.custom.min.js"></script>
 <script src="bs3/js/bootstrap.min.js"></script>

@@ -239,7 +239,16 @@ if(isset($_POST['submit']) && ($_SESSION['role'] == 'COH'||$_SESSION['role'] == 
                                     <div class="form-group ">
                                         <label for="poi" class="control-label col-lg-3">Product of Interest</label>
                                         <div class="col-lg-6">
-                                            <input class="form-control " id="poi" type="text" name="interest" required/>
+                                            <select class="form-control"  id="poi" name="interest" required>
+                                                <?php
+                                                    $query = mysqli_query($connection, "SELECT * FROM machines");
+                                                    $rows = mysqli_num_rows($query);
+                                                    for($i = 0 ;$i <$rows ; $i++){
+                                                      $result = mysqli_fetch_array($query);
+                                                  ?>
+                                                    <option value="<?php echo $result[1]; ?>"><?php echo $result[1]; ?></option>
+                                                <?php } ?>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="form-group">

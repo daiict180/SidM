@@ -4,6 +4,19 @@
 <?php require_once("includes/constants.php"); ?>
 <?php include("includes/checksession.php"); ?>
 
+<?php
+
+if(isset($_POST['submit'])){
+  $fullname = $_POST['fullname'];
+  $email = $_POST['email'];
+  $mobile = $_POST['mobile'];
+
+  $id = $_SESSION['user'];
+  $query = mysqli_query($connection, "UPDATE users SET fullname='$fullname', email='$email', mobile='$mobile' WHERE userid='$id'");
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,6 +37,14 @@
   <link href="css/table-responsive.css" rel="stylesheet" />
   <link href="css/style1.css" rel="stylesheet">
   <link href="css/style-responsive.css" rel="stylesheet"/>
+  <script type="text/javascript">
+  function editProfile() {
+   // console.log(document.getElementById("uname").innerHTML);
+    document.getElementById("euname").value = document.getElementById("uname").innerHTML;
+    document.getElementById("euemail").value = document.getElementById("uemail").innerHTML;
+    document.getElementById("eumobile").value = document.getElementById("umobile").innerHTML;
+  }
+  </script>
 </head>
 <?php include("includes/sidebar.php"); ?>
     <section id="main-content">
@@ -38,7 +59,7 @@
                    <img src="images/lock_thumb.jpg" alt=""/>
                  </div>
                  <div class="row" style="margin-top:5%;margin-left:25%">
-                  <a href="#myModal-2" data-toggle="modal" class="btn btn-primary">
+                  <a href="#myModal-2" data-toggle="modal" class="btn btn-primary" onclick="editProfile();">
                    Edit Profile
                  </a>
                  <a href="#myModal-1" data-toggle="modal" class="btn btn-danger">
@@ -56,20 +77,26 @@
 
                      <form class="form-horizontal" role="form">
                        <div class="form-group ">
-                         <label for="pass" class="control-label col-lg-3">Password</label>
+                         <label for="pass" class="control-label col-lg-3">Old Password</label>
                          <div class="col-lg-6">
-                           <input class="form-control " id="pass" type="password" name="password" required/>
+                           <input class="form-control " id="oldpass" type="password" name="password" required/>
+                         </div>
+                       </div>
+                       <div class="form-group ">
+                         <label for="pass" class="control-label col-lg-3">New Password</label>
+                         <div class="col-lg-6">
+                           <input class="form-control " id="newpass" type="password" name="password" required/>
                          </div>
                        </div>
                        <div class="form-group ">
                          <label for="cpass" class="control-label col-lg-3">Confirm Password</label>
                          <div class="col-lg-6">
-                           <input class="form-control " id="cpass" type="password" name="confirmPassword" required/>
+                           <input class="form-control " id="confirmpass" type="password" name="confirmPassword" required/>
                          </div>
                        </div>
                        <div class="form-group">
-                         <div class="col-lg-offset-2 col-lg-10">
-                           <button type="submit" class="btn btn-default">Save</button>
+                         <div class="col-lg-offset-3 col-lg-6">
+                           <button class="btn btn-primary" type="submit" name="submit">Save</button>
                          </div>
                        </div>
                      </form>
@@ -87,53 +114,23 @@
                      <h4 class="modal-title">Edit Profile</h4>
                    </div>
                    <div class="modal-body">
-                     <form class="cmxform form-horizontal " id="commentForm" method="get" action="#">
+                     <form class="cmxform form-horizontal " id="commentForm" method="post" action="#">
                        <div class="form-group ">
                          <label for="UserName" class="control-label col-lg-3">Full Name</label>
                          <div class="col-lg-6">
-                           <input class="form-control " id="UserName" type="text" name="FullName" required/>
+                           <input class="form-control " id="euname" type="text" name="fullname" required/>
                          </div>
                        </div>
                        <div class="form-group ">
                          <label for="uemail" class="control-label col-lg-3">Email-Id</label>
                          <div class="col-lg-6">
-                           <input class="form-control " id="uemail" type="email" name="useremail" required/>
+                           <input class="form-control " id="euemail" type="email" name="email" required/>
                          </div>
                        </div>
                        <div class="form-group ">
                          <label for="umobile" class="control-label col-lg-3">Mobile</label>
                          <div class="col-lg-6">
-                           <input class="form-control " id="umobile" type="number" name="umobile"/>
-                         </div>
-                       </div>
-                       <div class="form-group ">
-                         <label for="uactive" class="control-label col-lg-3">Active</label>
-                         <div class="col-lg-6">
-                           <select class="form-control"  id="uactive" required>
-                             <option value="Y">Yes</option>
-                             <option value="N">No</option>
-                           </select>
-                         </div>
-                       </div>
-                       <div class="form-group ">
-                         <label for="urole" class="control-label col-lg-3">Role</label>
-                         <div class="col-lg-6">
-                           <select class="form-control"  id="urole" required>
-                             <option value="SAE">SAE</option>
-                             <option value="BRH">BRH</option>
-                             <option value="COH">COH</option>
-                             <option value="ADM">ADM</option>
-                           </select>
-                         </div>
-                       </div>
-                       <div class="form-group ">
-                         <label for="ubranch" class="control-label col-lg-3">Branch</label>
-                         <div class="col-lg-6">
-                           <select class="form-control"  id="ubranch" required>
-                             <option value="B1">Branch1</option>
-                             <option value="B2">Branch2</option>
-                             <option value="B3">Branch3</option>
-                           </select>
+                           <input class="form-control " id="eumobile" name="mobile"/>
                          </div>
                        </div>
                        <div class="form-group">
@@ -144,8 +141,7 @@
                        </div>
                        <div class="form-group">
                          <div class="col-lg-offset-3 col-lg-6">
-                           <button class="btn btn-primary" type="submit">Save</button>
-                           <button class="btn btn-default" type="button">Cancel</button>
+                           <button class="btn btn-primary" type="submit" name="submit">Save</button>
                          </div>
                        </div>
                      </form>
@@ -161,8 +157,8 @@
                              <!-- <div class="profile-pic text-center">
                                  <img src="images/lock_thumb.jpg" alt=""/>
                                </div> -->
-                               <?php 
-                                $id = $_SESSION['user'];
+                               <?php
+                               $id = $_SESSION['user'];
                                 $query = mysqli_query($connection, "SELECT * FROM users WHERE userid='$id'");
                                 $result = mysqli_fetch_array($query);
                                ?>
@@ -170,38 +166,32 @@
                                  <form class="cmxform form-horizontal " id="commentForm" method="get" action="#">
                                    <div class="form-group">
                                      <label for="UserName" class="control-label col-lg-3">Full Name:</label>
-                                     <div class="col-lg-6" style="margin-top:7.5px">
-                                       <?php echo $result['fullname']; ?>
-                                     </div>
+                                     <div class="col-lg-6" style="margin-top:7.5px" id="uname"><?php echo $result[1]; ?></div>
                                    </div>
                                    <div class="form-group ">
                                      <label for="uemail" class="control-label col-lg-3">Email-Id:</label>
-                                     <div class="col-lg-6" style="margin-top:7.5px">
-                                       <?php echo $result['email']; ?>
-                                     </div>
+                                     <div class="col-lg-6" style="margin-top:7.5px" id="uemail"><?php echo $result[2]; ?></div>
                                    </div>
                                    <div class="form-group ">
                                      <label for="umobile" class="control-label col-lg-3">Mobile:</label>
-                                     <div class="col-lg-6" style="margin-top:7.5px">
-                                       <?php echo $result['mobile']; ?>
-                                     </div>
+                                     <div class="col-lg-6" style="margin-top:7.5px" id="umobile"><?php echo $result[3]; ?></div>
                                    </div>
                                    <div class="form-group ">
                                      <label for="uactive" class="control-label col-lg-3">Active:</label>
                                      <div class="col-lg-6" style="margin-top:7.5px">
-                                       <?php echo $result['active']; ?>
+                                       <?php echo $result[5]; ?>
                                      </div>
                                    </div>
                                    <div class="form-group ">
                                      <label for="urole" class="control-label col-lg-3">Role:</label>
                                      <div class="col-lg-6" style="margin-top:7.5px">
-                                       <?php echo $result['role']; ?>
+                                       <?php echo $result[4]; ?>
                                      </div>
                                    </div>
                                    <div class="form-group ">
                                      <label for="ubranch" class="control-label col-lg-3">Branch:</label>
                                      <div class="col-lg-6" style="margin-top:7.5px">
-                                       <?php echo $result['branch']; ?>
+                                       <?php echo $result[7]; ?>
                                      </div>
                                    </div>
                                  </div>

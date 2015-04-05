@@ -4,11 +4,20 @@
 <?php require_once("includes/constants.php"); ?>
 <?php include("includes/checksession.php"); ?>
 
-<!DOCTYPE html>
-<html lang="en">
+<?php
+$days = 7;
+if(isset($_POST['days']) && isset($_POST['branch'])){
+  $days = $_POST['days'];
+  $branch = $_POST['branch'];
+}
 
-<!-- Mirrored from bucketadmin.themebucket.net/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 31 Jul 2014 11:12:06 GMT -->
-<head>
+?>
+
+  <!DOCTYPE html>
+  <html lang="en">
+
+  <!-- Mirrored from bucketadmin.themebucket.net/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 31 Jul 2014 11:12:06 GMT -->
+  <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
@@ -24,127 +33,164 @@
     <link href="css/style1.css" rel="stylesheet">
     <link href="css/style-responsive.css" rel="stylesheet"/>
     <link href="js/c3-chart/c3.css" rel="stylesheet"/>
-</head>
-<?php include("includes/sidebar.php"); ?>
-<section id="main-content">
- <div class="col-lg-6" style="margin-top:9%%">
- <!--tab nav start-->
- <section class="panel" style="width:213%">
-     <header class="panel-heading tab-bg-dark-navy-blue ">
-         <ul class="nav nav-tabs">
-             <li class="active">
-                 <a data-toggle="tab" href="#home">Home</a>
-             </li>
-             <li class="">
-                 <a data-toggle="tab" href="#about">About</a>
-             </li>
-             <li class="">
-                 <a data-toggle="tab" href="#profile">Profile</a>
-             </li>
-             <li class="">
-                 <a data-toggle="tab" href="#contact">Contact</a>
-             </li>
-         </ul>
-     </header>
-     <div class="panel-body">
-         <div class="tab-content">
-             <div id="home" class="tab-pane active">
-                <p class="text-muted">
-                    Forecast Bar for next 15 days
-                </p>
-                <div class="progress progress-sm">
-                    <div class="progress-bar progress-bar-success" style="width: 35%" data-toggle="tooltip" data-placement="bottom" title="Cold opportunities = 35">
-                        <span class="sr-only">35% Complete (success)</span>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>  
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $('#button').click(function(){
+              var days = document.getElementById("days").value;
+              //var year = document.getElementById("year").value;
+            $.ajax({
+
+                type: "GET",
+                url: "getexceptionreports.php",
+                data: 'days='+days,
+                success: function(msg){
+                    $('#target').html(msg);
+                    
+                }
+
+            }); // Ajax Call
+        }); //event handler
+    }); //document.ready
+  </script>
+  </head>
+  
+ <?php include("includes/sidebar.php"); ?>
+      <section id="main-content">
+        <section class="wrapper">
+          
+           <div class="row">
+            <div class="col-md-6">
+            <section class="panel">
+            <div class="panel-body">
+            <form method="post" href="#" role="form" class="form-inline">
+                     <div class="form-group">
+                         <input type="text" name="days" class="form-control" id = "days" placeholder="Enter the number of days">
+                     </div>
+                     <div class="form-group">
+                        <select class="form-control" id="branch1" name="branch">
+                <optgroup label="">
+                  <?php
+                $query = mysqli_query($connection, "SELECT * FROM branches");
+                $rows = mysqli_num_rows($query);
+                for($i = 0 ;$i <$rows ; $i++){
+                  $result = mysqli_fetch_array($query);
+                  if($i == 0)
+                    $reqbranch = $result[1];
+              ?>
+                <option value="<?php echo $result[1]; ?>" <?php if(isset($branch) && $branch==$result[1]) {echo "selected";} ?> ><?php echo $result[1]; ?></option>
+                <?php } ?>
+                </optgroup>
+              </select>        
+                      </div>     
+            <button type="submit" class="btn btn-primary">GO!</button>
+            </form>  
+            </div>
+            </section>
+            
+              
+            
+          </div>
+          </div>
+          <?php
+
+            
+            $query = mysqli_query($connection, "SELECT DISTINCT lead FROM calls WHERE 'calldate' >= DATE_SUB(CURDATE(), INTERVAL $days DAY)");
+            $result = mysqli_num_rows($query);
+            $query2 = mysqli_query($connection, "SELECT DISTINCT opportunity FROM calls WHERE 'calldate' >= DATE_SUB(CURDATE(), INTERVAL $days DAY)");
+            $result2 = mysqli_num_rows($query2);
+          ?>
+
+          <!-- <div class="row" id="target">
+            <div class="col-md-6">
+                <div class="mini-stat clearfix" style="padding-top: 36px;">
+                  <span class="mini-stat-icon" style="background:blue;"><i class="fa fa-chevron-down"></i></span>
+                  <div class="mini-stat-info" style="margin-bottom: 27px;">
+                    <span><?php //echo $result; ?></span>
+                    Leads not contacted in last <?php //echo $days; ?> days
+                  </div>
+              </div>
+                 
+            </div>
+            <div class="col-md-6">
+                <div class="mini-stat clearfix" style="padding-top: 36px;">
+                  <span class="mini-stat-icon" style="background:crimson;"><i class="fa fa-chevron-down"></i></span>
+                  <div class="mini-stat-info" style="margin-bottom: 27px;">
+                    <span><?php //echo $result2; ?></span>
+                    Opportunities not contacted in last <?php// echo $days; ?> days
+                  </div>
+                </div>
+                
+              </div>
+          </div> -->
+          <div class="row">
+            <div class="col-lg-12">
+            <section class="panel">
+            <header class="panel-heading">
+                <p class="text-muted"><h4>
+                    Forecast Bar for next <?php echo $days; ?> days
+                  </h4></p>
+            </header>
+            <?php
+              if(!isset($branch))
+                $branch = $reqbranch;
+              $q = mysqli_query($connection, "SELECT * FROM opportunities WHERE branch='$branch' AND stage='Hot' AND closingdate <= DATE_SUB(CURDATE(), INTERVAL -'$days' DAY) AND closingdate >= CURDATE()");
+              $hot = mysqli_num_rows($q);
+              $q = mysqli_query($connection, "SELECT * FROM opportunities WHERE branch='$branch' AND stage='Cold' AND closingdate <= DATE_SUB(CURDATE(), INTERVAL -'$days' DAY) AND closingdate >= CURDATE()");
+              $cold = mysqli_num_rows($q);
+              $q = mysqli_query($connection, "SELECT * FROM opportunities WHERE branch='$branch' AND stage='Warm' AND closingdate <= DATE_SUB(CURDATE(), INTERVAL -'$days' DAY) AND closingdate >= CURDATE()");
+              $warm = mysqli_num_rows($q);
+            ?>
+            <div  class="panel-body">
+                  <div class="progress progress-sm">
+                    <div class="progress-bar progress-bar-success" style="width: <?php echo $cold.'%'; ?>" data-toggle="tooltip" data-placement="bottom" title="Cold opportunities = 35">
+                      <span class="sr-only">35% Complete (success)</span>
                     </div>
-                    <div class="progress-bar progress-bar-warning" style="width: 20%" data-toggle="tooltip" data-placement="bottom" title="Warm opportunities = 35">
-                        <span class="sr-only">20% Complete (warning)</span>
+                    <div class="progress-bar progress-bar-warning" style="width: <?php echo $warm.'%' ; ?>" data-toggle="tooltip" data-placement="bottom" title="Warm opportunities = 35">
+                      <span class="sr-only">20% Complete (warning)</span>
                     </div>
-                    <div class="progress-bar progress-bar-danger" style="width: 10%" data-toggle="tooltip" data-placement="bottom" title="Hot opportunities = 35">
-                        <span class="sr-only">10% Complete (danger)</span>
+                    <div class="progress-bar progress-bar-danger" style="width: <?php echo $hot.'%' ; ?>" data-toggle="tooltip" data-placement="bottom" title="Hot opportunities = 35">
+                      <span class="sr-only">10% Complete (danger)</span>
                     </div>
-                </div> 
-             </div>
-             <div id="about" class="tab-pane">About</div>
-             <div id="profile" class="tab-pane">Profile</div>
-             <div id="contact" class="tab-pane">Contact</div>
-         </div>
-     </div>
-
-
-
-  </section>
-  <form method="post" style="margin-top:40%;margin-right:-80%">
-    <input type="text" class="form-control" style="margin-left:74.7%;width:26%;margin-top:-1%" placeholder="Discount amount">
-    <button type="submit" class="btn btn-default" style="margin-left:102%;margin-top:-5.7%;width:9.85%">Go!</button>
-  </form>
-  <form method="post" style="margin-top:-10%;margin-right:16%">
-    <input type="text" class="form-control" style="margin-left:74.7%;width:55%;margin-top:1%" placeholder="Enter the number of days">
-    <button type="submit" class="btn btn-default" style="margin-left:133%;margin-top:-12.7%;width:21.5%">Go!</button>
-  </form>
-  <form method="post" style="margin-top: -10%;width: 45%;margin-right: 40%;margin-left: -42.7%;">
-    <input type="text" class="form-control" style="margin-left:74.7%;width:100%;margin-top:-1%" placeholder="Enter the number of days">
-    <button type="submit" class="btn btn-default" style="margin-left:181%;margin-top:-23.7%;width:41.85%">Go!</button>
-  </form>
-
-</div>
-
-                <div class="col-md-6" style="margin-left:-52.8%;width:42%;margin-top:27%">
-                      <div class="row" style="margin-right: 0px;width:80%;">
-                          <div class="mini-stat clearfix" style="padding-top: 36px;">
-                          <span class="mini-stat-icon" style="background:blue;"><i class="fa fa-chevron-down"></i></span>
-                              <div class="mini-stat-info" style="margin-bottom: 27px;">
-                                  <span>12</span>
-                                  Leads not contacted in last X days
-                              </div>
-                          </div>
-                      </div>
-                      <div class="row" style="margin-right: 0px;width:80%;margin-left:83%;margin-top:-35.7%">
-                          <div class="mini-stat clearfix" style="padding-top: 36px;">
-                          <span class="mini-stat-icon" style="background:crimson;"><i class="fa fa-chevron-down"></i></span>
-                              <div class="mini-stat-info" style="margin-bottom: 27px;">
-                                  <span>16</span>
-                                  Leads not contacted in last X days
-                              </div>
-                          </div>
-                      </div>
-                      <div class="row" style="margin-right: 0px;width:80%;margin-left:169%;margin-top:-35.7%">
-                          <div class="mini-stat clearfix" style="padding-top: 36px;">
-                          <span class="mini-stat-icon" style="background:orange;"><i class="fa fa-chevron-down"></i></span>
-                              <div class="mini-stat-info" style="margin-bottom: 27px;">
-                                  <span>19</span>
-                                  Leads not contacted in last X days
-                              </div>
-                          </div>
-                      </div>
                   </div>
             </div>
-</section>
-<!-- Placed js at the end of the document so the pages load faster -->
-<!--Core js-->
-<script src="js/jquery.js"></script>
-<script src="js/jquery-ui/jquery-ui-1.10.1.custom.min.js"></script>
-<script src="bs3/js/bootstrap.min.js"></script>
-<script src="js/jquery.dcjqaccordion.2.7.js"></script>
-<script src="js/jquery.scrollTo.min.js"></script>
-<script src="js/jquery.nicescroll.js"></script>
-<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="js/flot-chart/excanvas.min.js"></script><![endif]-->
-<!--Chart JS-->
-<!-- morris chart js -->
+                  </section>
+                  </div>
+          </div>
+          </section>
+          </section>
+          </section>
+  <!-- Placed js at the end of the document so the pages load faster -->
+  <!--Core js-->
+  <script src="js/jquery.js"></script>
+  <script src="js/jquery-ui/jquery-ui-1.10.1.custom.min.js"></script>
+  <script src="bs3/js/bootstrap.min.js"></script>
+  <script src="js/jquery.dcjqaccordion.2.7.js"></script>
+  <script src="js/jquery.scrollTo.min.js"></script>
+  <script src="js/jquery.nicescroll.js"></script>
+  <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="js/flot-chart/excanvas.min.js"></script><![endif]-->
+  <!--Chart JS-->
+  <!-- morris chart js -->
 
-<!--clock init-->
-<!--Chart JS-->
+  <!--clock init-->
+  <!--Chart JS-->
 
-
-<!--clock init-->
-<!--common script init for all pages-->
-<script src="js/scripts.js"></script>
-<!--script for this page-->
 
 <script type="text/javascript">
-  $( document ).ready(function() {
-    $('[data-toggle="tooltip"]').tooltip();
-  });
+      var result = <?php echo json_encode($result); ?>;
+      var result2 = <?php echo json_encode($result2); ?>;
 </script>
+
+  <!--clock init-->
+  <!--common script init for all pages-->
+  <script src="js/scripts.js"></script>
+  <!--script for this page-->
+
+  <script type="text/javascript">
+    $( document ).ready(function() {
+      $('[data-toggle="tooltip"]').tooltip();
+    });
+  </script>
 
 </body>
 
