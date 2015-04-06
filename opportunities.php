@@ -5,8 +5,8 @@
 <?php include("includes/checksession.php"); ?>
 
 <?php
-if(isset($_GET['oid']) && ($_SESSION['role'] == 'BRH' || $_SESSION['role'] == 'COH')){
-	$oid = $_GET['oid'];
+if(isset($_GET['oid']) && ($_SESSION['role'] == 'BRH' || $_SESSION['role'] == 'COH'|| $_SESSION['role'] == 'ADM')){
+    $oid = $_GET['oid'];
     $pre = mysqli_query($connection, "SELECT branch FROM opportunities WHERE opportunityid='$oid'");
     $res = mysqli_fetch_array($pre);
     if($_SESSION['role'] == 'BRH' && $res['branch'] == getbranchbyid($_SESSION['user'], $connection))
@@ -14,11 +14,9 @@ if(isset($_GET['oid']) && ($_SESSION['role'] == 'BRH' || $_SESSION['role'] == 'C
     if($_SESSION['role'] == 'COH' || $_SESSION['role'] == 'ADM')
         $query = mysqli_query($connection, "DELETE FROM opportunities WHERE opportunityid='$oid'");
 }
-
 ?>
 
 <?php
-
 if(isset($_POST['editsubmit'])){
     $oppname = mysql_prep($_POST['oppName'], $connection);
     $company = mysql_prep($_POST['company'], $connection);
@@ -35,12 +33,9 @@ if(isset($_POST['editsubmit'])){
     $oremarks = mysql_prep($_POST['oremarks'], $connection);
     $branch = getbranchbyid($assignedto , $connection);
     $oppid = intval($_POST['oppid']);
-
     $prequery = mysqli_query($connection, "DELETE FROM opportunities WHERE opportunityid='$oppid'");
     $query = mysqli_query($connection, "INSERT INTO opportunities VALUES ('','$oppname', '$company', '$lead', '$branch', STR_TO_DATE('$crdate', '%Y-%m-%d'), '$user', '$assignedto', '$status', '$stage', '$source', $amount, '$interest', STR_TO_DATE('$cdate', '%Y-%m-%d'), '$oremarks')");
-
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -90,7 +85,6 @@ if(isset($_POST['editsubmit'])){
             for(var i = 0; i < 16; i++) {
                 values[i] = document.getElementById("row"+id).cells[i].innerHTML; 
             }
-
             document.getElementById("oppid").value = id;
             document.getElementById("oppName").value = values[0];
             document.getElementById("contactCompany").value = values[15];
@@ -113,7 +107,6 @@ if(isset($_POST['editsubmit'])){
             var headRow = tbl.rows[1];
             var arrayOfHTxt = new Array();
             var arrayOfHtxtCellIndex = new Array();
-
             for (var v = 0; v < headRow.cells.length-2; v++) {
              if (headRow.cells[v].getElementsByTagName('input')[0]) {
              var Htxtbox = headRow.cells[v].getElementsByTagName('input')[0];
@@ -123,7 +116,6 @@ if(isset($_POST['editsubmit'])){
               }
              }
             }
-
             for (var i = 2; i < tbl.rows.length; i++) {
              
                 tbl.rows[i].style.display = 'table-row';
@@ -187,20 +179,20 @@ if(isset($_POST['editsubmit'])){
                     <div class="adv-table">
                     <div class="btn-group">
                     <?php if($_SESSION['role'] == 'COH' || $_SESSION['role'] == 'ADM' || $_SESSION['role'] == 'BRH'){ ?>
-					<a href="newopportunity.php">
+                    <a href="newopportunity.php">
                         <button id="editable-sample_new" class="btn btn-primary">
                             Add New Opportunity <i class="fa fa-plus"></i>
                         </button>
                     </a>
                     <?php } ?>
-					</div>
+                    </div>
                     <br><br>
                     <div class="text-left">
                             <a href="#myModal" data-toggle="modal" class="btn btn-success">
                                 Generate Quotation
                             </a>
-					</div>
-					<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade">
+                    </div>
+                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -214,14 +206,14 @@ if(isset($_POST['editsubmit'])){
                                                 <label for="OpportunityNames">Select Opportunity Name for which Quotation is to be generated</label>
                                                 <select class="form-control" id="OpportunityNames" name="oppid" required>
                                                     <?php
-														$query = mysqli_query($connection, "SELECT * FROM opportunities");
-														$rows = mysqli_num_rows($query);
-														for($i = 0; $i < $rows ; $i++){
-															$result = mysqli_fetch_array($query);
-													?>
-													<option value="<?php echo $result[0] ; ?>"><?php echo $result[1] ; ?></option>
+                                                        $query = mysqli_query($connection, "SELECT * FROM opportunities");
+                                                        $rows = mysqli_num_rows($query);
+                                                        for($i = 0; $i < $rows ; $i++){
+                                                            $result = mysqli_fetch_array($query);
+                                                    ?>
+                                                    <option value="<?php echo $result[0] ; ?>"><?php echo $result[1] ; ?></option>
                                                 <?php } ?>
-												</select>
+                                                </select>
                                             </div>
                                             <div class="form-group">
                                                 <label for="machineNos">Number of machines</label>
@@ -274,14 +266,14 @@ if(isset($_POST['editsubmit'])){
                     </tr>
                     </thead>
                     <tbody>
-					<?php
-						$query = mysqli_query($connection, "SELECT * FROM opportunities");
-						$rows = mysqli_num_rows($query);
-						for($i=0 ; $i<$rows ; $i++){
-							$result = mysqli_fetch_array($query);
+                    <?php
+                        $query = mysqli_query($connection, "SELECT * FROM opportunities");
+                        $rows = mysqli_num_rows($query);
+                        for($i=0 ; $i<$rows ; $i++){
+                            $result = mysqli_fetch_array($query);
                             $q2 = mysqli_query($connection, "SELECT companyname FROM companies WHERE companyid='$result[2]'");
                             $r2 = mysqli_fetch_array($q2);
-					?>
+                    ?>
                     <tr class="gradeX" id="<?php echo 'row'.$result[0]; ?>">
                         <td><?php echo $result[1]; ?></td>
                         <td><?php echo $r2[0]; ?></td>
@@ -304,7 +296,7 @@ if(isset($_POST['editsubmit'])){
                         <td><a class="delete" href="opportunities.php?oid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Opportunity?')">Delete</a></td>
                         <?php } ?>
                     </tr>
-					<?php } ?>
+                    <?php } ?>
                     </tbody>
                     <tfoot>
                     <tr>
@@ -369,12 +361,12 @@ if(isset($_POST['editsubmit'])){
                                         <div class="col-lg-6">
                                             <select class="form-control" id="lead" name="lead" required>
                                                 <?php
-                                                    $query = mysqli_query($connection, "SELECT datetime FROM leads WHERE customer='$req_company'");
+                                                    $query = mysqli_query($connection, "SELECT * FROM leads");
                                                     $rows = mysqli_num_rows($query);
                                                     for($i = 0; $i < $rows ; $i++){
                                                         $result = mysqli_fetch_array($query);
                                                 ?>
-                                                    <option value="<?php echo $result[0] ; ?>"><?php echo $result[0] ; ?></option>
+                                                    <option value="<?php echo $result[0] ; ?>"><?php echo $result[7] ; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </div>

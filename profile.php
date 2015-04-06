@@ -32,7 +32,7 @@ if(isset($_POST['submit'])){
     $temp_name=$_FILES["profilepic"]["tmp_name"];
     $imgtype=$_FILES["profilepic"]["type"];
     $ext= GetImageExtension($imgtype);
-    $target_path = "images/".$_SESSION['user'].".png";
+    $target_path = "images/".$_SESSION['user'];
     $id = $_SESSION['user'];
 
     
@@ -88,7 +88,7 @@ if(isset($_POST['submit'])){
               <div class="panel-body profile-information">
                <div class="col-md-5">
                  <div class="profile-pic text-center">
-                   <img src="<?php echo "images/".$_SESSION['user'].".png"; ?>" alt=""/>
+                   <img src="<?php echo "images/".$_SESSION['user']; ?>" alt=""/>
                  </div>
                  <div class="row" style="margin-top:5%;margin-left:25%">
                   <a href="#myModal-2" data-toggle="modal" class="btn btn-primary" onclick="editProfile();">

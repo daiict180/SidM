@@ -77,14 +77,14 @@ if(isset($_POST['editsubmit'])){
     <script type="text/javascript">
         function populateForm(id) {
             var values = [];
-            for(var i = 0; i < 13; i++) {
+            for(var i = 0; i < 15; i++) {
                 values[i] = document.getElementById("row"+id).cells[i].innerHTML; 
             }
             document.getElementById("calldate").value = values[0];
-            document.getElementById("callMode").value = values[1];
+            document.getElementById("callMode").value = values[13];
             document.getElementById("callfor").value = values[2];
             document.getElementById("contactCompany").value = values[11];
-            document.getElementById("opportunity").value = values[4];
+            document.getElementById("opportunity").value = values[14];
             document.getElementById("suser").value = values[12];
             document.getElementById("callNotes").value = values[6];
             document.getElementById("followup").value = values[8];
@@ -190,6 +190,8 @@ if(isset($_POST['editsubmit'])){
                         <th>Followed Up</th> 
                         <th hidden></th> 
                         <th hidden></th>
+                        <th hidden></th>
+                        <th hidden></th>
                         <th hidden></th> 
                         <th>Follow Up/Edit</th>
                         <th>Delete</th>
@@ -213,19 +215,23 @@ if(isset($_POST['editsubmit'])){
                     </thead>
                     <tbody>
 					<?php
-									$query = mysqli_query($connection, "SELECT * FROM calls");
-									$rows = mysqli_num_rows($query);
-									for($i=0 ; $i<$rows ; $i++){
-										$result = mysqli_fetch_array($query);
-                                        $q2 = mysqli_query($connection, "SELECT companyname FROM companies WHERE companyid='$result[5]'");
-                                        $r2 = mysqli_fetch_array($q2);
+						$query = mysqli_query($connection, "SELECT * FROM calls");
+						$rows = mysqli_num_rows($query);
+						for($i=0 ; $i<$rows ; $i++){
+								$result = mysqli_fetch_array($query);
+                                $q2 = mysqli_query($connection, "SELECT companyname FROM companies WHERE companyid='$result[5]'");
+                                $r2 = mysqli_fetch_array($q2);
+                                $q3 = mysqli_query($connection, "SELECT value FROM callmodes WHERE modeid='$result[2]'");
+                                $r3 = mysqli_fetch_array($q3);
+                                $q4 = mysqli_query($connection, "SELECT opportunityname FROM opportunities WHERE opportunityid='$result[7]'");
+                                $r4 = mysqli_fetch_array($q4);
 					?>
                     <tr class="gradeX"  id="<?php echo "row".$result[0] ?>">
                         <td><?php echo $result[1]; ?></td>
-                        <td><?php echo $result[2]; ?></td>
+                        <td><?php echo $r3[0]; ?></td>
                         <td><?php echo $result[4]; ?></td>
                         <td><?php echo $r2[0]; ?></td>
-                        <td><?php echo $result[7]; ?></td>
+                        <td><?php echo $r4[0]; ?></td>
                         <td><?php echo getnamebyid($result[3], $connection); ?></td>
                         <td><?php echo $result[8]; ?></td>
                         <td><?php echo $result[11]; ?></td>
@@ -238,6 +244,8 @@ if(isset($_POST['editsubmit'])){
                         <td hidden><?php echo $result[6]; ?></td>
                         <td hidden><?php echo $result[5]; ?></td>
                         <td hidden><?php echo $result[3]; ?></td>
+                        <td hidden><?php echo $result[2]; ?></td>
+                        <td hidden><?php echo $result[7]; ?></td>
 						<td><a class="edit" href="">Follow Up</a><br><a class="edit" href="#myModal-1" data-toggle="modal"  id="<?php echo $result[0]; ?>" onclick="populateForm(this.id)">Edit</a></td>
                         <td><a class="delete" href="calls.php?cid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Call?')">Delete</a></td>
                     </tr>
@@ -255,6 +263,8 @@ if(isset($_POST['editsubmit'])){
                         <th>Branch</th>
                         <th>Next Follow Up</th>  
                         <th>Followed Up</th>
+                        <th hidden></th>
+                        <th hidden></th>
                         <th hidden></th>
                         <th hidden></th>
                         <th hidden></th>
@@ -292,12 +302,12 @@ if(isset($_POST['editsubmit'])){
                                         <div class="col-lg-6">
                                             <select class="form-control" id="callMode" name="mode" required>
                                                 <?php
-                                                    $query = mysqli_query($connection, "SELECT value FROM callmodes");
+                                                    $query = mysqli_query($connection, "SELECT * FROM callmodes");
                                                     $rows = mysqli_num_rows($query);
                                                     for($i = 0; $i < $rows ; $i++){
                                                         $result = mysqli_fetch_array($query);
                                                 ?>
-                                                    <option value="<?php echo $result[0] ; ?>"> <?php echo $result[0] ; ?></option>
+                                                    <option value="<?php echo $result[0] ; ?>"> <?php echo $result[1] ; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </div>
@@ -348,12 +358,12 @@ if(isset($_POST['editsubmit'])){
                                         <div class="col-lg-6">
                                             <select class="form-control" id="lead" name="lead" required>
                                                 <?php
-                                                    $query = mysqli_query($connection, "SELECT datetime FROM leads");
+                                                    $query = mysqli_query($connection, "SELECT * FROM leads");
                                                     $rows = mysqli_num_rows($query);
                                                     for($i = 0; $i < $rows ; $i++){
                                                         $result = mysqli_fetch_array($query);
                                                 ?>
-                                                    <option value="<?php echo $result[0] ; ?>"><?php echo $result[0] ; ?></option>
+                                                    <option value="<?php echo $result[0] ; ?>"><?php echo $result[7] ; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </div>
@@ -363,12 +373,12 @@ if(isset($_POST['editsubmit'])){
                                         <div class="col-lg-6">
                                             <select class="form-control" id="opportunity" name="opportunity" required>
                                                 <?php
-                                                    $query = mysqli_query($connection, "SELECT opportunityname FROM opportunities");
+                                                    $query = mysqli_query($connection, "SELECT * FROM opportunities");
                                                     $rows = mysqli_num_rows($query);
                                                     for($i = 0; $i < $rows ; $i++){
                                                         $result = mysqli_fetch_array($query);
                                                 ?>
-                                                    <option value="<?php echo $result[0] ; ?>"><?php echo $result[0] ; ?></option>
+                                                    <option value="<?php echo $result[0] ; ?>"><?php echo $result[1] ; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </div>

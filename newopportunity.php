@@ -5,29 +5,25 @@
 <?php include("includes/checksession.php"); ?>
 
 <?php
-
 if($_SESSION['role'] == 'SAE')
     redirect_to("dashboard.php");
-
 if(isset($_POST['submit']) && ($_SESSION['role'] == 'COH'||$_SESSION['role'] == 'ADM'||$_SESSION['role'] == 'BRH')){
-	$oppname = mysql_prep($_POST['oppName'], $connection);
-	$company = mysql_prep($_POST['company'], $connection);
-	$lead = mysql_prep($_POST['lead'], $connection);
-	$crdate = mysql_prep($_POST['crdate'], $connection);
-	$user = mysql_prep($_POST['user'], $connection);
-	$assignedto = mysql_prep($_POST['assignedto'], $connection);
-	$status = mysql_prep($_POST['status'], $connection);
-	$stage = mysql_prep($_POST['stage'], $connection);
-	$source = mysql_prep($_POST['source'], $connection);
-	$amount = intval($_POST['amount']);
-	$interest = mysql_prep($_POST['interest'], $connection);
-	$cdate = mysql_prep($_POST['cdate'], $connection);
-	$oremarks = mysql_prep($_POST['oremarks'], $connection);
-	$branch = getbranchbyid($assignedto, $connection);
-
-	$query = mysqli_query($connection, "INSERT INTO opportunities VALUES ('','$oppname', '$company', '$lead', '$branch', STR_TO_DATE('$crdate', '%m-%d-%Y'), '$user', '$assignedto', '$status', '$stage', '$source', $amount, '$interest', STR_TO_DATE('$cdate', '%m-%d-%Y'), '$oremarks')");	
+    $oppname = mysql_prep($_POST['oppName'], $connection);
+    $company = mysql_prep($_POST['company'], $connection);
+    $lead = mysql_prep($_POST['lead'], $connection);
+    $crdate = mysql_prep($_POST['crdate'], $connection);
+    $user = mysql_prep($_POST['user'], $connection);
+    $assignedto = mysql_prep($_POST['assignedto'], $connection);
+    $status = mysql_prep($_POST['status'], $connection);
+    $stage = mysql_prep($_POST['stage'], $connection);
+    $source = mysql_prep($_POST['source'], $connection);
+    $amount = intval($_POST['amount']);
+    $interest = mysql_prep($_POST['interest'], $connection);
+    $cdate = mysql_prep($_POST['cdate'], $connection);
+    $oremarks = mysql_prep($_POST['oremarks'], $connection);
+    $branch = getbranchbyid($assignedto, $connection);
+    $query = mysqli_query($connection, "INSERT INTO opportunities VALUES ('','$oppname', '$company', '$lead', '$branch', STR_TO_DATE('$crdate', '%m-%d-%Y'), '$user', '$assignedto', '$status', '$stage', '$source', $amount, '$interest', STR_TO_DATE('$cdate', '%m-%d-%Y'), '$oremarks')");   
 }
-
 ?>
 
 
@@ -82,7 +78,6 @@ if(isset($_POST['submit']) && ($_SESSION['role'] == 'COH'||$_SESSION['role'] == 
                 }
                 xmlhttp.onreadystatechange = function() {
                     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                        alert(xmlhttp.responseText);
                         document.getElementById("targetDiv").innerHTML = xmlhttp.responseText;
                     }
                 }
@@ -116,20 +111,20 @@ if(isset($_POST['submit']) && ($_SESSION['role'] == 'COH'||$_SESSION['role'] == 
                                         <div class="col-lg-6">
                                              <select class="form-control" id="contactCompany" name="company" onchange="show(this.value)" required>
                                                 <?php
-													$exec = "SELECT * FROM companies ";
+                                                    $exec = "SELECT * FROM companies ";
                                                     if($_SESSION['role'] == 'BRH'){
                                                         $branch = getbranchbyid($_SESSION['user'], $connection);
                                                         $exec = $exec."WHERE branch='$branch'";
                                                     }
                                                     $query = mysqli_query($connection, $exec);
-													$rows = mysqli_num_rows($query);
-													for($i = 0; $i < $rows ; $i++){
-														$result = mysqli_fetch_array($query);
+                                                    $rows = mysqli_num_rows($query);
+                                                    for($i = 0; $i < $rows ; $i++){
+                                                        $result = mysqli_fetch_array($query);
                                                         if($i == 0)
                                                             $req_company = $result[0];
-												?>
-                                                	<option value="<?php echo $result[0] ; ?>"> <?php echo $result[1] ; ?></option>
-												<?php } ?>
+                                                ?>
+                                                    <option value="<?php echo $result[0] ; ?>"> <?php echo $result[1] ; ?></option>
+                                                <?php } ?>
                                             </select>
                                         </div>
                                     </div>
@@ -138,15 +133,15 @@ if(isset($_POST['submit']) && ($_SESSION['role'] == 'COH'||$_SESSION['role'] == 
                                         <div class="col-lg-6" id = "targetDiv">
                                             <select class="form-control" id="OpportunityForm" name="lead" required>
                                                 <?php
-													$query = mysqli_query($connection, "SELECT datetime FROM leads WHERE customer='$req_company'");
+                                                    $query = mysqli_query($connection, "SELECT * FROM leads WHERE customer='$req_company'");
                                                     $rows = 0;
                                                     if($query != false)
-													   $rows = mysqli_num_rows($query);
-													for($i = 0; $i < $rows ; $i++){
-														$result = mysqli_fetch_array($query);
-												?>
-                                                	<option value="<?php echo $result[0] ; ?>"><?php echo $result[0] ; ?></option>
-                                            	<?php } ?>
+                                                       $rows = mysqli_num_rows($query);
+                                                    for($i = 0; $i < $rows ; $i++){
+                                                        $result = mysqli_fetch_array($query);
+                                                ?>
+                                                    <option value="<?php echo $result[0] ; ?>"><?php echo $result[7] ; ?></option>
+                                                <?php } ?>
                                             </select>
                                         </div>
                                     </div>
@@ -162,13 +157,13 @@ if(isset($_POST['submit']) && ($_SESSION['role'] == 'COH'||$_SESSION['role'] == 
                                         <div class="col-lg-6">
                                             <select class="form-control" name="user" id="suser" required>
                                                 <?php
-													$query = mysqli_query($connection, "SELECT * FROM users");
-													$rows = mysqli_num_rows($query);
-													for($i = 0; $i < $rows ; $i++){
-														$result = mysqli_fetch_array($query);
-												?>
-                                                	<option value="<?php echo $result['userid'] ; ?>"> <?php echo $result['fullname'] ; ?></option>
-												<?php } ?>
+                                                    $query = mysqli_query($connection, "SELECT * FROM users");
+                                                    $rows = mysqli_num_rows($query);
+                                                    for($i = 0; $i < $rows ; $i++){
+                                                        $result = mysqli_fetch_array($query);
+                                                ?>
+                                                    <option value="<?php echo $result['userid'] ; ?>"> <?php echo $result['fullname'] ; ?></option>
+                                                <?php } ?>
                                             </select>
                                         </div>
                                     </div>
@@ -177,22 +172,22 @@ if(isset($_POST['submit']) && ($_SESSION['role'] == 'COH'||$_SESSION['role'] == 
                                         <div class="col-lg-6">
                                             <select class="form-control" name="assignedto" id="assignedto" required>
                                                 <?php
-													$exec = "SELECT * FROM users ";
+                                                    $exec = "SELECT * FROM users ";
                                                     if($_SESSION['role'] == 'BRH'){
                                                         $branch = getbranchbyid($_SESSION['user'], $connection);
                                                         $exec = $exec."WHERE branch='$branch'";
                                                     }
                                                     $query = mysqli_query($connection, $exec);
-													$rows = mysqli_num_rows($query);
-													for($i = 0; $i < $rows ; $i++){
-														$result = mysqli_fetch_array($query);
-												?>
-                                                	<option value="<?php echo $result['userid'] ; ?>"> <?php echo $result['fullname'] ; ?></option>
-												<?php } ?>
+                                                    $rows = mysqli_num_rows($query);
+                                                    for($i = 0; $i < $rows ; $i++){
+                                                        $result = mysqli_fetch_array($query);
+                                                ?>
+                                                    <option value="<?php echo $result['userid'] ; ?>"> <?php echo $result['fullname'] ; ?></option>
+                                                <?php } ?>
                                             </select>
                                         </div>
                                     </div>
-									<div class="form-group ">
+                                    <div class="form-group ">
                                         <label for="oppstatus" class="control-label col-lg-3">Status</label>
                                         <div class="col-lg-6">
                                             <select class="form-control" name="status" id="oppstatus" required>
@@ -220,13 +215,13 @@ if(isset($_POST['submit']) && ($_SESSION['role'] == 'COH'||$_SESSION['role'] == 
                                         <div class="col-lg-6">
                                             <select class="form-control" name="source"  id="lsource" required>
                                                 <?php
-													$query = mysqli_query($connection, "SELECT value FROM sources");
-													$rows = mysqli_num_rows($query);
-													for($i = 0; $i < $rows ; $i++){
-														$result = mysqli_fetch_array($query);
-												?>
-                                                	<option value="<?php echo $result[0] ; ?>"> <?php echo $result[0] ; ?></option>
-												<?php } ?>
+                                                    $query = mysqli_query($connection, "SELECT value FROM sources");
+                                                    $rows = mysqli_num_rows($query);
+                                                    for($i = 0; $i < $rows ; $i++){
+                                                        $result = mysqli_fetch_array($query);
+                                                ?>
+                                                    <option value="<?php echo $result[0] ; ?>"> <?php echo $result[0] ; ?></option>
+                                                <?php } ?>
                                             </select>
                                         </div>
                                     </div>
