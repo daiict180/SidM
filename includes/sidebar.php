@@ -20,7 +20,7 @@
         <!-- user login dropdown start-->
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                <img alt="" src="images/avatar1_small.jpg">
+                <img alt="" src="<?php echo "images/".$_SESSION['user'].".png"; ?>">
                 <span class="username"><?php echo getnamebyid($_SESSION['user'], $connection) ?></span>
                 <b class="caret"></b>
             </a>

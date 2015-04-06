@@ -129,7 +129,7 @@ if(isset($_POST['editsubmit']) && ($_SESSION['role']=='ADM'||$_SESSION['role']==
             <!-- page start-->
             <div class="row">
             <div class="col-sm-12">
-                <section class="panel">
+                <section class="panel"  style="min-width: 1024px;">
                     <header class="panel-heading">
                         Users
                     </header>

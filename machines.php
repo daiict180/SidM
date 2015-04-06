@@ -113,7 +113,7 @@ if(isset($_POST['editsubmit'])){
             <div class="row">
             <div class="col-sm-12">
                 <section class="panel">
-                    <header class="panel-heading">
+                    <header class="panel-heading" style="min-width: 1024px;">
                         Machines
                     </header>
                     <div class="panel-body">

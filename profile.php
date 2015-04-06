@@ -32,9 +32,11 @@ if(isset($_POST['submit'])){
     $temp_name=$_FILES["profilepic"]["tmp_name"];
     $imgtype=$_FILES["profilepic"]["type"];
     $ext= GetImageExtension($imgtype);
-    $imagename=date("d-m-Y")."-".time().$ext;
-    $target_path = "images/".$_SESSION['user'];
+    $target_path = "images/".$_SESSION['user'].".png";
     $id = $_SESSION['user'];
+
+    
+
     if(move_uploaded_file($temp_name, $target_path)) {
             $query_upload=mysqli_query($connection, "UPDATE users SET image_path='$target_path' WHERE userid='$id'");
         }else{
@@ -86,7 +88,7 @@ if(isset($_POST['submit'])){
               <div class="panel-body profile-information">
                <div class="col-md-5">
                  <div class="profile-pic text-center">
-                   <img src="<?php echo "images/".$_SESSION['user']; ?>" alt=""/>
+                   <img src="<?php echo "images/".$_SESSION['user'].".png"; ?>" alt=""/>
                  </div>
                  <div class="row" style="margin-top:5%;margin-left:25%">
                   <a href="#myModal-2" data-toggle="modal" class="btn btn-primary" onclick="editProfile();">

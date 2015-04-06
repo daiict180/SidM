@@ -58,6 +58,10 @@ if(isset($_POST['submit'])){
 
     $filePath = $uploadDir . $fileName;
 
+    if ( !file_exists($uploadDir) ) {
+      mkdir ($uploadDir, 0744);
+    }
+
     $result = move_uploaded_file($tmpName, $filePath);
     if (!$result) {
         exit;
