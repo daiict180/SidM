@@ -20,7 +20,7 @@
         <!-- user login dropdown start-->
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                <img alt="" src="<?php echo "images/".$_SESSION['user'].".png"; ?>">
+                <img alt="" src="<?php echo "images/".$_SESSION['user'].".jpg"; ?>">
                 <span class="username"><?php echo getnamebyid($_SESSION['user'], $connection) ?></span>
                 <b class="caret"></b>
             </a>
@@ -92,10 +92,14 @@
                         <li><a href="leadsreports.php">Leads</a></li>
                         <li><a href="openopportunityreports.php">Opportunities</a></li>
                         <li><a href="live-vs-dead-reports.php">Live/Dead Leads</a></li>
+                        <?php if($_SESSION['role'] != 'SAE'){ ?>
                         <li><a href="branchwisecharts.php">Opportunities Vs. Leads</a></li>
                         <li><a href="machinewisereport.php">Machinewise Sales</a></li>
+                        <?php } ?>
                         <li><a href="salesreport.php">Sales Report</a></li>
+                        <?php if($_SESSION['role'] != 'SAE'){ ?>
                         <li><a href="forecastchart.php">Forecast/Exception Report</a></li>
+                        <?php } ?>
                     </ul>
                 </li>
                 <li class="sub-menu">

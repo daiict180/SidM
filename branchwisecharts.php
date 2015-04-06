@@ -4,6 +4,14 @@
 <?php require_once("includes/constants.php"); ?>
 <?php include("includes/checksession.php"); ?>
 
+<?php
+
+if($_SESSION['role'] == 'SAE'){
+  redirect_to("dashboard.php");
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -136,7 +144,14 @@ $(function () {
            <div class="form-group">
             <select class="form-control" id="branch">
               <optgroup label="">
-                <?php $query = mysqli_query($connection, "SELECT * FROM branches"); 
+                <?php 
+                      $exec = "SELECT * FROM branches ";
+                      if($_SESSION['role'] == 'BRH' || $_SESSION['role'] == 'SAE'){
+                        $id = $_SESSION['user'];
+                        $branch = getbranchbyid($id, $connection);
+                        $exec = $exec."WHERE branchname='$branch'";
+                      }
+                      $query = mysqli_query($connection, $exec); 
                       $rows = mysqli_num_rows($query);
                       for($i=0; $i<$rows; $i++){
                         $result = mysqli_fetch_array($query);

@@ -34,9 +34,28 @@
     for($i = 0 ;$i < $snumber ; $i++){
       $result = mysqli_fetch_array($query);
       $sources[$i] = $result[1];
-      $q = mysqli_query($connection, "SELECT * FROM leads WHERE source='$result[1]' AND (status='New' OR status='Active')");
+      $e1 = "SELECT * FROM leads WHERE source='$result[1]' AND (status='New' OR status='Active') ";
+      if($_SESSION['role'] == 'SAE'){
+          $id = $_SESSION['user'];
+          $e1 = $e1."AND assignedto='$id'";
+        }
+        if($_SESSION['role'] == 'BRH'){
+          $branch = getbranchbyid($_SESSION['user'], $connection);
+          $e1 = $e1."AND branch='$branch'";
+        }
+      $q = mysqli_query($connection, $e1);
+
       $liveleads[$i] = mysqli_num_rows($q);
-      $q2 = mysqli_query($connection, "SELECT * FROM leads WHERE source='$result[1]' AND status='Closed'");
+      $e2 = "SELECT * FROM leads WHERE source='$result[1]' AND status='Closed' ";
+      if($_SESSION['role'] == 'SAE'){
+          $id = $_SESSION['user'];
+          $e2 = $e2."AND assignedto='$id'";
+        }
+        if($_SESSION['role'] == 'BRH'){
+          $branch = getbranchbyid($_SESSION['user'], $connection);
+          $e2 = $e2."AND branch='$branch'";
+        }
+      $q2 = mysqli_query($connection, $e2);
       $deadleads[$i] = mysqli_num_rows($q2);
     }
   ?>

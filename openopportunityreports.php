@@ -27,10 +27,28 @@
       <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
       <?php
-        $query1 = mysqli_query($connection, "SELECT MIN(totalamount) FROM opportunities");
+        $e1 =  "SELECT MIN(totalamount) FROM opportunities ";
+        if($_SESSION['role'] == 'SAE'){
+          $id = $_SESSION['user'];
+          $e1 = $e1."WHERE assignedto='$id'";
+        }
+        if($_SESSION['role'] == 'BRH'){
+          $branch = getbranchbyid($_SESSION['user'], $connection);
+          $e1 = $e1."WHERE branch='$branch'";
+        }
+        $query1 = mysqli_query($connection, $e1);
         $res = mysqli_fetch_array($query1);
         $minamount = $res['MIN(totalamount)'];
-        $query2 = mysqli_query($connection, "SELECT MAX(totalamount) FROM opportunities");
+        $e2 =  "SELECT MAX(totalamount) FROM opportunities ";
+        if($_SESSION['role'] == 'SAE'){
+          $id = $_SESSION['user'];
+          $e2 = $e2."WHERE assignedto='$id'";
+        }
+        if($_SESSION['role'] == 'BRH'){
+          $branch = getbranchbyid($_SESSION['user'], $connection);
+          $e2 = $e2."WHERE branch='$branch'";
+        }
+        $query2 = mysqli_query($connection, $e2);
         $res = mysqli_fetch_array($query2);
         $maxamount = $res['MAX(totalamount)'] +1;
 
@@ -40,7 +58,16 @@
         for($i = 0 ; $i < 10 ; $i++){
           $start = $minamount+($section*($i));
           $end = $minamount+($section*($i+1));
-          $query = mysqli_query($connection, "SELECT * FROM opportunities WHERE (status='Initial' OR status='Quoted' OR status='Negotiation') AND totalamount>='$start' AND totalamount<'$end'");
+          $e3 = "SELECT * FROM opportunities WHERE (status='Initial' OR status='Quoted' OR status='Negotiation') AND totalamount>='$start' AND totalamount<'$end' ";
+          if($_SESSION['role'] == 'SAE'){
+          $id = $_SESSION['user'];
+          $e2 = $e2."AND assignedto='$id'";
+          }
+          if($_SESSION['role'] == 'BRH'){
+            $branch = getbranchbyid($_SESSION['user'], $connection);
+            $e2 = $e2."AND branch='$branch'";
+          }
+          $query = mysqli_query($connection, $e3);
           $amountopp[$i] = mysqli_num_rows($query);
         }
 
@@ -132,14 +159,24 @@
   });
       </script>
        <?php
-        $query = mysqli_query($connection, "SELECT * FROM machines");
+        $exe = "SELECT * FROM machines ";
+        $query = mysqli_query($connection, $exe);
         $totalmachines = mysqli_num_rows($query);
         $machines = array($totalmachines);
         $machineopp = array($totalmachines);
         for($i = 0;  $i < $totalmachines ; $i++){
           $res = mysqli_fetch_array($query);
           $machines[$i] = $res[1];
-          $q = mysqli_query($connection, "SELECT * FROM opportunities WHERE productofinterest='$res[1]' AND (status='Initial' OR status='Quoted' OR status='Negotiation')");
+          $e5 = "SELECT * FROM opportunities WHERE productofinterest='$res[1]' AND (status='Initial' OR status='Quoted' OR status='Negotiation') ";
+          if($_SESSION['role'] == 'SAE'){
+          $id = $_SESSION['user'];
+          $e5 = $e5."AND assignedto='$id'";
+          }
+          if($_SESSION['role'] == 'BRH'){
+            $branch = getbranchbyid($_SESSION['user'], $connection);
+            $e5 = $e5."AND branch='$branch'";
+          }
+          $q = mysqli_query($connection, $e5);
           $machinesopp[$i] = mysqli_num_rows($q);
         }
        ?>
@@ -214,7 +251,12 @@
        </script>
 
        <?php
-        $query = mysqli_query($connection, "SELECT * FROM branches");
+       $ex = "SELECT * FROM branches ";
+       if($_SESSION['role'] == 'BRH' || $_SESSION['role'] == 'SAE'){
+          $branch = getbranchbyid($_SESSION['user'], $connection);
+          $ex = $ex."WHERE branchname='$branch'";
+       }
+        $query = mysqli_query($connection, $ex);
         $totalbranches = mysqli_num_rows($query); 
         $branches = array($totalbranches);
         $branchopp = array($totalbranches);
@@ -313,7 +355,16 @@
                 <span class="mini-stat-icon" style="background:crimson;"><i class="fa fa-chevron-up"></i></span>
                 <div class="mini-stat-info" style="margin-bottom: 27px;">
                 <?php
-                  $query = mysqli_query($connection, "SELECT * FROM opportunities WHERE (status='Initial' OR status='quoted' OR status='Negotiation')");
+                  $ex = "SELECT * FROM opportunities WHERE (status='Initial' OR status='quoted' OR status='Negotiation') ";
+                  if($_SESSION['role'] == 'BRH'){
+                    $branch = getbranchbyid($_SESSION['user'], $connection);
+                    $ex = $ex."AND branch='$branch'";
+                  }
+                  if($_SESSION['role'] == 'SAE'){
+                    $id = $_SESSION['user'];
+                    $ex = $ex."AND assignedto='$id'";
+                  }
+                  $query = mysqli_query($connection, $ex);
                   $rows = mysqli_num_rows($query);
                 ?>
                   <span><?php echo $rows; ?></span>
@@ -326,7 +377,12 @@
                 <select class="form-control" id="branch">
                   <optgroup label="">
                     <?php 
-                $query = mysqli_query($connection, "SELECT * FROM branches");
+                    $branchex = "SELECT * FROM branches ";
+                    if($_SESSION['role'] == 'BRH' || $_SESSION['role'] == 'SAE'){
+                      $branch = getbranchbyid($_SESSION['user'], $connection);
+                      $branchex = $branchex."WHERE branchname='$branch'";
+                    }
+                $query = mysqli_query($connection, $branchex);
                 $rows = mysqli_num_rows($query);
                 for($i =0 ; $i < $rows ; $i++){
                   $res = mysqli_fetch_array($query);
@@ -353,13 +409,19 @@
             
           <div class="row">
             <div class="col-md-6">
+            <?php if($_SESSION['role'] != 'SAE'){ ?>
               <section class="panel">
                 <div class="panel-body">
                     <div id="branchChart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
                 </div>
               </section>
+              <?php } ?>
             </div>
+             <?php if($_SESSION['role'] != 'SAE'){ ?>
              <div class="col-md-6">
+             <?php } else{ ?>
+             <div class="col-md-12">
+             <?php } ?>
               <section class="panel">
                 <div class="panel-body">
                   <div id="amountChart" style="min-width: 300px; height: 400px; margin: 0 auto"></div>
@@ -383,7 +445,12 @@
     </section>
 
 <?php
-        $query = mysqli_query($connection, "SELECT * FROM users WHERE branch='$requiredbranch'");
+        $ex = "SELECT * FROM users WHERE branch='$requiredbranch' ";
+        if($_SESSION['role'] == 'SAE'){
+          $id = $_SESSION['user'];
+          $ex = $ex."AND userid='$id'";
+        }
+        $query = mysqli_query($connection, $ex);
         $totalemp = mysqli_num_rows($query);
         $empid = array($totalemp);
         $emp = array($totalemp);

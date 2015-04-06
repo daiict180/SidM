@@ -27,7 +27,13 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <?php
-      $query = mysqli_query($connection, "SELECT * FROM branches");
+      
+      $exec = "SELECT * FROM branches ";
+      if($_SESSION['role'] == 'SAE' || $_SESSION['role'] == 'BRH'){
+        $branch = getbranchbyid($_SESSION['user'], $connection);
+        $exec = $exec."WHERE branchname='$branch'";
+      }
+      $query = mysqli_query($connection, $exec);
       $rows = mysqli_num_rows($query);
       $branches = array($rows);
       $branchleads = array($rows);
@@ -121,7 +127,7 @@
                    yAxis: {
                        min: 0,
                        title: {
-                           text: 'Total Open Opportunities'
+                           text: 'Total Open Leads'
                        }
                    },
                    legend: {
@@ -133,7 +139,7 @@
                        }
                    },
                    series: [{
-                       name: 'Open Opportunities',
+                       name: 'Open Leads',
                        data: onumber
                    }]
                });
@@ -150,8 +156,13 @@
               <section class = "panel-body"> 
               <select class="form-control" id="branch">
               <optgroup label="">
-              <?php 
-                $query = mysqli_query($connection, "SELECT * FROM branches");
+              <?php
+                $exec = "SELECT * FROM branches ";
+                if($_SESSION['role'] == 'BRH' || $_SESSION['role'] == 'SAE'){
+                  $branch = getbranchbyid($_SESSION['user'], $connection);
+                  $exec = $exec."WHERE branchname='$branch'";
+                }
+                $query = mysqli_query($connection, $exec);
                 $rows = mysqli_num_rows($query);
                 for($i =0 ; $i < $rows ; $i++){
                   $res = mysqli_fetch_array($query);
@@ -170,7 +181,16 @@
                 <span class="mini-stat-icon" style="background:crimson;"><i class="fa fa-chevron-up"></i></span>
                 <div class="mini-stat-info" >
                 <?php
-                  $query = mysqli_query($connection, "SELECT * FROM leads");
+                  $exec = "SELECT * FROM leads ";
+                  if($_SESSION['role']=='BRH'){
+                    $branch = getbranchbyid($_SESSION['user'], $connection);
+                    $exec = $exec."WHERE branch='$branch'";
+                  }
+                  if($_SESSION['role']=='SAE'){
+                    $id = $_SESSION['user'];
+                    $exec = $exec."WHERE assignedto=$id";
+                  }
+                  $query = mysqli_query($connection, $exec);
                   $rows = mysqli_num_rows($query);
                 ?>
                   <span><?php echo $rows; ?></span>
@@ -180,8 +200,11 @@
             </div>
             </div>
           <div class="row">
+          <?php if($_SESSION['role']!='SAE'){ ?>
             <div class="col-md-6">
-              
+              <?php } else {?>
+              <div class="col-md-12">
+              <?php } ?>
               <section class="panel">
                   <div class="panel-body">
                     <div id="barChart" style="min-width: 310px; max-width: 800px; height: 400px; margin: 0 auto"></div>
@@ -189,11 +212,14 @@
               </section>
             </div>
             <div class="col-md-6">
+              <?php if($_SESSION['role']!='SAE'){ ?>
               <section class="panel">
                 <div class="panel-body">
+                
                   <div id="branchChart" style="width:100%"></div>
                 </div>
               </section>
+              <?php } ?>
             </div>
           </div>
         </section>
@@ -201,7 +227,12 @@
         
     </section>
     <?php
-      $query = mysqli_query($connection, "SELECT * FROM users WHERE branch='$requiredbranch'");
+      $ex = "SELECT * FROM users WHERE branch='$requiredbranch' ";
+      if($_SESSION['role'] == 'SAE'){
+        $id = $_SESSION['user'];
+        $ex = $ex."AND userid='$id'";
+      }
+      $query = mysqli_query($connection, $ex);
       $totalemp = mysqli_num_rows($query);
       $emp = array($totalemp);
       $onumber = array($totalemp);
@@ -209,7 +240,7 @@
       for($i = 0 ; $i < $totalemp ; $i++){
           $result = mysqli_fetch_array($query);
           $emp[$i] = $result[1];
-          $q = mysqli_query($connection, "SELECT * FROM opportunities WHERE assignedto='$result[0]' AND (status='Initial' OR status='Quoted' OR status='Negotiated')");
+          $q = mysqli_query($connection, "SELECT * FROM leads WHERE assignedto='$result[0]' AND (status='New' OR status='Active')");
           $onumber[$i] = mysqli_num_rows($q);
       }
     ?>

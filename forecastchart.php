@@ -5,8 +5,14 @@
 <?php include("includes/checksession.php"); ?>
 
 <?php
+
+
+if($_SESSION['role'] == 'SAE'){
+  redirect_to("dashboard.php");
+}
+
 $days = 7;
-if(isset($_POST['days']) && isset($_POST['branch'])){
+if(isset($_POST['days']) && isset($_POST['branch']) && $_POST['branch']!="" && $_POST['days']!="" && $_POST['days']!=0){
   $days = $_POST['days'];
   $branch = $_POST['branch'];
 }
@@ -71,7 +77,12 @@ if(isset($_POST['days']) && isset($_POST['branch'])){
                         <select class="form-control" id="branch1" name="branch">
                 <optgroup label="">
                   <?php
-                $query = mysqli_query($connection, "SELECT * FROM branches");
+                  $e = "SELECT * FROM branches ";
+                  if($_SESSION['role'] == 'BRH' || $_SESSION['role'] == 'SAE'){
+                    $branch = getbranchbyid($_SESSION['user'], $connection);
+                    $e = $e."WHERE branchname='$branch'";
+                  }
+                $query = mysqli_query($connection, $e);
                 $rows = mysqli_num_rows($query);
                 for($i = 0 ;$i <$rows ; $i++){
                   $result = mysqli_fetch_array($query);
