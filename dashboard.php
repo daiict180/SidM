@@ -459,7 +459,7 @@ $(function () {
             <!-- </div> -->
             <div class="row">
             <div class="col-sm-12">
-                <section class="panel" style="min-width: 1024px;">
+                <section class="panel" style="min-width: 1024px;>"
                     <header class="panel-heading">
                         Calls Due Since last 15 days
                         <span class="tools pull-right">
@@ -515,7 +515,7 @@ $(function () {
                         <?php } else if($result[10] == "No"){ ?>
                         <td><span class="label label-danger">No</span></td>
                         <?php } ?>
-                        <td><a class="edit" href="">Follow Up</a></td>
+                        <td><a class="edit" href="newcall.php?cid=<?php echo $result[0]; ?>">Follow Up</a></td>
                     </tr>
                     <?php  } ?>
                     </tbody>
