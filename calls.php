@@ -109,26 +109,16 @@ if(isset($_POST['editsubmit'])){
              }
             }
 
-            for (var i = 2; i < tbl.rows.length; i++) {
-             
+            for (var i = 2; i < tbl.rows.length; i++) {             
                 tbl.rows[i].style.display = 'table-row';
-             
                 for (var v = 0; v < arrayOfHTxt.length; v++) {
-             
                     var CurCell = tbl.rows[i].cells[arrayOfHtxtCellIndex[v]];
-             
                     var CurCont = CurCell.innerHTML.replace(/<[^>]+>/g, "");
-             
                     var reg = new RegExp(arrayOfHTxt[v] + ".*", "i");
-             
                     if (CurCont.match(reg) == null) {
-             
                         tbl.rows[i].style.display = 'none';
-             
                     }
-             
                 }
-             
             }
         } 
     </script>
@@ -246,7 +236,7 @@ if(isset($_POST['editsubmit'])){
                         <td hidden><?php echo $result[3]; ?></td>
                         <td hidden><?php echo $result[2]; ?></td>
                         <td hidden><?php echo $result[7]; ?></td>
-						<td><a class="edit" href="">Follow Up</a><br><a class="edit" href="#myModal-1" data-toggle="modal"  id="<?php echo $result[0]; ?>" onclick="populateForm(this.id)">Edit</a></td>
+						<td><a class="edit" href="newcall.php?cid=<?php echo $result[0] ; ?>" href="">Follow Up</a><br><a class="edit" href="#myModal-1" data-toggle="modal"  id="<?php echo $result[0]; ?>" onclick="populateForm(this.id)">Edit</a></td>
                         <td><a class="delete" href="calls.php?cid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Call?')">Delete</a></td>
                     </tr>
 					<?php  } ?>

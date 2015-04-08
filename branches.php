@@ -15,17 +15,33 @@ if(isset($_GET['bid']) && ($_SESSION['role']=='ADM'||$_SESSION['role']=='COH')){
 <?php
 if(isset($_POST['submit']) && ($_SESSION['role']=='ADM'||$_SESSION['role']=='COH')){
 	$branch = $_POST['Branch'];
+    $address = $_POST['BranchAddress'];
 	$active = $_POST['active'];
-	$query = mysqli_query($connection, "INSERT INTO branches VALUES ('', '$branch', '$active')");
+    $data_arr = geocode($address);
+ 
+    // if able to geocode the address
+    if($data_arr){
+         
+        $latitude = $data_arr[0];
+        $longitude = $data_arr[1];
+    }
+	$query = mysqli_query($connection, "INSERT INTO branches VALUES ('', '$branch', '$active','$address','$latitude','$longitude')");
 }
 
 if(isset($_POST['editsubmit'])){
     $branchid = $_POST['branchid'];
     $branch = $_POST['ebranch'];
+    $address = $_POST['ebranchAddress'];
     $active = $_POST['eactive'];
-
+    $data_arr = geocode($address);
+ 
+    // if able to geocode the address
+    if($data_arr){
+        $latitude = $data_arr[0];
+        $longitude = $data_arr[1];
+    }
     $prequery = mysqli_query($connection, "DELETE FROM branches WHERE branchid='$branchid'");
-    $query = mysqli_query($connection, "INSERT INTO branches VALUES ('$branchid', '$branch', '$active')");
+    $query = mysqli_query($connection, "INSERT INTO branches VALUES ('$branchid', '$branch', '$active', '$address','$latitude','$longitude')");
 }
 
 ?>
@@ -51,11 +67,12 @@ if(isset($_POST['editsubmit'])){
     <script type="text/javascript">
         function populateForm(id) {
             var values = [];
-            for(var i = 0; i < 2; i++) {
+            for(var i = 0; i < 3; i++) {
                 values[i] = document.getElementById("row"+id).cells[i].innerHTML; 
             }
             document.getElementById("ebranchName").value = values[0];
-            document.getElementById("eactive").value = values[1];
+            document.getElementById("ebranchAddress").value=values[1];
+            document.getElementById("eactive").value = values[2];
             document.getElementById("branchid").value = id;
         } 
     </script>
@@ -78,6 +95,12 @@ if(isset($_POST['editsubmit'])){
                                         <label for="BranchName" class="control-label col-lg-3">Branch Name</label>
                                         <div class="col-lg-6">
                                             <input class="form-control " id="branchName" type="text" name="Branch" required/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="BranchAddress" class="control-label col-lg-3">Branch Address</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="branchAddress" type="text" name="BranchAddress" required/>
                                         </div>
                                     </div>
                                     <div class="form-group ">
@@ -112,6 +135,7 @@ if(isset($_POST['editsubmit'])){
                                 <thead>
                                 <tr>
                                     <th>Branch Name</th>
+                                    <th>Branch Address</th>
                                     <th>Active</th>
                                     <?php if($_SESSION['role']=='ADM'||$_SESSION['role']=='COH'){ ?>
                                     <th>Edit</th>
@@ -128,6 +152,7 @@ if(isset($_POST['editsubmit'])){
 								?>
                                 <tr  id="<?php echo "row".$result[0]; ?>">
                                     <td><?php echo $result[1]; ?></td>
+                                    <td><?php echo $result[3]; ?></td>
                                     <td><?php echo $result[2]; ?></td>
                                     <?php if($_SESSION['role']=='ADM'||$_SESSION['role']=='COH'){ ?>
                                     <td><a class="edit" href="#myModal-1" data-toggle="modal" id="<?php echo $result[0]; ?>" onclick="populateForm(this.id)">Edit</a></td>
@@ -151,6 +176,12 @@ if(isset($_POST['editsubmit'])){
                                         <label for="eBranchName" class="control-label col-lg-3">Branch Name</label>
                                         <div class="col-lg-6">
                                             <input class="form-control " id="ebranchName" type="text" name="ebranch" required/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="eBranchAddress" class="control-label col-lg-3">Branch Address</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control " id="ebranchAddress" type="text" name="ebranchAddress" required/>
                                         </div>
                                     </div>
                                     <div class="form-group ">

@@ -23,9 +23,24 @@ if(isset($_POST['submit']) && ($_SESSION['role'] == 'COH'||$_SESSION['role'] == 
     $oremarks = mysql_prep($_POST['oremarks'], $connection);
     $branch = getbranchbyid($assignedto, $connection);
     $query = mysqli_query($connection, "INSERT INTO opportunities VALUES ('','$oppname', '$company', '$lead', '$branch', STR_TO_DATE('$crdate', '%m-%d-%Y'), '$user', '$assignedto', '$status', '$stage', '$source', $amount, '$interest', STR_TO_DATE('$cdate', '%m-%d-%Y'), '$oremarks')");   
-}
-?>
 
+    if(isset($_GET['lid'])){
+        $leadid = $_GET['lid'];
+        $query = mysqli_query($connection, "UPDATE leads SET status='Converted' WHERE leadid='$leadid'");
+    }
+}
+
+if(isset($_GET['lid'])){
+    $leadid = $_GET['lid'];
+    $query = mysqli_query($connection, "SELECT * FROM leads WHERE leadid='$leadid'");
+    $convertlead = mysqli_fetch_array($query);
+}
+
+?>
+<script type="text/javascript">
+var convertlead = <?php echo json_encode($convertlead); ?>;
+
+</script>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -133,7 +148,7 @@ if(isset($_POST['submit']) && ($_SESSION['role'] == 'COH'||$_SESSION['role'] == 
                                         <div class="col-lg-6" id = "targetDiv">
                                             <select class="form-control" id="OpportunityForm" name="lead" required>
                                                 <?php
-                                                    $query = mysqli_query($connection, "SELECT * FROM leads WHERE customer='$req_company'");
+                                                    $query = mysqli_query($connection, "SELECT * FROM leads");
                                                     $rows = 0;
                                                     if($query != false)
                                                        $rows = mysqli_num_rows($query);
@@ -148,7 +163,7 @@ if(isset($_POST['submit']) && ($_SESSION['role'] == 'COH'||$_SESSION['role'] == 
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Creation Date</label>
                                         <div class="col-md-6 col-xs-11">
-                                            <input class="form-control form-control-inline input-medium default-date-picker" name="crdate" size="16" type="text" value="" />
+                                            <input class="form-control form-control-inline input-medium default-date-picker" name="crdate" size="16" type="text" value="" id="crdate"/>
                                             <!-- <span class="help-block">Select date</span> -->
                                         </div>
                                     </div>
@@ -277,6 +292,12 @@ if(isset($_POST['submit']) && ($_SESSION['role'] == 'COH'||$_SESSION['role'] == 
 </section>
 <!-- Placed js at the end of the document so the pages load faster -->
 <!--Core js-->
+<script type="text/javascript">
+    document.getElementById("contactCompany").value = convertlead[1];
+    document.getElementById("OpportunityForm").value = convertlead[0];
+    document.getElementById("assignedto").value = convertlead[2];
+    document.getElementById("lsource").value = convertlead[5];
+</script>
 <script src="js/jquery.js"></script>
 <script src="js/jquery-1.8.3.min.js"></script>
 <script src="bs3/js/bootstrap.min.js"></script>

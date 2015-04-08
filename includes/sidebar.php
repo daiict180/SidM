@@ -126,8 +126,8 @@
                         <li><a href="maps.php">Nearby Clients</a></li>
                         <li><a href="clientroutes.php">Routes</a></li>
                         <li><a href="filemanager.php">Document Manager</a></li>
-                        <li><a href="basic_table.html">Group Email</a></li>
-                        
+                        <li><a href="composeemail.php">Transanctional Email</a></li>
+                        <li><a href="https://login.mailchimp.com/" target="_blank">Group Email</a></li>
                     </ul>
                 </li>
             </ul>            

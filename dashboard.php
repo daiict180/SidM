@@ -211,7 +211,7 @@ $(function () {
         <section class="wrapper">
              <div class="row">
                 <div class="col-md-3">
-                    <section class="panel" >
+                    <section class="panel">
                         <div class="panel-body" > 
                             <div id="chart1" style="height:250px"></div>   
                         </div>
@@ -459,7 +459,7 @@ $(function () {
             <!-- </div> -->
             <div class="row">
             <div class="col-sm-12">
-                <section class="panel">
+                <section class="panel" style="min-width: 1024px;">
                     <header class="panel-heading">
                         Calls Due Since last 15 days
                         <span class="tools pull-right">

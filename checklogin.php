@@ -18,8 +18,8 @@ if(isset($_POST['submit'])){
 		
 		$username = mysql_prep($username, $connection);
 		$password = md5(mysql_prep($password, $connection));
-		
-		$query = mysqli_query($connection,"SELECT * from users where password='$password' AND email='$username'");
+
+		$query = mysqli_query($connection,"SELECT * from users where password='$password' AND (Left(email,InStr(email,'@')-1)='$username' || email='$username')");
 		if($query == FALSE){
 			$error = "Username or Password is invalid";
 			echo mysqli_error($connection);

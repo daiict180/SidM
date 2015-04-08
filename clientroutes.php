@@ -26,17 +26,57 @@
     <link rel="stylesheet" type="text/css" href="js/select2/select2.css" />
 
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=false"></script>
+
+    <?php
+        $query = mysqli_query($connection, "SELECT * FROM companies");
+        $totalcompany = intval(mysqli_num_rows($query));
+        $companies = array($totalcompany);
+        $latitudes = array($totalcompany);
+        $longitudes = array($totalcompany);
+        $address = array($totalcompany);
+        $branch = getbranchbyid($_SESSION['user'], $connection);
+        $q = mysqli_query($connection, "SELECT * FROM branches WHERE branchname='$branch'");
+        $res = mysqli_fetch_array($q);
+        $latitude = $res[4];
+        $longitude = $res[5];
+
+        for($i = 0 ; $i < $totalcompany ; $i++){
+            $result = mysqli_fetch_array($query);
+            $companies[$i] = $result[1];
+            $latitudes[$i] = $result[21];
+            $longitudes[$i] = $result[22];
+            $address[$i] = $result[3].$result[4].$result[5].$result[7];
+        }
+
+    ?>
     <script>
+        var companies = <?php echo json_encode($companies); ?>;
+        var latitudes = <?php echo json_encode($latitudes); ?>;
+        var longitudes = <?php echo json_encode($longitudes); ?>;
+        var address = <?php echo json_encode($address); ?>;
+        var l = <?php echo json_encode($totalcompany); ?>;
+        var branchlatitude = <?php echo json_encode($latitude); ?>;
+        var branchlongitude = <?php echo json_encode($longitude); ?>;
+
     var map;
-    var locations = [{cname: "abc", lat:23.19, lon:72.63, place:"Infocity, Gandhinagar, India"}, 
-                    {cname: "xyz",lat:23.02, lon:72.57, place:"Ahmedabad, India"}, 
-                    {cname: "qwer", lat:21.17, lon:72.83, place:"Surat, India"}];
-    
+    // var locations = [{cname: "abc", lat:23.19, lon:72.63, place:"Infocity, Gandhinagar, India"}, 
+    //                 {cname: "xyz",lat:23.02, lon:72.57, place:"Ahmedabad, India"}, 
+    //                 {cname: "qwer", lat:21.17, lon:72.83, place:"Surat, India"}];
+    var locations = [];
+        //var len = oFullResponse.results.length;
+        for (var i = 0; i < l; i++) {
+            locations.push({
+                cname: companies[i],
+                lat: latitudes[i],
+                lon: longitudes[i],
+                place: address[i]
+            });
+        }
     var directionsDisplay;
     var directionsService = new google.maps.DirectionsService();
     function initialize() {
       directionsDisplay = new google.maps.DirectionsRenderer();
-      var abad = new google.maps.LatLng(23.02, 72.57);
+      var abad = new google.maps.LatLng(branchlatitude, branchlongitude);
       var mapOptions = {
         zoom: 6,
         center: abad
@@ -112,9 +152,14 @@
                             </div> 
                             <div class="form-group">
                                 <select multiple name="e9" id="e9" style="width:300px" class="populate">
-                                <option value="0">abc</option>
-                                <option value="1">xyz</option>
-                                <option value="2">qwer</option>
+                                <?php
+                                  $query = mysqli_query($connection, "SELECT * FROM companies");
+                                  $rows = mysqli_num_rows($query);
+                                  for($i = 0 ; $i < $rows ; $i++){
+                                    $result = mysqli_fetch_array($query);
+                                ?>
+                                <option value="<?php echo $i; ?>"><?php echo $result[1]; ?></option>
+                                <?php } ?>
                                 <!-- <option value="3">qwsdaer</option>
                                 <option value="4">asdqwer</option>
                                 <option value="5">qwgher</option>

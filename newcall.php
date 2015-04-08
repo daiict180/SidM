@@ -6,6 +6,12 @@
 
 <?php
 
+if(isset($_GET['cid'])){
+    $cid = $_GET['cid'];
+    $query = mysqli_query($connection, "SELECT * FROM calls WHERE callid='$cid'");
+    $populate = mysqli_fetch_array($query);
+}
+
 if(isset($_POST['submit'])){
 	$calldate = mysql_prep($_POST['calldate'], $connection);
 	$mode = mysql_prep($_POST['mode'], $connection);
@@ -18,10 +24,19 @@ if(isset($_POST['submit'])){
 	$followup = mysql_prep($_POST['followup'], $connection);
 	$branch = getbranchbyid($user, $connection);
 
-	$query = mysqli_query($connection, "INSERT INTO calls VALUES ('', STR_TO_DATE('$calldate', '%m-%d-%Y'), '$mode', '$user', '$for', '$company', '$lead', '$opportunity', '$notes', STR_TO_DATE('$followup', '%m-%d-%Y'),'No','$branch')");	
+	$query = mysqli_query($connection, "INSERT INTO calls VALUES ('', STR_TO_DATE('$calldate', '%m-%d-%Y'), '$mode', '$user', '$for', '$company', '$lead', '$opportunity', '$notes', STR_TO_DATE('$followup', '%m-%d-%Y'),'No','$branch')");
+    if(isset($_GET['cid'])){
+        $cid = $_GET['cid'];
+        $q = mysqli_query($connection, "UPDATE calls SET followed='Yes' WHERE callid=$cid");
+    }
+    
+    redirect_to("calls.php");
 }
 
 ?>
+<script type="text/javascript">
+    var populate = <?php echo json_encode($populate); ?>;
+</script>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -98,7 +113,7 @@ if(isset($_POST['submit'])){
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Call Date</label>
                                         <div class="col-md-6 col-xs-11">
-                                            <input class="form-control form-control-inline input-medium default-date-picker"  size="16" name="calldate" type="text" value="" required/>
+                                            <input class="form-control form-control-inline input-medium default-date-picker"  size="16" name="calldate" id = "calldate" type="text" value="" required/>
                                             <!-- <span class="help-block">Select date</span> -->
                                         </div>
                                     </div>
@@ -175,12 +190,12 @@ if(isset($_POST['submit'])){
                                         <div class="col-lg-6">
                                             <select class="form-control" name="lead" id="lead" required>
                                                 <?php
-													$query = mysqli_query($connection, "SELECT * FROM leads WHERE customer='$req_company'");
+													$query = mysqli_query($connection, "SELECT * FROM leads");
 													$rows = mysqli_num_rows($query);
 													for($i = 0; $i < $rows ; $i++){
 														$result = mysqli_fetch_array($query);
 												?>
-                                                	<option value="<?php echo $result[7] ; ?>"><?php echo $result[0] ; ?></option>
+                                                	<option value="<?php echo $result[0] ; ?>"><?php echo $result[7] ; ?></option>
                                             	<?php } ?>
                                             </select>
                                         </div>
@@ -190,12 +205,12 @@ if(isset($_POST['submit'])){
                                         <div class="col-lg-6">
                                             <select class="form-control" id="opportunity" name="opportunity" required>
                                                 <?php
-													$query = mysqli_query($connection, "SELECT opportunityname FROM opportunities WHERE customer='$req_company'");
+													$query = mysqli_query($connection, "SELECT * FROM opportunities");
 													$rows = mysqli_num_rows($query);
 													for($i = 0; $i < $rows ; $i++){
 														$result = mysqli_fetch_array($query);
 												?>
-                                                	<option value="<?php echo $result[0] ; ?>"><?php echo $result[0] ; ?></option>
+                                                	<option value="<?php echo $result[0] ; ?>"><?php echo $result[1] ; ?></option>
                                             	<?php } ?>
                                             </select>
                                         </div>
@@ -232,6 +247,23 @@ if(isset($_POST['submit'])){
 </section>
 <!-- Placed js at the end of the document so the pages load faster -->
 <!--Core js-->
+<script type="text/javascript">
+Date.prototype.yyyymmdd = function() {
+   var yyyy = this.getFullYear().toString();
+   var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based
+   var dd  = this.getDate().toString();
+   return yyyy +"-"+ (mm[1]?mm:"0"+mm[0]) +"-"+ (dd[1]?dd:"0"+dd[0]); // padding
+  };
+
+d = new Date();
+
+    //alert();
+    document.getElementById("suser").value = populate[3];
+    document.getElementById("callfor").value = populate[4];
+    document.getElementById("contactCompany").value = populate[5];
+    document.getElementById("lead").value = populate[6];
+    document.getElementById("opportunity").value = populate[7];
+</script>
 <script src="js/jquery.js"></script>
 <script src="js/jquery-1.8.3.min.js"></script>
 <script src="bs3/js/bootstrap.min.js"></script>

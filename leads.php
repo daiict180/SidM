@@ -29,11 +29,12 @@ if(isset($_POST['editsubmit'])){
     $leadid = intval($_POST['leadid']);
     
     $pquery = mysqli_query($connection, "SELECT createdby FROM leads WHERE leadid='$leadid'");
-    $result = $mysqli_fetch_array($pquery);
+    $result =   mysqli_fetch_array($pquery);
     $by = $result[0];
 
     $prequery = mysqli_query($connection, "DELETE FROM leads WHERE leadid='$leadid'");
-    $query = mysqli_query($connection, "INSERT INTO leads VALUES ('$leadid','$company', '$user', '$status', '$branch', '$source', '$mremarks', now()), '$by'");
+    $query = mysqli_query($connection, "INSERT INTO leads VALUES ('$leadid', '$company', '$user', '$status', '$branch', '$source', '$mremarks', now(), $by)");
+    echo mysqli_error($connection);
 }
 
 ?>
@@ -155,6 +156,7 @@ if(isset($_POST['editsubmit'])){
                         <th hidden></th>
                         <th hidden></th>
                         <?php if($_SESSION['role'] == 'BRH'||$_SESSION['role'] == 'COH'||$_SESSION['role'] == 'ADM'){ ?>
+                        <th>Convert</th>
                         <th>Edit</th>
                         <th>Delete</th>
                         <?php } ?>
@@ -199,6 +201,7 @@ if(isset($_POST['editsubmit'])){
                         <td hidden><?php echo $result[2]; ?></td>
                         <td hidden><?php echo $result[1]; ?></td>
                         <?php if($_SESSION['role'] == 'BRH'||$_SESSION['role'] == 'COH'||$_SESSION['role'] == 'ADM'){ ?>
+                        <td><a class="edit" href="newopportunity.php?lid=<?php echo $result[0]; ?>">Convert</a></td>
                         <td><a class="edit" href="#myModal-1" data-toggle="modal"  id = "<?php echo $result[0]; ?>" onclick="populateForm(this.id)">Edit</a></td>
                         <td><a class="delete" href="leads.php?lid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Lead?')">Delete</a></td>
                         <?php } ?>
@@ -217,6 +220,7 @@ if(isset($_POST['editsubmit'])){
                         <th hidden></th>
                         <th hidden></th>
                         <?php if($_SESSION['role'] == 'BRH'||$_SESSION['role'] == 'COH'||$_SESSION['role'] == 'ADM'){ ?>
+                        <th>Convert</th>
                         <th>Edit</th>
                         <th>Delete</th>
                         <?php } ?>

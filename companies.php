@@ -3,16 +3,29 @@
 <?php require_once("includes/functions.php"); ?>
 <?php require_once("includes/constants.php"); ?>
 <?php include("includes/checksession.php"); ?>
+<?php include("MailChimp.php"); ?>
+
 
 <?php
 if(isset($_GET['cid']) && ($_SESSION['role']=='ADM' || $_SESSION['role']=='COH' || $_SESSION['role']=='BRH')){
 	$cid = $_GET['cid'];
-    $prequery = mysqli_query($connection, "SELECT branch FROM companies WHERE companyid='$cid'");
+    $prequery = mysqli_query($connection, "SELECT * FROM companies WHERE companyid='$cid'");
     $r = mysqli_fetch_array($prequery);
     if($_SESSION['role'] == 'BRH' && $r['branch'] == getbranchbyid($_SESSION['role'], $connection))
         $query = mysqli_query($connection, "DELETE FROM companies WHERE companyid='$cid'");
     if($_SESSION['role']=='ADM' || $_SESSION['role']=='COH')
         $query = mysqli_query($connection, "DELETE FROM companies WHERE companyid='$cid'");
+
+    $email = $r['email'];
+    $api = '834fa0f70901971dedfc9919ecedb094-us10';
+    $MailChimp = new \Drewm\MailChimp($api);
+    $result = $MailChimp->call('lists/unsubscribe', array(
+                    'id'                => 'f2131d3e92',
+                    'email'             => array('email'=>$email),
+                    //'merge_vars'        => array('FNAME'=>'Davy', 'LNAME'=>'Jones'),
+                    'delete_member'      => true
+                
+                ));
 }
 
 ?>
@@ -55,7 +68,21 @@ if(isset($_POST['editsubmit'])){
 
     $prequery = mysqli_query($connection, "DELETE FROM companies WHERE companyid='$companyid'");
     $query = mysqli_query($connection, "INSERT INTO companies VALUES ('$companyid','$name', '$oname', '$add1', '$add2', '$city', $pin, '$state', '$country', '$source', '$remarks', '$type', '$branch', '$email', '$bphone', '$mobile', '$phone2', '$fax', '$url', '$segment', '$experience', '$latitude', '$longitude')");
-}
+
+    $api = '834fa0f70901971dedfc9919ecedb094-us10';
+    $MailChimp = new \Drewm\MailChimp($api);
+    $result = $MailChimp->call('lists/subscribe', array(
+                    'id'                => 'f2131d3e92',
+                    'email'             => array('email'=>$email),
+                    //'merge_vars'        => array('FNAME'=>'Davy', 'LNAME'=>'Jones'),
+                    'double_optin'      => false,
+                    'update_existing'   => true,
+                    'replace_interests' => false,
+                    'send_welcome'      => false,
+                ));
+    
+    }
+
 
 ?>
 

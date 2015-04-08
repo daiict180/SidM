@@ -32,6 +32,7 @@
         $latitudes = array($totalcompany);
         $longitudes = array($totalcompany);
         $address = array($totalcompany);
+        
         for($i = 0 ; $i < $totalcompany ; $i++){
             $result = mysqli_fetch_array($query);
             $companies[$i] = $result[1];
