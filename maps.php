@@ -130,11 +130,10 @@
         mapTypeId:google.maps.MapTypeId.ROADMAP
         };
         map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
-        initializeMap(0);    
+        for(i=0;i<l;i++) {
+            initializeMap(i);    
+        }
         
-        initializeMap(1);
-        
-        initializeMap(2);
     }
     google.maps.event.addDomListener(window, 'load', initialize);
     </script>

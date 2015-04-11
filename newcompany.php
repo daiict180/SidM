@@ -36,7 +36,7 @@ if(isset($_POST['submit'])){
 	$remarks = mysql_prep($_POST['remarks'],$connection);
 	$experience = mysql_prep($_POST['experience'],$connection);
 
-    $address = $add1+$add2+$city+$state;
+    $address = $add1.",".$add2.",".$city.",".$state;
     
     $data_arr = geocode($address);
  
@@ -101,7 +101,7 @@ if(isset($_POST['submit'])){
                         </header>
                         <div class="panel-body">
                             <div class=" form">
-                                <form class="cmxform form-horizontal " id="commentForm" method="post" action="#">
+                                <form class="cmxform form-horizontal " id="commentForm" method="post" action="#" onsubmit="return modalCall()">
                                     <div class="form-group ">
                                         <label for="cname" class="control-label col-lg-3">Company Name</label>
                                         <div class="col-lg-3">
@@ -173,7 +173,7 @@ if(isset($_POST['submit'])){
                                     <div class="form-group ">
                                         <label for="cpin" class="control-label col-lg-3">Pincode</label>
                                         <div class="col-lg-3">
-                                            <input class="form-control " id="cpin" type="number" name="pin" />
+                                            <input class="form-control " id="cpin" name="pin" />
                                         </div>
                                         <label for="cphone2" class="control-label col-lg-3">Phone2</label>
                                         <div class="col-lg-3">
@@ -246,6 +246,28 @@ if(isset($_POST['submit'])){
                                         </div>
                                     </div>
                                 </form>
+                                <!-- <button class="btn btn-primary"  onclick="modalCall()" >modal</button> -->
+                                
+
+           
+                            <!-- Modal -->
+                            <!-- <button class="btn btn-primary" onclick="modalCall()">Modal</button> -->
+                            <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                            <h4 class="modal-title">Wrong Input!!!</h4>
+                                        </div>
+                                        <div class="modal-body" >
+                                        <h4><b><i><div  id = "modaltext"></div></h4>
+
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- modal -->
                             </div>
 
                         </div>
@@ -257,6 +279,35 @@ if(isset($_POST['submit'])){
 </section>
 <!-- Placed js at the end of the document so the pages load faster -->
 <!--Core js-->
+<script type="text/javascript">
+    function modalCall() {
+        var error;
+        var phone2 = document.getElementById("cphone2").value;
+        var mobile = document.getElementById("cmobile").value;
+        var bphone = document.getElementById("cbphone").value;
+        var flag = false;
+        if(phone2.length>0 && isNaN(phone2)) {
+            flag = true;
+            error = "phone2 should be numeric!!!";
+        }
+        if(mobile.length>0 && isNaN(mobile)) {
+            flag = true;
+            error = "mobile should be numeric!!!";
+        }
+        if(bphone.length>0 && isNaN(bphone)) {
+            flag = true;
+            error = "bphone should be numeric!!!";
+        }
+        if(flag) {
+            //alert(error);
+            document.getElementById("modaltext").innerHTML = error;
+            $('#myModal3').modal('show'); 
+            return false;   
+        }
+        return true;
+
+    }
+</script>
 <script src="js/jquery.js"></script>
 <script src="js/jquery-ui/jquery-ui-1.10.1.custom.min.js"></script>
 <script src="bs3/js/bootstrap.min.js"></script>

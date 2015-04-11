@@ -109,7 +109,7 @@ if(isset($_POST['submit'])){
                         </header>
                         <div class="panel-body">
                             <div class=" form">
-                                <form class="cmxform form-horizontal " id="commentForm" method="post" action="#">
+                                <form class="cmxform form-horizontal " id="commentForm" method="post" action="#" onsubmit = "return checkDate()">
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Call Date</label>
                                         <div class="col-md-6 col-xs-11">
@@ -225,7 +225,7 @@ if(isset($_POST['submit'])){
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Next Follow Up Call</label>
                                         <div class="col-md-6 col-xs-11">
-                                            <input class="form-control form-control-inline input-medium default-date-picker" name="followup" size="16" type="text" value="" />
+                                            <input class="form-control form-control-inline input-medium default-date-picker" name="followup" size="16" id="fdate" type="text" value="" />
                                             <!-- <span class="help-block">Select date</span> -->
                                         </div>
                                     </div>
@@ -237,6 +237,20 @@ if(isset($_POST['submit'])){
                                     </div>
                                 </form>
                             </div>
+                            <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                            <h4 class="modal-title">Wrong Input!!!</h4>
+                                        </div>
+                                        <div class="modal-body" >
+                                        <h4><b><i><div  id = "modaltext">Follow date cannot be before Call Date!!!</div></h4>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
 
                         </div>
                     </section>
@@ -247,6 +261,21 @@ if(isset($_POST['submit'])){
 </section>
 <!-- Placed js at the end of the document so the pages load faster -->
 <!--Core js-->
+<script type="text/javascript">
+    function checkDate() {
+        var fdate = document.getElementById("fdate").value.split("-");
+        var cdate = document.getElementById("calldate").value.split("-");
+        var f = new Date(fdate[2],fdate[0]-1,fdate[1]);
+        var c = new Date(cdate[2],cdate[0]-1,cdate[1]);
+        if(f < c) {
+            $('#myModal3').modal('show'); 
+            return false;
+        }
+        return true;    
+    }
+    
+
+</script>
 <script type="text/javascript">
 Date.prototype.yyyymmdd = function() {
    var yyyy = this.getFullYear().toString();

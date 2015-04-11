@@ -47,6 +47,22 @@ if(isset($_POST['submit'])){
 		}
 }
 
+
+if(isset($_POST['resetpassword'])){
+    if(isset($_POST['email']) && $_POST['email'] != "")
+      {
+          $email = mysql_prep($_POST['email'], $connection);
+          $exec = "SELECT * FROM users WHERE email='$email'";
+          $query = mysqli_query($connection, $exec);
+          if($query == true){
+              $rows = mysqli_num_rows($query);
+                if($rows == 1){
+                  //send mail
+                }
+          }
+      }
+}
+
 ?>
 
 <?php require_once("includes/footer.php"); ?>

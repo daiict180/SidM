@@ -66,9 +66,12 @@
                 </a>
             </div>-->
 
+          </div>
         </div>
+      </form>
 
           <!-- Modal -->
+        <form method="post">
           <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade">
               <div class="modal-dialog">
                   <div class="modal-content">
@@ -82,18 +85,14 @@
                       </div>
                       <div class="modal-footer">
                         <div style="margin-top:16px">
-                          <button class="btn btn-success" type="button" style="margin-left:140px;margin-bottom:16px">Submit</button>
-                          <button class="btn btn-default" type="button">Cancel</button>
+                          <button class="btn btn-success" type="submit" name="resetpassword" style="margin-left:100px;margin-bottom:16px">Submit</button>
                         </div>
                       </div>
                   </div>
               </div>
           </div>
           <!-- modal -->
-
-      </form>
-
-    </div>
+        </form>
 
 
 
@@ -107,4 +106,3 @@
 
 <!-- Mirrored from bucketadmin.themebucket.net/login.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 31 Jul 2014 11:13:08 GMT -->
 </html>
-<?php require_once("includes/footer.php"); ?>

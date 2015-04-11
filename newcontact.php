@@ -62,7 +62,7 @@ if(isset($_POST['submit'])){
                         </header>
                         <div class="panel-body">
                             <div class=" form">
-                                <form class="cmxform form-horizontal " id="commentForm" method="post" action="#">
+                                <form class="cmxform form-horizontal " id="commentForm" method="post" onsubmit="return modalCall()" action="#">
                                     <div class="form-group ">
                                         <label for="contactCompany" class="control-label col-lg-3">Company</label>
                                         <div class="col-lg-6">
@@ -127,7 +127,21 @@ if(isset($_POST['submit'])){
                                     </div>
                                 </form>
                             </div>
+                            <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                            <h4 class="modal-title">Wrong Input!!!</h4>
+                                        </div>
+                                        <div class="modal-body" >
+                                        <h4><b><i><div  id = "modaltext"></div></h4>
 
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </section>
                 </div>
@@ -137,6 +151,37 @@ if(isset($_POST['submit'])){
 </section>
 <!-- Placed js at the end of the document so the pages load faster -->
 <!--Core js-->
+<script type="text/javascript">
+    function modalCall() {
+        var error;
+        var phone2 = document.getElementById("bphone").value;
+        var mobile = document.getElementById("mobile").value;
+        var bphone = document.getElementById("pphone").value;
+        var flag = false;
+        if(mobile.length>0 && isNaN(mobile)) {
+            flag = true;
+            error = "Mobile should be numeric!!!";
+        }
+        if(bphone.length>0 && isNaN(bphone)) {
+            flag = true;
+            error = "Personal Phone should be numeric!!!";
+        }
+        if(phone2.length>0 && isNaN(phone2)) {
+            flag = true;
+            error = "Business Phone should be numeric!!!";
+        }
+        if(flag) {
+            //alert(error);
+            document.getElementById("modaltext").innerHTML = error;
+            $('#myModal3').modal('show'); 
+            return false;   
+        }
+        return true;
+        
+
+    }
+</script>
+
 <script src="js/jquery.js"></script>
 <script src="js/jquery-ui/jquery-ui-1.10.1.custom.min.js"></script>
 <script src="bs3/js/bootstrap.min.js"></script>
