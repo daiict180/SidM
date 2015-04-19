@@ -5,13 +5,10 @@
 <?php include("includes/checksession.php"); ?>
 
 <?php
-if(isset($_GET['oid']) && ($_SESSION['role'] == 'BRH' || $_SESSION['role'] == 'COH'|| $_SESSION['role'] == 'ADM')){
+if(isset($_GET['oid'])){
     $oid = $_GET['oid'];
     $pre = mysqli_query($connection, "SELECT branch FROM opportunities WHERE opportunityid='$oid'");
     $res = mysqli_fetch_array($pre);
-    if($_SESSION['role'] == 'BRH' && $res['branch'] == getbranchbyid($_SESSION['user'], $connection))
-        $query = mysqli_query($connection, "DELETE FROM opportunities WHERE opportunityid='$oid'");
-    if($_SESSION['role'] == 'COH' || $_SESSION['role'] == 'ADM')
         $query = mysqli_query($connection, "DELETE FROM opportunities WHERE opportunityid='$oid'");
 }
 ?>
@@ -34,7 +31,7 @@ if(isset($_POST['editsubmit'])){
     $branch = getbranchbyid($assignedto , $connection);
     $oppid = intval($_POST['oppid']);
     $prequery = mysqli_query($connection, "DELETE FROM opportunities WHERE opportunityid='$oppid'");
-    $query = mysqli_query($connection, "INSERT INTO opportunities VALUES ('','$oppname', '$company', '$lead', '$branch', STR_TO_DATE('$crdate', '%Y-%m-%d'), '$user', '$assignedto', '$status', '$stage', '$source', $amount, '$interest', STR_TO_DATE('$cdate', '%Y-%m-%d'), '$oremarks')");
+    $query = mysqli_query($connection, "INSERT INTO opportunities VALUES ('','$oppname', '$company', '$lead', '$branch', STR_TO_DATE('$crdate', '%m-%d-%Y'), '$user', '$assignedto', '$status', '$stage', '$source', $amount, '$interest', STR_TO_DATE('$cdate', '%m-%d-%Y'), '$oremarks')");
 }
 ?>
 
@@ -88,10 +85,20 @@ if(isset($_POST['editsubmit'])){
             document.getElementById("oppid").value = id;
             document.getElementById("oppName").value = values[0];
             document.getElementById("contactCompany").value = values[15];
-            document.getElementById("crdate").value = values[3];
+            var yyyy = values[3].substring(0,4);                                    
+            var mm = values[3].substring(5,7); // getMonth() is zero-based         
+            var dd  = values[3].substring(8,10);             
+                            
+            var crdate =  mm + '-' + dd + '-' + yyyy;
+            document.getElementById("crdate").value = crdate;
             document.getElementById("assignedto").value = values[14];
             document.getElementById("status").value = values[5];
-            document.getElementById("cdate").value = values[6];
+            var yyyy = values[6].substring(0,4);                                    
+            var mm = values[6].substring(5,7); // getMonth() is zero-based         
+            var dd  = values[6].substring(8,10);             
+                            
+            var cdate =  mm + '-' + dd + '-' + yyyy;
+            document.getElementById("cdate").value = cdate;
             document.getElementById("lead").value = values[7];
             document.getElementById("user").value = values[8];
             document.getElementById("stage").value = values[9];
@@ -178,13 +185,11 @@ if(isset($_POST['editsubmit'])){
                     <div class="panel-body">
                     <div class="adv-table">
                     <div class="btn-group">
-                    <?php if($_SESSION['role'] == 'COH' || $_SESSION['role'] == 'ADM' || $_SESSION['role'] == 'BRH'){ ?>
                     <a href="newopportunity.php">
                         <button id="editable-sample_new" class="btn btn-primary">
                             Add New Opportunity <i class="fa fa-plus"></i>
                         </button>
                     </a>
-                    <?php } ?>
                     </div>
                     <br><br>
                     <div class="text-left">
@@ -244,10 +249,8 @@ if(isset($_POST['editsubmit'])){
                         <th hidden></th>
                         <th hidden></th>
                         <th hidden></th>
-                        <?php if($_SESSION['role'] == 'COH' || $_SESSION['role'] == 'ADM' || $_SESSION['role'] == 'BRH'){ ?>
                         <th>Edit</th>
                         <th>Delete</th>
-                        <?php } ?>
                     </tr>
                     </thead>
                     <thead>
@@ -259,10 +262,8 @@ if(isset($_POST['editsubmit'])){
                         <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
                         <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
                         <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
-                        <?php if($_SESSION['role'] == 'COH' || $_SESSION['role'] == 'ADM' || $_SESSION['role'] == 'BRH'){ ?>
                         <td></td>
                         <td></td>
-                        <?php } ?>
                     </tr>
                     </thead>
                     <tbody>
@@ -291,10 +292,8 @@ if(isset($_POST['editsubmit'])){
                         <td hidden><?php echo $result[14]; ?></td>
                         <td hidden><?php echo $result[7]; ?></td>
                         <td hidden><?php echo $result[2]; ?></td>
-                        <?php if($_SESSION['role'] == 'COH' || $_SESSION['role'] == 'ADM' || $_SESSION['role'] == 'BRH'){ ?>
                         <td><a class="edit" href="#myModal-1" data-toggle="modal" id = "<?php echo $result[0]; ?>" onclick="populateForm(this.id)">Edit</a></td>
                         <td><a class="delete" href="opportunities.php?oid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Opportunity?')">Delete</a></td>
-                        <?php } ?>
                     </tr>
                     <?php } ?>
                     </tbody>
@@ -316,10 +315,8 @@ if(isset($_POST['editsubmit'])){
                         <th hidden></th>
                         <th hidden></th>
                         <th hidden></th>
-                        <?php if($_SESSION['role'] == 'COH' || $_SESSION['role'] == 'ADM' || $_SESSION['role'] == 'BRH'){ ?>
                         <th>Edit</th>
                         <th>Delete</th>
-                        <?php } ?>
                     </tr>
                     </tfoot>
                     </table>

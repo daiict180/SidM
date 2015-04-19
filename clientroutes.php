@@ -150,7 +150,7 @@
                             <div class="form-group">
                                 <label>Select Companies To Visit</label>
                             </div> 
-                            <div class="form-group">
+                            <div class="form-group"  style="max-height:50px">
                                 <select multiple name="e9" id="e9" style="width:300px" class="populate">
                                 <?php
                                   $query = mysqli_query($connection, "SELECT * FROM companies");

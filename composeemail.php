@@ -151,7 +151,7 @@ if(isset($_POST['submit'])){
                         <?php if(isset($execute)){ ?>
                         <section class="panel">
                             <div class="panel-body">
-                                <ul class="nav nav-pills nav-stacked labels-info ">
+                                <ul class="nav nav-pills nav-stacked labels-info "  style="overflow-y:scroll;max-height:300px">
                                     <li> <h4>Contacts</h4> </li>
                                     <?php
                                         $query = mysqli_query($connection, $execute);
@@ -208,8 +208,7 @@ if(isset($_POST['submit'])){
                                     </div>
                                     <div class="compose-btn">
                                         <button type="button" class="btn btn-primary btn-sm" onclick="sendmail()"><i class="fa fa-check"></i> Send</button>
-                                        <button class="btn btn-sm"><i class="fa fa-times"></i> Discard</button>
-                                        <button class="btn btn-sm">Draft</button>
+                                        <button HTTP-EQUIV="refresh" class="btn btn-sm"><i class="fa fa-times"></i> Discard</button>
                                     </div>
 
                                 <!-- </form> -->
@@ -266,35 +265,7 @@ if(isset($_POST['submit'])){
             
         }
         var m = new mandrill.Mandrill('lzMg5wTxhG_ZfWJRGuuiGQ');
-       //// var filesSelected = document.getElementById("inputFileToLoad").files;
-        //alert("abc");   
-        // var attachment = false;
-        // var type;
-        // var content;
-        // if (filesSelected.length > 0)
-        // {
-        //    // alert("asd");
-        //     attachment = true;   
-        //     var fileToLoad = filesSelected[0];
-        //     // var bytes = File.ReadAllBytes(fileToLoad);
-        //     // alert(Convert.ToBase64String(bytes)); 
-        //     // alert(fileToLoad);
-        //     var fileReader = new FileReader();
-           
-        //     fileReader.onload = function(fileLoadedEvent) 
-        //     {
-        //         alert("yah");
-
-        //         var encode =  fileLoadedEvent.target.result;
-        //         var data = encode.split(";");//
-        //         type = data[0].split(":")[1];
-        //         content = data[1].split(",")[1];
-                     
-        //     };
-
-        //     fileReader.readAsDataURL(fileToLoad);
-        // }
-        // alert(type + "  " + content);
+       
         if(attachment) {
 
             var params = {
@@ -316,21 +287,31 @@ if(isset($_POST['submit'])){
         else {
             var params = {
             "message": {
-                "from_email":"vishwa9694@gmail.com",
+                "from_email":"siddharth@gmail.com",
                 "to": emailjson,
                 "subject": document.getElementById("subject").value,
-                "text": document.getElementById("editor").value
+                "html": document.getElementById("editor").value
                 
             }
         };
         }
         
         m.messages.send(params, function(res) {
-                console.log(res);
-            }, function(err) {
-                console.log(err);
-        });
+                var result = JSON.stringify(res[0]["status"]);
+                //alert(result);
+               if(result == "\"sent\"" || result == "\"queued\"") {
+                    alert("Mail Sent.");
+                   window.location="composeemail.php";                
+                 }
+                 else
+                   alert("Mail cannot be sent.");
+                
+                //alert(res);
+    // window.location="dashboard.php";
 
+            }, function(err) {
+                console.log(JSON.stringify(err));
+        });
 
 
     }
@@ -351,10 +332,10 @@ if(isset($_POST['submit'])){
     <script type="text/javascript" src="js/bootstrap-wysihtml5/wysihtml5-0.3.0.js"></script>
     <script type="text/javascript" src="js/bootstrap-wysihtml5/bootstrap-wysihtml5.js"></script>
 
-    <script src="js/flot-chart/jquery.flot.js"></script>
-    <script src="js/flot-chart/jquery.flot.tooltip.min.js"></script>
-    <script src="js/flot-chart/jquery.flot.resize.js"></script>
-    <script src="js/flot-chart/jquery.flot.pie.resize.js"></script>
+    <!-- // <script src="js/flot-chart/jquery.flot.js"></script> -->
+    <!-- // <script src="js/flot-chart/jquery.flot.tooltip.min.js"></script> -->
+    <!-- <script src="js/flot-chart/jquery.flot.resize.js"></script>
+    <script src="js/flot-chart/jquery.flot.pie.resize.js"></script> -->
 
 
     <script src="js/iCheck/jquery.icheck.js"></script>

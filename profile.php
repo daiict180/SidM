@@ -91,7 +91,12 @@ if(isset($_POST['submit'])){
               <div class="panel-body profile-information">
                <div class="col-md-5">
                  <div class="profile-pic text-center">
-                   <img src="<?php echo "images/".$_SESSION['user'].".jpg"; ?>" alt=""/>
+                 <?php
+                  $id = $_SESSION['user'];
+                  $query = mysqli_query($connection, "SELECT image_path FROM users WHERE userid='$id'");
+                  $result = mysqli_fetch_array($query);
+                 ?>
+                   <img src="<?php echo $result[0]; ?>" alt=""/>
                  </div>
                  <div class="row" style="margin-top:5%;margin-left:25%">
                   <a href="#myModal-2" data-toggle="modal" class="btn btn-primary" onclick="editProfile();">

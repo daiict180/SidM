@@ -20,7 +20,12 @@
         <!-- user login dropdown start-->
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                <img alt="" src="<?php echo "images/".$_SESSION['user'].".jpg"; ?>">
+            <?php
+                  $id = $_SESSION['user'];
+                  $query = mysqli_query($connection, "SELECT image_path FROM users WHERE userid='$id'");
+                  $result = mysqli_fetch_array($query);
+                 ?>
+                <img alt="" src="<?php echo $result[0]; ?>">
                 <span class="username"><?php echo getnamebyid($_SESSION['user'], $connection) ?></span>
                 <b class="caret"></b>
             </a>

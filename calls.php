@@ -26,9 +26,11 @@ if(isset($_POST['editsubmit'])){
     $followup = mysql_prep($_POST['followup'], $connection);
     $branch = getbranchbyid($user, $connection);
     $callid = intval($_POST['callid']);
+    $followedup = mysql_prep($_POST['followedup'], $connection);
 
     $prequery = mysqli_query($connection, "DELETE FROM calls WHERE callid='$callid'");
-    $query = mysqli_query($connection, "INSERT INTO calls VALUES ('$callid', STR_TO_DATE('$calldate', '%Y-%m-%d'), '$mode', '$user', '$for', '$company', '$lead', '$opportunity', '$notes', STR_TO_DATE('$followup', '%Y-%m-%d'),'No','$branch')");    
+    $query = mysqli_query($connection, "INSERT INTO calls VALUES ('$callid', STR_TO_DATE('$calldate', '%m-%d-%Y'), '$mode', '$user', '$for', '$company', '$lead', '$opportunity', '$notes', STR_TO_DATE('$followup', '%m-%d-%Y'),'$followedup','$branch')");
+    echo mysqli_error($connection);
 }
 
 ?>
@@ -77,18 +79,29 @@ if(isset($_POST['editsubmit'])){
     <script type="text/javascript">
         function populateForm(id) {
             var values = [];
-            for(var i = 0; i < 15; i++) {
+            for(var i = 0; i < 16; i++) {
                 values[i] = document.getElementById("row"+id).cells[i].innerHTML; 
             }
-            document.getElementById("calldate").value = values[0];
+            var yyyy = values[0].substring(0,4);                                    
+            var mm = values[0].substring(5,7); // getMonth() is zero-based         
+            var dd  = values[0].substring(8,10);             
+                            
+            var calldate =  mm + '-' + dd + '-' + yyyy;
+            document.getElementById("calldate").value =  calldate;
             document.getElementById("callMode").value = values[13];
             document.getElementById("callfor").value = values[2];
             document.getElementById("contactCompany").value = values[11];
             document.getElementById("opportunity").value = values[14];
             document.getElementById("suser").value = values[12];
             document.getElementById("callNotes").value = values[6];
-            document.getElementById("followup").value = values[8];
+            var yyyy = values[8].substring(0,4);                                    
+            var mm = values[8].substring(5,7); // getMonth() is zero-based         
+            var dd  = values[8].substring(8,10);             
+                            
+            var followdate =  mm + '-' + dd + '-' + yyyy;
+            document.getElementById("followup").value = followdate;
             document.getElementById("lead").value = values[10];
+            document.getElementById("followedup").value = values[15];
             document.getElementById("callid").value = id;
 
 
@@ -183,6 +196,7 @@ if(isset($_POST['editsubmit'])){
                         <th hidden></th>
                         <th hidden></th>
                         <th hidden></th> 
+                        <th hidden></th> 
                         <th>Follow Up/Edit</th>
                         <th>Delete</th>
                     </tr>
@@ -236,6 +250,7 @@ if(isset($_POST['editsubmit'])){
                         <td hidden><?php echo $result[3]; ?></td>
                         <td hidden><?php echo $result[2]; ?></td>
                         <td hidden><?php echo $result[7]; ?></td>
+                        <td hidden><?php echo $result[10]; ?></td>
 						<td><a class="edit" href="newcall.php?cid=<?php echo $result[0] ; ?>" href="">Follow Up</a><br><a class="edit" href="#myModal-1" data-toggle="modal"  id="<?php echo $result[0]; ?>" onclick="populateForm(this.id)">Edit</a></td>
                         <td><a class="delete" href="calls.php?cid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Call?')">Delete</a></td>
                     </tr>
@@ -253,6 +268,7 @@ if(isset($_POST['editsubmit'])){
                         <th>Branch</th>
                         <th>Next Follow Up</th>  
                         <th>Followed Up</th>
+                        <th hidden></th>
                         <th hidden></th>
                         <th hidden></th>
                         <th hidden></th>
@@ -381,6 +397,9 @@ if(isset($_POST['editsubmit'])){
                                         </div>
                                         <div class="col-lg-3">
                                             <input class="form-control" id="callid" type="hidden" name="callid" />
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <input class="form-control" id="followedup" type="hidden" name="followedup" />
                                         </div>
                                     </div>
                                     <div class="form-group">

@@ -31,6 +31,7 @@ if(isset($_GET['fid'])){
     $fid = $_GET['fid'];
     $query = mysqli_query($connection, "SELECT * FROM filemanager WHERE fileid='$fid'");
     $result = mysqli_fetch_array($query);
+    if(($result['uploadedby']==$_SESSION['user'] && $_SESSION['role']=='SAE') || ($_SESSION['role'] == 'BRH' && getbranchbyid($_SESSION['user'], $connection)==$result['branch'])){
     $filename = $result['filename'];
     $filepath = $result['filepath'];
 
@@ -39,7 +40,8 @@ if(isset($_GET['fid'])){
 
 
     if($filepath && unlink($filepath))
-    $query = mysqli_query($connection, "Delete FROM filemanager WHERE fileid='$fid'");
+        $query = mysqli_query($connection, "Delete FROM filemanager WHERE fileid='$fid'");
+}
 }
 
 ?>
@@ -54,7 +56,8 @@ if(isset($_POST['submit'])){
     $fileSize = $_FILES['inputFile']['size'];
     $fileType = $_FILES['inputFile']['type'];
     $specifiedtype = $_POST['doctype'];
-    $uploadedby = getnamebyid($_SESSION['user'], $connection);
+    $uploadedby = $_SESSION['user'];
+    $branch = getbranchbyid($_SESSION['user'], $connection);
 
     $filePath = $uploadDir . $fileName;
 
@@ -72,7 +75,7 @@ if(isset($_POST['submit'])){
         $filePath = addslashes($filePath);
     }
 
-    $query = "INSERT INTO filemanager VALUES ('','$fileName', '$fileType', '$fileSize', '$filePath', '$specifiedtype', '$uploadedby', NOW())";
+    $query = "INSERT INTO filemanager VALUES ('','$fileName', '$fileType', '$fileSize', '$filePath', '$specifiedtype', '$uploadedby', NOW(), '$branch')";
 
     mysqli_query($connection, $query) or die('Error, query failed : ' . mysql_error());
 }
@@ -176,18 +179,29 @@ if(isset($_POST['submit'])){
                     </thead>
                     <tbody>
                     <?php
-                            $query = mysqli_query($connection, "SELECT * FROM filemanager");
+                            $execute = "SELECT * FROM filemanager ";
+                            if($_SESSION['role'] == 'SAE'){
+                                $id = $_SESSION['user'];
+                                $execute = $execute."WHERE uploadedby='$id'";
+                            }
+                            if($_SESSION['role'] == 'BRH'){
+                                $branch = getbranchbyid($_SESSION['user'], $connection);
+                                $execute = $execute."WHERE branch='$branch'";
+                            }
+                            $query = mysqli_query($connection, $execute);
                             $rows = mysqli_num_rows($query);
                             for($i = 0 ; $i < $rows ; $i++){
                                 $result = mysqli_fetch_array($query);
                                 $q = mysqli_query($connection, "SELECT * FROM documents where doctypeid='$result[5]'");
                                 $r = mysqli_fetch_array($q);
+                                $q1 = mysqli_query($connection, "SELECT * FROM users WHERE userid='$result[6]'");
+                                $r1 = mysqli_fetch_array($q1);
                         ?>
                     <tr class="gradeX" id = "row1">
                         <td><?php echo $result[1]; ?>
                         <div class="fa-hover col-md-3 col-sm-4"><a href="filemanager.php?readfile=<?php echo $result[0] ; ?>"><i class="fa fa-download"></a></div></td>
                         <td><?php echo $r[1]; ?></td>
-                        <td><?php echo $result[6]; ?></td>
+                        <td><?php echo $r1[1]; ?></td>
                         <td><?php echo $result[7]; ?></td>
                         <td><div class="fa-hover col-md-3 col-sm-4"><a href="filemanager.php?fid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete File?')"><i class="fa fa-trash-o"></a></div></td>
                     </tr>

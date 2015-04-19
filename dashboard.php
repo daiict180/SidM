@@ -197,8 +197,9 @@ $(function () {
                 }
                 $query2 = mysqli_query($connection, $exec2);
                 $rows2 = 0;
-                if($query2 != false)
+                if($query2 != false){
                     $rows2 = mysqli_num_rows($query2);
+                }
 
                 ?>
 
@@ -252,7 +253,7 @@ $(function () {
                 </section>
             </div>
             <?php
-                                        $ae = "SELECT COUNT(*) FROM leads WHERE status='Hot' ";
+                                        $ae = "SELECT COUNT(*) FROM leads WHERE status='Active' ";
                                         if($_SESSION['role'] == 'BRH')
                                             {
                                                 $mybranch = getbranchbyid($_SESSION['user'], $connection);
@@ -352,7 +353,7 @@ $(function () {
                         </div>
                         <?php
                         $userid = $_SESSION['user'];
-                        $query = mysqli_query($connection, "SELECT COUNT(*) FROM calls WHERE callby='$userid' AND `calldate` >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)");
+                        $query = mysqli_query($connection, "SELECT COUNT(*) FROM calls WHERE callby='$userid' AND 'calldate' >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)");
                         $result = mysqli_fetch_array($query);
                         ?>
                         <div class="row" style="max-height:120px;">
@@ -493,20 +494,38 @@ $(function () {
                     </thead>
                     <tbody>
                     <?php
-                            $query = mysqli_query($connection, "SELECT * FROM calls WHERE followed='No' AND nextfollowup > DATE_ADD(CURDATE(), INTERVAL -15 DAY) AND nextfollowup < DATE_ADD(CURDATE(), INTERVAL 1 DAY)");
+                            $exec = "SELECT * FROM calls WHERE followed='No' AND nextfollowup > DATE_ADD(CURDATE(), INTERVAL -15 DAY) AND nextfollowup < DATE_ADD(CURDATE(), INTERVAL 1 DAY) ";
+                            if($_SESSION['role'] == 'SAE'){
+                                $id = $_SESSION['user'];
+                                $exec = $exec."AND callby=$id";
+                            }
+                            if($_SESSION['role'] == 'BRH'){
+                                $branch = getbranchbyid($_SESSION['user'], $connection);
+                                $exec = $exec."AND branch='$branch'";
+                            }
+                            $query = mysqli_query($connection, $exec);
                             $rows = 0;
                             if($query != false)
                                 $rows = mysqli_num_rows($query);
                             for($i=0 ; $i<$rows ; $i++){
                                 $result = mysqli_fetch_array($query);
+                                $q1 = mysqli_query($connection, "SELECT * FROM callmodes WHERE modeid='$result[2]'");
+                                $mode = mysqli_fetch_array($q1);
+                                $q2 = mysqli_query($connection, "SELECT * FROM companies WHERE companyid='$result[5]'");
+                                $company = mysqli_fetch_array($q2);
+                                $q3 = mysqli_query($connection, "SELECT * FROM opportunities WHERE opportunityid='$result[7]'");
+                                $opportunity = mysqli_fetch_array($q3);
+                                $q4 = mysqli_query($connection, "SELECT * FROM users WHERE userid='$result[3]'");
+                                $user = mysqli_fetch_array($q4);
+
                     ?>
                     <tr class="gradeX">
                         <td><?php echo $result[1]; ?></td>
-                        <td><?php echo $result[2]; ?></td>
+                        <td><?php echo $mode[1]; ?></td>
                         <td><?php echo $result[4]; ?></td>
-                        <td><?php echo $result[5]; ?></td>
-                        <td><?php echo $result[7]; ?></td>
-                        <td><?php echo $result[3]; ?></td>
+                        <td><?php echo $company[1]; ?></td>
+                        <td><?php echo $opportunity[1]; ?></td>
+                        <td><?php echo $user['fullname']; ?></td>
                         <td><?php echo $result[8]; ?></td>
                         <td><?php echo $result[11]; ?></td>
                         <td><?php echo $result[9]; ?></td>

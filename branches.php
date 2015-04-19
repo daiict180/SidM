@@ -21,7 +21,6 @@ if(isset($_POST['submit']) && ($_SESSION['role']=='ADM'||$_SESSION['role']=='COH
  
     // if able to geocode the address
     if($data_arr){
-         
         $latitude = $data_arr[0];
         $longitude = $data_arr[1];
     }

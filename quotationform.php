@@ -8,7 +8,7 @@
 if(isset($_GET['oppid']) && isset($_GET['mnumber']) && $_GET['oppid']!="" && $_GET['mnumber']!=""){
 	$oppid = $_GET['oppid'];
 	$mnumber = $_GET['mnumber'];
-    $query = mysqli_query($connection, "SELECT customer FROM opportunities WHERE opportunityid='$oppid'");
+    $query = mysqli_query($connection, "SELECT * FROM opportunities WHERE opportunityid='$oppid'");
 	$result = mysqli_fetch_array($query);
 }
 else{
@@ -68,7 +68,11 @@ else{
                                     <div class="form-group ">
                                         <label for="qCompany" class="control-label col-lg-3">Company</label>
                                         <div class="col-lg-6">
-                                            <input class="form-control " id="qcompany" type="text" name="qcompany" readonly="readonly" value=<?php echo $result[0]; ?> placeholder=<?php echo $result[0]; ?>>
+                                        <?php
+                                            $q1 = mysqli_query($connection, "SELECT * FROM companies WHERE companyid='$result[2]'");
+                                            $company = mysqli_fetch_array($q1);
+                                        ?>
+                                            <input class="form-control " id="qcompany" type="text" name="qcompany" readonly="readonly" value=<?php echo $company[1]; ?> placeholder=<?php echo $company[1]; ?>>
                                         </div>
                                     </div>
                                     <div class="form-group ">

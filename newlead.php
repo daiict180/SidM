@@ -6,11 +6,7 @@
 
 <?php
 
-if($_SESSION['role'] == 'SAE'){
-    redirect_to("dashboard.php");
-}
-
-if(isset($_POST['submit']) && ($_SESSION['role'] == 'BRH'||$_SESSION['role'] == 'ADM'||$_SESSION['role'] == 'COH')){
+if(isset($_POST['submit'])){
 	$company = mysql_prep($_POST['company'], $connection);
 	$user = mysql_prep($_POST['user'], $connection);
 	$status = mysql_prep($_POST['status'], $connection);
@@ -77,7 +73,7 @@ if(isset($_POST['submit']) && ($_SESSION['role'] == 'BRH'||$_SESSION['role'] == 
                                             <select class="form-control" name="company" id="contactCompany" required>
                                                 <?php
 													$exec = "SELECT * FROM companies ";
-                                                    if($_SESSION['role'] == 'BRH'){
+                                                    if($_SESSION['role'] == 'BRH' || $_SESSION['role'] == 'SAE'){
                                                         $branch = getbranchbyid($_SESSION['user'], $connection);
                                                         $exec = $exec."WHERE branch='$branch'";
                                                     }
@@ -100,6 +96,10 @@ if(isset($_POST['submit']) && ($_SESSION['role'] == 'BRH'||$_SESSION['role'] == 
                                                     if($_SESSION['role'] == 'BRH'){
                                                         $branch = getbranchbyid($_SESSION['user'], $connection);
                                                         $exec = $exec."WHERE branch='$branch'";
+                                                    }
+                                                    if($_SESSION['role'] == 'SAE'){
+                                                        $id = $_SESSION['user'];
+                                                        $exec = $exec."WHERE userid='$id'";
                                                     }
                                                     $query = mysqli_query($connection, $exec);
 													$rows = mysqli_num_rows($query);
@@ -128,7 +128,7 @@ if(isset($_POST['submit']) && ($_SESSION['role'] == 'BRH'||$_SESSION['role'] == 
                                             <select class="form-control"  id="branch" name="branch" required>
                                                 <?php
 													$exec = "SELECT branchname FROM branches ";
-                                                    if($_SESSION['role'] == 'BRH'){
+                                                    if($_SESSION['role'] == 'BRH' || $_SESSION['role'] == 'SAE'){
                                                         $branch = getbranchbyid($_SESSION['user'], $connection);
                                                         $exec = $exec."WHERE branchname='$branch'";
                                                     }

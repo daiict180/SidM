@@ -18,11 +18,12 @@ if(isset($_POST['submit']) && ($_SESSION['role']=='ADM'||$_SESSION['role']=='COH
 	$active = mysql_prep($_POST['active'], $connection);
 	$role = mysql_prep($_POST['role'], $connection);
 	$branch = mysql_prep($_POST['branch'], $connection);
+    $target_path = "images/default_pic.jpg";
 	
 	if($password == $confirmPassword && $_SESSION['role']!='BRH')
-		$query = mysqli_query($connection, "INSERT INTO users VALUES ('','$FullName', '$useremail', '$umobile', '$role', '$active', '$password', '$branch')");
+		$query = mysqli_query($connection, "INSERT INTO users VALUES ('','$FullName', '$useremail', '$umobile', '$role', '$active', '$password', '$branch', '$target_path')");
 	if($password == $confirmPassword && $_SESSION['role']=='BRH' && getbranchbyid($_SESSION['user'],$connection)==$branch)
-        $query = mysqli_query($connection, "INSERT INTO users VALUES ('','$FullName', '$useremail', '$umobile', '$role', '$active', '$password', '$branch')");
+        $query = mysqli_query($connection, "INSERT INTO users VALUES ('','$FullName', '$useremail', '$umobile', '$role', '$active', '$password', '$branch', '$target_path')");
 
 }
 

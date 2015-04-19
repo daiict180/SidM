@@ -6,6 +6,21 @@
 <?php
 $error = "";
 
+if(isset($_GET['email']) && isset($_GET['reset']) && isset($_GET['email'])!="" && isset($_GET['reset'])!=""){
+	$email = $_GET['email'];
+	$reset = $_GET['reset'];
+	$pass = getrandomstring(8);
+	$password = md5($pass);
+	$query = mysqli_query($connection, "UPDATE users SET password='$password' WHERE email='$email' AND reset='$reset'");
+	if($query == true){
+		$toprint = $pass;
+	}
+	else{
+		$toprint = "No such user exists";
+	}
+	$query = mysqli_query($connection, "UPDATE users SET reset='' WHERE email='$email'");
+}
+
 if(isset($_POST['submit'])){
 	if (empty($_POST['uname']) || empty($_POST['pwd'])) {
 		$error = "Username or Password is invalid";
@@ -48,7 +63,7 @@ if(isset($_POST['submit'])){
 }
 
 
-if(isset($_POST['resetpassword'])){
+if(isset($_POST['email']) && isset($_POST['confirmreset'])){
     if(isset($_POST['email']) && $_POST['email'] != "")
       {
           $email = mysql_prep($_POST['email'], $connection);
@@ -57,7 +72,8 @@ if(isset($_POST['resetpassword'])){
           if($query == true){
               $rows = mysqli_num_rows($query);
                 if($rows == 1){
-                  //send mail
+                	$linkvalue = $_POST['confirmreset'];
+                	$q = mysqli_query($connection, "UPDATE users SET reset='$linkvalue' WHERE email='$email'");
                 }
           }
       }

@@ -5,9 +5,8 @@
 <?php include("includes/checksession.php"); ?>
 
 <?php
-if($_SESSION['role'] == 'SAE')
-    redirect_to("dashboard.php");
-if(isset($_POST['submit']) && ($_SESSION['role'] == 'COH'||$_SESSION['role'] == 'ADM'||$_SESSION['role'] == 'BRH')){
+
+if(isset($_POST['submit'])){
     $oppname = mysql_prep($_POST['oppName'], $connection);
     $company = mysql_prep($_POST['company'], $connection);
     $lead = mysql_prep($_POST['lead'], $connection);
@@ -127,7 +126,7 @@ var convertlead = <?php echo json_encode($convertlead); ?>;
                                              <select class="form-control" id="contactCompany" name="company" onchange="show(this.value)" required>
                                                 <?php
                                                     $exec = "SELECT * FROM companies ";
-                                                    if($_SESSION['role'] == 'BRH'){
+                                                    if($_SESSION['role'] == 'BRH' || $_SESSION['role'] == 'SAE'){
                                                         $branch = getbranchbyid($_SESSION['user'], $connection);
                                                         $exec = $exec."WHERE branch='$branch'";
                                                     }
@@ -148,7 +147,16 @@ var convertlead = <?php echo json_encode($convertlead); ?>;
                                         <div class="col-lg-6" id = "targetDiv">
                                             <select class="form-control" id="OpportunityForm" name="lead" required>
                                                 <?php
-                                                    $query = mysqli_query($connection, "SELECT * FROM leads");
+                                                    $exec = "SELECT * FROM leads ";
+                                                    if($_SESSION['role'] == 'BRH'){
+                                                        $branch = getbranchbyid($_SESSION['user'], $connection);
+                                                        $exec = $exec."WHERE branch='$branch'";
+                                                    }
+                                                    if($_SESSION['role'] == 'SAE'){
+                                                        $id = $_SESSION['user'];
+                                                        $exec = $exec."WHERE userid='$id'";
+                                                    }
+                                                    $query = mysqli_query($connection, $exec);
                                                     $rows = 0;
                                                     if($query != false)
                                                        $rows = mysqli_num_rows($query);
@@ -191,6 +199,10 @@ var convertlead = <?php echo json_encode($convertlead); ?>;
                                                     if($_SESSION['role'] == 'BRH'){
                                                         $branch = getbranchbyid($_SESSION['user'], $connection);
                                                         $exec = $exec."WHERE branch='$branch'";
+                                                    }
+                                                    if($_SESSION['role'] == 'SAE'){
+                                                        $id = $_SESSION['user'];
+                                                        $exec = $exec."WHERE userid='$id'";
                                                     }
                                                     $query = mysqli_query($connection, $exec);
                                                     $rows = mysqli_num_rows($query);

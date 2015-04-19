@@ -5,13 +5,10 @@
 <?php include("includes/checksession.php"); ?>
 
 <?php
-if(isset($_GET['lid']) && ($_SESSION['role']=='ADM'||$_SESSION['role']=='COH'||$_SESSION['role']=='BRH')){
+if(isset($_GET['lid'])){
 	$lid = $_GET['lid'];
     $pre = mysqli_query($connection, "SELECT branch FROM leads WHERE leadid='$lid'");
     $res = mysqli_fetch_array($pre);
-    if($_SESSION['role'] == 'BRH' && $res['branch'] == getbranchbyid($_SESSION['role'], $connection))
-        $query = mysqli_query($connection, "DELETE FROM leads WHERE leadid='$lid'");
-    if($_SESSION['role']=='COH'||$_SESSION['role']=='ADM')
         $query = mysqli_query($connection, "DELETE FROM leads WHERE leadid='$lid'");
 }
 
@@ -135,13 +132,11 @@ if(isset($_POST['editsubmit'])){
                     <div class="panel-body">
                     <div class="adv-table">
                     <div class="btn-group">
-                    <?php if($_SESSION['role'] == 'BRH'||$_SESSION['role'] == 'COH'||$_SESSION['role'] == 'ADM'){ ?>
 					<a href="newlead.php">
                         <button id="editable-sample_new" class="btn btn-primary">
                             Add New Lead <i class="fa fa-plus"></i>
                         </button>
                     </a>
-                    <?php } ?>
 					</div>
                     <table  class="display table table-bordered table-striped" id="dynamic-table">
                     <thead>
@@ -155,11 +150,9 @@ if(isset($_POST['editsubmit'])){
                         <th hidden></th>
                         <th hidden></th>
                         <th hidden></th>
-                        <?php if($_SESSION['role'] == 'BRH'||$_SESSION['role'] == 'COH'||$_SESSION['role'] == 'ADM'){ ?>
                         <th>Convert</th>
                         <th>Edit</th>
                         <th>Delete</th>
-                        <?php } ?>
                     </tr>
                     </thead>
                     <thead>
@@ -170,10 +163,8 @@ if(isset($_POST['editsubmit'])){
                         <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
                         <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
                         <td><input class="form-control input-sm m-bot15" type="text" style="width: 100%" onkeyup="searchRows('dynamic-table')"></td>
-                        <?php if($_SESSION['role'] == 'BRH'||$_SESSION['role'] == 'COH'||$_SESSION['role'] == 'ADM'){ ?>
                         <td></td>
                         <td></td>
-                        <?php } ?>
                     </tr>
                     </thead>
                     <tbody>
@@ -200,11 +191,9 @@ if(isset($_POST['editsubmit'])){
                         <td hidden><?php echo $result[6]; ?></td>
                         <td hidden><?php echo $result[2]; ?></td>
                         <td hidden><?php echo $result[1]; ?></td>
-                        <?php if($_SESSION['role'] == 'BRH'||$_SESSION['role'] == 'COH'||$_SESSION['role'] == 'ADM'){ ?>
                         <td><a class="edit" href="newopportunity.php?lid=<?php echo $result[0]; ?>">Convert</a></td>
                         <td><a class="edit" href="#myModal-1" data-toggle="modal"  id = "<?php echo $result[0]; ?>" onclick="populateForm(this.id)">Edit</a></td>
                         <td><a class="delete" href="leads.php?lid=<?php echo $result[0] ; ?>" onclick="return confirm('Delete Lead?')">Delete</a></td>
-                        <?php } ?>
                     </tr>
 					<?php  } ?>
                     </tbody>
@@ -219,11 +208,9 @@ if(isset($_POST['editsubmit'])){
                         <th hidden></th>
                         <th hidden></th>
                         <th hidden></th>
-                        <?php if($_SESSION['role'] == 'BRH'||$_SESSION['role'] == 'COH'||$_SESSION['role'] == 'ADM'){ ?>
                         <th>Convert</th>
                         <th>Edit</th>
                         <th>Delete</th>
-                        <?php } ?>
                     </tr>
                     </tfoot>
                     </table>
