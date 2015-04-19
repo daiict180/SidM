@@ -227,8 +227,10 @@ if(isset($_POST['submit'])){
     var attachment=false;
     var type;
     var content;
+    var filename;
     function loadImageFileAsURL()
     {
+        filename = document.getElementById("inputFileToLoad").files[0].name;
         var filesSelected = document.getElementById("inputFileToLoad").files;
         if (filesSelected.length > 0)
         {
@@ -270,14 +272,14 @@ if(isset($_POST['submit'])){
 
             var params = {
             "message": {
-                "from_email":"vishwa9694@gmail.com",
+                "from_email":"siddharthMachines@gmail.com",
                 "to": emailjson,
                 "subject": document.getElementById("subject").value,
                 "text": document.getElementById("editor").value,
                 "attachments": [
                     {
                         "type": type,
-                        "name": "doc.pdf",
+                        "name": filename,
                         "content": content
                     }
                 ]
