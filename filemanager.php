@@ -31,7 +31,7 @@ if(isset($_GET['fid'])){
     $fid = $_GET['fid'];
     $query = mysqli_query($connection, "SELECT * FROM filemanager WHERE fileid='$fid'");
     $result = mysqli_fetch_array($query);
-    if(($result['uploadedby']==$_SESSION['user'] && $_SESSION['role']=='SAE') || ($_SESSION['role'] == 'BRH' && getbranchbyid($_SESSION['user'], $connection)==$result['branch'])){
+    if(($result['uploadedby']==$_SESSION['user'] && $_SESSION['role']=='SAE') || ($_SESSION['role'] == 'BRH' && getbranchbyid($_SESSION['user'], $connection)==$result['branch']) || ($_SESSION['role'] == 'COH') || ($_SESSION['role'] == 'ADM')){
     $filename = $result['filename'];
     $filepath = $result['filepath'];
 
@@ -39,7 +39,9 @@ if(isset($_GET['fid'])){
     chmod("filemanager/", 0600);
 
 
-    if($filepath && unlink($filepath))
+    if(!file_exists($filepath))
+    	$query = mysqli_query($connection, "Delete FROM filemanager WHERE fileid='$fid'");
+    else if($filepath && unlink($filepath))
         $query = mysqli_query($connection, "Delete FROM filemanager WHERE fileid='$fid'");
 }
 }

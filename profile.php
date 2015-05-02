@@ -32,7 +32,7 @@ if(isset($_POST['submit'])){
     $temp_name=$_FILES["profilepic"]["tmp_name"];
     $imgtype=$_FILES["profilepic"]["type"];
     $ext= GetImageExtension($imgtype);
-    $target_path = "images/".$_SESSION['user'].".jpg";
+    $target_path = "images/".$_SESSION['user'];
     $id = $_SESSION['user'];
 
     if(!get_magic_quotes_gpc())

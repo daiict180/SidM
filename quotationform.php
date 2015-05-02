@@ -9,7 +9,7 @@ if(isset($_GET['oppid']) && isset($_GET['mnumber']) && $_GET['oppid']!="" && $_G
 	$oppid = $_GET['oppid'];
 	$mnumber = $_GET['mnumber'];
     $query = mysqli_query($connection, "SELECT * FROM opportunities WHERE opportunityid='$oppid'");
-	$result = mysqli_fetch_array($query);
+	$comresult = mysqli_fetch_array($query);
 }
 else{
 	redirect_to("opportunities.php");
@@ -55,7 +55,6 @@ else{
 <section id="main-content">
         <section class="wrapper">
             <!-- page start-->
-            
             <div class="row">
                 <div class="col-lg-12">
                     <section class="panel">
@@ -69,7 +68,7 @@ else{
                                         <label for="qCompany" class="control-label col-lg-3">Company</label>
                                         <div class="col-lg-6">
                                         <?php
-                                            $q1 = mysqli_query($connection, "SELECT * FROM companies WHERE companyid='$result[2]'");
+                                            $q1 = mysqli_query($connection, "SELECT * FROM companies WHERE companyid='$comresult[2]'");
                                             $company = mysqli_fetch_array($q1);
                                         ?>
                                             <input class="form-control " id="qcompany" type="text" name="qcompany" readonly="readonly" value=<?php echo $company[1]; ?> placeholder=<?php echo $company[1]; ?>>
